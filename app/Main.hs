@@ -2,6 +2,7 @@ module Main (main) where
 
 import Data.Conversion.Rule (Rule (..))
 import Data.Conversion.Term (Term (..))
+import Data.Conversion.Parse (exampleParse)
 
 main :: IO ()
 main = do
@@ -9,3 +10,5 @@ main = do
   let t2 = Fun 'g' [Fun 'f' [Var 1, Var 2], Var 9]
   let r = Rule {lhs = t1, rhs = t2}
   print r
+  prob <- exampleParse
+  print prob

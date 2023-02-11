@@ -24,6 +24,8 @@ source-repository head
 
 library
   exposed-modules:
+      Data.Conversion.Parse
+      Data.Conversion.Parse.COPS
       Data.Conversion.Rule
       Data.Conversion.Rule.Type
       Data.Conversion.Term
