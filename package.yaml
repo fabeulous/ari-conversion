@@ -22,6 +22,8 @@ description:         Please see the README on GitHub at <https://github.com/j-f-
 dependencies:
 - base >= 4.7 && < 5
 - term-rewriting >= 0.4.0.2 && < 0.5
+- prettyprinter >= 1.7.1 && < 1.8
+- ansi-wl-pprint >= 0.6.9 && < 0.7 # For term rewriting pretty printingd
 
 ghc-options:
 - -Wall

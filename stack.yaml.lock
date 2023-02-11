@@ -18,6 +18,13 @@ packages:
       size: 482
   original:
     hackage: union-find-array-0.1.0.3
+- completed:
+    hackage: prettyprinter-1.7.1@sha256:9c43c9d8c3cd9f445596e5a2379574bba87f935a4d1fa41b5407ee3cf4edc743,6987
+    pantry-tree:
+      sha256: cd6f393bf7cba603a1958a139915fc343efd5488e36fd7b3b5c6956c002d04fa
+      size: 3460
+  original:
+    hackage: prettyprinter-1.7.1
 snapshots:
 - completed:
     sha256: 17870c63f8041ac17a38096124abeb953cb14d84bfc96deb88f9b24daa97b347

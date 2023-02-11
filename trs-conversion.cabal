@@ -30,6 +30,8 @@ library
       Data.Conversion.Rule.Type
       Data.Conversion.Term
       Data.Conversion.Term.Type
+      Data.Conversion.Unparse
+      Data.Conversion.Unparse.ARI
   other-modules:
       Paths_trs_conversion
   autogen-modules:
@@ -38,7 +40,9 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      ansi-wl-pprint >=0.6.9 && <0.7
+    , base >=4.7 && <5
+    , prettyprinter >=1.7.1 && <1.8
     , term-rewriting >=0.4.0.2 && <0.5
   default-language: Haskell2010
 
@@ -52,7 +56,9 @@ executable trs-conversion-exe
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      ansi-wl-pprint >=0.6.9 && <0.7
+    , base >=4.7 && <5
+    , prettyprinter >=1.7.1 && <1.8
     , term-rewriting >=0.4.0.2 && <0.5
     , trs-conversion
   default-language: Haskell2010
@@ -68,7 +74,9 @@ test-suite trs-conversion-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      ansi-wl-pprint >=0.6.9 && <0.7
+    , base >=4.7 && <5
+    , prettyprinter >=1.7.1 && <1.8
     , term-rewriting >=0.4.0.2 && <0.5
     , trs-conversion
   default-language: Haskell2010

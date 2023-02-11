@@ -3,6 +3,7 @@ module Main (main) where
 import Data.Conversion.Rule (Rule (..))
 import Data.Conversion.Term (Term (..))
 import Data.Conversion.Parse (exampleParse)
+import Data.Conversion.Unparse (unparseTrsAri)
 
 main :: IO ()
 main = do
@@ -12,3 +13,4 @@ main = do
   print r
   prob <- exampleParse
   print prob
+  print (unparseTrsAri prob)
