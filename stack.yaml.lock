@@ -11,6 +11,13 @@ packages:
       size: 3012
   original:
     hackage: term-rewriting-0.4.0.2
+- completed:
+    hackage: union-find-array-0.1.0.3@sha256:242e066ec516d61f262947e5794edc7bbc11fd538a0415c03ac0c01b028cfa8a,1372
+    pantry-tree:
+      sha256: 1c53fba1445e9dde2d72979a049438213c0c500e40189c76818314600fb9d875
+      size: 482
+  original:
+    hackage: union-find-array-0.1.0.3
 snapshots:
 - completed:
     sha256: 17870c63f8041ac17a38096124abeb953cb14d84bfc96deb88f9b24daa97b347

@@ -31,13 +31,15 @@ resolver:
 #   - wai
 packages:
 - .
-
 # Dependency packages to be pulled from upstream that are not in the resolver.
 # These entries can reference officially published versions as well as
 # forks / in-progress versions pinned to a git hash. For example:
 #
 extra-deps:
 - term-rewriting-0.4.0.2
+# Dependencies for term-rewriting
+- union-find-array-0.1.0.3
+
 # - acme-missiles-0.3
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
