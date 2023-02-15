@@ -38,6 +38,8 @@ extra-deps:
 - term-rewriting-0.4.0.2 
 - union-find-array-0.1.0.3 # Needed for term-rewriting library
 - prettyprinter-1.7.1
+- parsec-3.1.16.1
+- mtl-2.2.2
 # - acme-missiles-0.3
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a

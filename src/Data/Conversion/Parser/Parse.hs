@@ -1,11 +1,12 @@
-module Data.Conversion.Parse
+module Data.Conversion.Parser.Parse
   ( exampleParse,
   )
 where
 
-import Data.Conversion.Parse.COPS
+import Data.Conversion.Problem.TRS 
+import Data.Conversion.Parser.Parse.COPS
 
-exampleParse :: IO (Problem String String)
+exampleParse :: IO (TRS String String)
 exampleParse = parseIO exampleTrs
 
 exampleTrs :: String

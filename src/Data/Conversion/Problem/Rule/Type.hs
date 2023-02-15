@@ -1,4 +1,4 @@
-module Data.Conversion.Rule.Type
+module Data.Conversion.Problem.Rule.Type
   ( 
     -- * Rule datatype copied almost verbatim from "Data.Rewriting.Rule.Type"
     --
@@ -8,7 +8,7 @@ module Data.Conversion.Rule.Type
 where
 
 
-import Data.Conversion.Term.Type
+import Data.Conversion.Problem.Term.Type
 import Prettyprinter
 
 -- | Rewrite rule with left-hand side and right-hand side.

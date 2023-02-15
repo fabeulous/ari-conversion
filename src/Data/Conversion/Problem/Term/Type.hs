@@ -1,4 +1,4 @@
-module Data.Conversion.Term.Type
+module Data.Conversion.Problem.Term.Type
   ( 
     -- * 'Term' datatype re-exported from "Data.Rewriting.Term.Type"
     --

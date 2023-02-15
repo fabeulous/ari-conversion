@@ -1,4 +1,4 @@
-module Data.Conversion.Unparse.ARI
+module Data.Conversion.Parser.Unparse.ARI
   ( unparseTrsAri
   )
 where
@@ -6,14 +6,24 @@ where
 import Data.Rewriting.Problem.Type
 import Data.Maybe (isJust, fromJust)
 import Data.List (nub)
-import Data.Rewriting.Problem.Type
-import Data.Rewriting.Rule (prettyRule)
---import Prettyprinter hiding (Doc)
-import Text.PrettyPrint.ANSI.Leijen.Internal 
-
-unparseTrsAri ::  (Pretty f, Pretty v, Eq f, Eq v) => Problem f v -> Doc
-unparseTrsAri = pretty
+import Data.Conversion.Problem.Rule 
+import Prettyprinter
  
+unparseTrsAri ::  (Pretty f, Pretty v) => Problem f v -> Doc ann
+unparseTrsAri prob = block "RULES" (ppRules $ rules prob)
+    where
+        ppRules rp = undefined -- align $ vcat ([pretty r | r <- strictRules rp])
+
+
+
+block n pp = hang 3 $ pretty (n ++ ":") <+> pp
+ 
+
+
+{-
+instance (Eq f, Eq v, Pretty f, Pretty v) => Pretty (Problem f v) where
+  pretty = prettyProblem pretty pretty
+
 
 {-
 **** ARI format
@@ -35,15 +45,17 @@ unparseTrsAri = pretty
 (rule (inc (tl nats))) (tl (inc nats)))
 -}
 
-printWhen :: Bool -> Doc -> Doc
+printWhen :: Bool -> Doc ann -> Doc ann
 printWhen False _ = empty
 printWhen True  p = p
 
+text :: String -> String
+text = id
 
-prettyWST' :: (Pretty f, Pretty v) => Problem f v -> Doc
+prettyWST' :: (Pretty f, Pretty v) => Problem f v -> Doc ann
 prettyWST' = prettyWST pretty pretty
 
-prettyWST :: (f -> Doc) -> (v -> Doc) -> Problem f v -> Doc
+prettyWST :: (f -> Doc ann) -> (v -> Doc ann) -> Problem f v -> Doc ann
 prettyWST fun var prob =
     printWhen (sterms /= AllTerms) (block "STARTTERM" $ text "CONSTRUCTOR-BASED")
     <> printWhen (strat /= Full) (block "STRATEGY" $ ppStrat strat)
@@ -80,7 +92,7 @@ prettyWST fun var prob =
         thry   = theory prob
 
 
-prettyProblem :: (Eq f, Eq v) => (f -> Doc) -> (v -> Doc) -> Problem f v -> Doc
+prettyProblem :: (Eq f, Eq v) => (f -> Doc ann) -> (v -> Doc ann) -> Problem f v -> Doc ann
 prettyProblem fun var prob =  block "Start-Terms" (ppST `on` startTerms)
                               <$$> block "Strategy" (ppStrat `on` strategy)
                               <$$> block "Variables" (ppVars `on` variables)
@@ -107,7 +119,8 @@ prettyProblem fun var prob =  block "Start-Terms" (ppST `on` startTerms)
   ppRules rp         = align $ vcat $
                        [ppRule "->" r | r <- strictRules rp]
                        ++ [ppRule "->=" r | r <- weakRules rp]
-  ppRule sep         = prettyRule (text sep) fun var
+  ppRule sep         = undefined --prettyRule ({-text-} sep) fun var
 
-instance (Eq f, Eq v, Pretty f, Pretty v) => Pretty (Problem f v) where
-  pretty = prettyProblem pretty pretty
+--instance (Eq f, Eq v, Pretty f, Pretty v) => Pretty (Problem f v) where
+--  pretty = prettyProblem pretty pretty
+-}
