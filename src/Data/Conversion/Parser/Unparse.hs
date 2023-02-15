@@ -1,5 +1,5 @@
 module Data.Conversion.Parser.Unparse
-  ( unparseTrsAri,
+  ( 
   )
 where
 
