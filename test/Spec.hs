@@ -1,2 +1,10 @@
+import Test.Problem.Term(termTests)
+import Test.HUnit
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented"
+main = do
+        putStrLn "Testing terms"
+        _ <- runTestTT termTests
+        putStrLn "Testing complete."
+
+
