@@ -1,6 +1,8 @@
 module Data.Conversion.Term
-  ( Term (..),
+  ( 
+    Term (..)
   )
 where
+
 
 import Data.Conversion.Term.Type

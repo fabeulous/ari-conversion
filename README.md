@@ -21,7 +21,7 @@ Run `stack test`
 
 ### Create Documentation
 
-Run `stack hoogle --server &` and navigate to [localhost:8080](http://localhost:8080/)
+Run `stack hoogle --server --no-haddock-deps [--rebuild]` and navigate to [localhost:8080](http://localhost:8080/)
 
 ### hie generation
 

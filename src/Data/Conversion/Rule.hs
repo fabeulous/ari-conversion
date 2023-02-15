@@ -1,5 +1,6 @@
 module Data.Conversion.Rule
-  ( Rule (..),
+  ( 
+    Rule (..)
   )
 where
 
