@@ -1,9 +1,17 @@
 module Main (main) where
 
 import Data.Conversion.Problem.Rule (Rule (..))
-import Data.Conversion.Problem.Term (Term (..))
+import Data.Conversion.Problem.Term (Term (..), parseTerm)
 import Data.Conversion.Parser.Parse (exampleParse)
 import Prettyprinter
+import Text.Parsec hiding (parse)
+
+
+-- | Parse a term from a string input where @xs@ is a list of variables
+fromString :: [String] -> String -> Either ParseError (Term String String)
+fromString xs = runP (parseTerm xs) () ""
+
+
 
 main :: IO ()
 main = do
@@ -18,3 +26,5 @@ main = do
   print (pretty t3)
   print (pretty r)
   print ""
+  print (fromString ["x", "y"] "f(x))")
+  print (fromString ["x", "y"] "f x")

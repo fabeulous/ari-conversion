@@ -3,7 +3,7 @@ import Test.HUnit
 
 main :: IO ()
 main = do
-        putStrLn "Testing terms"
+        putStrLn "Testing term parsing"
         _ <- runTestTT termTests
         putStrLn "Testing complete."
 
