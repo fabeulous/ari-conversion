@@ -26,8 +26,7 @@ import Text.Megaparsec
     manyTill_,
     noneOf,
     parse,
-    sepBy,
-    skipMany,
+    sepBy, 
     some,
     try,
     (<?>),
@@ -62,8 +61,8 @@ parseTerm :: Vars -> Parser (Term String String)
 parseTerm vs =
   stripSpaces $
     choice
-      [ -- stripSpaces $ parens (parseTerm vs),
-        {-stripSpaces-} parseTermHelper
+      [ parens (parseTerm vs),
+        parseTermHelper
       ]
   where
     -- \| Try to parse the given string as a variable, then as a function application, then as a constant
@@ -72,11 +71,6 @@ parseTerm vs =
       try (parseVariable vs)
         <|> try (parseFunApplication vs)
         <|> try parseConstant
-    -- <|> try parseDebug
-    parseDebug :: Parser (Term String String)
-    parseDebug = do
-      input <- many anySingle
-      return (Var (input ++ " DEBUG"))
 
     parseConstant :: Parser (Term String String)
     parseConstant = do
@@ -127,10 +121,7 @@ stripOuterParens = do
     aux :: Parser String
     aux = do
       (noParens, _) <- char '(' *> manyTill_ anySingle (try (lexeme (char ')') <* eof))
-      -- (noParens, _) <- char '(' *> manyTill_ anySingle (try (char ')' <* eof))
       return noParens
-    manyTillParen :: Parser (String, Char)
-    manyTillParen = char '(' *> manyTill_ anySingle (try (lexeme (char ')') <* eof))
 
 -- | Parse a function symbol either until the first '(' or as long as allowed characters are there
 -- Important: does not consume all input

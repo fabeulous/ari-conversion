@@ -34,10 +34,10 @@ parseTests :: Test
 parseTests = TestList [TestCase (assertParse vars t expected) | (t, expected) <- wellFormattedTerms]
 
 parenthesesTests :: Test
-parenthesesTests = TestList [] -- [TestCase (assertParseFail vars t) | t <- malformattedParentheses]
+parenthesesTests = TestList [TestCase (assertParseFail vars t) | t <- malformattedParentheses]
 
 malformattedTermTests :: Test
-malformattedTermTests = TestList [] -- [TestCase (assertParseFail vars t) | t <- malformattedTerms]
+malformattedTermTests = TestList [TestCase (assertParseFail vars t) | t <- malformattedTerms]
 
 -- | Terms with imbalanced parentheses for which parsing should fail
 malformattedParentheses :: [String]
@@ -71,11 +71,13 @@ wellFormattedTerms =
     ("f(x,y, z)", Fun "f" [Var "x", Var "y", Var "z"]),
     ("f(c,y,z) ", Fun "f" [Fun "c" [], Var "y", Var "z"]),
     (" f(c,f(g))", Fun "f" [Fun "c" [], Fun "f" [Fun "g" []]]),
+    ("f(g(d,e),y)", Fun "f" [Fun "g" [Fun "d" [], Fun "e" []], Var "y"]),
+    ("f(x,g(d,e))", Fun "f" [Var "x", Fun "g" [Fun "d" [], Fun "e" []]]),
     ("f(x,b(d,e),y)", Fun "f" [Var "x", Fun "b" [Fun "d" [], Fun "e" []], Var "y"]),
     ("f()", Fun "f" []),
-    --("(x)", Var "x"),
-    --("(c)", Fun "c" []),
-    --("((c))", Fun "c" []),
-    --("(((x)))", Var "x"),
+    ("(x)", Var "x"),
+    ("(c)", Fun "c" []),
+    -- ("((c))", Fun "c" []),
+    -- ("(((x)))", Var "x"),
     ("f(xy)", Fun "f" [Fun "xy" []])
   ]
