@@ -39,9 +39,30 @@ packages:
       size: 1713
   original:
     hackage: mtl-2.2.2
+- completed:
+    hackage: megaparsec-9.3.0@sha256:5836aed85cdc87025c2e947040331f2a3cde32911db3b841161c6f3dc4fc5f4f,3219
+    pantry-tree:
+      sha256: 5373bad5ded9d65b4947b0cda8720e73bcb2321f3e45e6487596803bc56d65f9
+      size: 1519
+  original:
+    hackage: megaparsec-9.3.0
+- completed:
+    hackage: containers-0.6.6@sha256:008d007dfff018954e05ecdb8d628d8e32531f7dc3c6bb7e9bd55118c1224514,2589
+    pantry-tree:
+      sha256: de48bcf6b468c4793bbdd22f969d940bfe74425c74654b0efbf0487792c239b5
+      size: 2822
+  original:
+    hackage: containers-0.6.6
+- completed:
+    hackage: text-2.0.1@sha256:907ecca6d20c42dafceb709ebac546f5d72e8b7dda3c39b286888c2f09e3bad8,9262
+    pantry-tree:
+      sha256: 2a661574e5663d733c08f4c34e1bdaaa9fd530be551aef0db99f1689541839c8
+      size: 7359
+  original:
+    hackage: text-2.0.1
 snapshots:
 - completed:
-    sha256: 17870c63f8041ac17a38096124abeb953cb14d84bfc96deb88f9b24daa97b347
-    size: 649332
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/10.yaml
-  original: lts-20.10
+    sha256: 1d25e3e0e2edb856951e8903821e0199a1112ab48b76c83f814e4f7596961e89
+    size: 598120
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2023/2/14.yaml
+  original: nightly-2023-02-14
