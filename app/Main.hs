@@ -9,7 +9,7 @@ import Text.Parsec hiding (parse)
 
 -- | Parse a term from a string input where @xs@ is a list of variables
 fromString :: [String] -> String -> Either ParseError (Term String String)
-fromString xs = runP (parseTerm xs) () ""
+fromString xs = undefined -- runP (parseTerm xs) () ""
 
 
 

@@ -3,12 +3,11 @@
 
 module Data.Conversion.Problem.Term.Parse
   ( parseTerm,
-    identWST,
+    parseVariable,
   )
 where
 
 import Control.Monad (guard)
-import Data.Conversion.Utils (ident)
 import Data.Rewriting.Term.Type
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -27,18 +26,18 @@ import Text.Megaparsec
     manyTill_,
     noneOf,
     parse,
-    parseTest,
     sepBy,
+    skipMany,
     some,
     try,
     (<?>),
     (<|>),
   )
-import Text.Megaparsec.Char (alphaNumChar, char, letterChar, space1, spaceChar, string)
+import Text.Megaparsec.Char (char, letterChar, space1, spaceChar)
 import qualified Text.Megaparsec.Char.Lexer as L
-import Text.Megaparsec.Error (ErrorFancy (..), ErrorItem, errorBundlePretty)
-import Text.Parsec (ParsecT, Stream)
+import Text.Megaparsec.Error (ErrorFancy (..), errorBundlePretty)
 import Prelude hiding (lex)
+
 type Parser = Parsec Void Text
 
 type Vars = [String]
@@ -61,10 +60,11 @@ lexeme = L.lexeme sc
 -- Tries to parse the expression as a variable first
 parseTerm :: Vars -> Parser (Term String String)
 parseTerm vs =
-  choice
-    [ parens (parseTerm vs),
-      parseTermHelper
-    ]
+  stripSpaces $
+    choice
+      [ -- stripSpaces $ parens (parseTerm vs),
+        {-stripSpaces-} parseTermHelper
+      ]
   where
     -- \| Try to parse the given string as a variable, then as a function application, then as a constant
     parseTermHelper :: Parser (Term String String)
@@ -72,7 +72,7 @@ parseTerm vs =
       try (parseVariable vs)
         <|> try (parseFunApplication vs)
         <|> try parseConstant
-        <|> try parseDebug
+    -- <|> try parseDebug
     parseDebug :: Parser (Term String String)
     parseDebug = do
       input <- many anySingle
@@ -104,31 +104,41 @@ parseFunApplication vs =
   do
     fsym <- parseFunSymbol
     argsStr <- stripOuterParens -- Remove outer parentheses
+    -- input <- many anySingle
+    -- return (Var input)
     case parse (parseFunArgs vs <* eof) "" (pack argsStr) of
       Left err -> fancyFailure (Set.singleton (ErrorFail (errorBundlePretty err)))
       Right args -> return (Fun fsym args)
 
--- \| Recursively strip outer parentheses of a function application, even if nested
+-- | Strip spaces at start and end of a string
+stripSpaces :: Parser a -> Parser a
+stripSpaces p = lexeme (many spaceChar *> p)
+
+-- | Recursively strip outer parentheses of a function application, even if nested
 -- Done in a slightly weird way with megaparsec as this library expects to always process streams from front to back
 stripOuterParens :: Parser String
 stripOuterParens = do
   out <- aux
   let output = case parse stripOuterParens "" (pack out) of
-        Left xs -> out -- Original output was ok
+        Left _ -> out -- Original output was ok
         Right xs -> xs
   return output
   where
     aux :: Parser String
     aux = do
-      (noParens, _) <- char '(' *> manyTill_ anySingle (try (char ')' <* eof))
+      (noParens, _) <- char '(' *> manyTill_ anySingle (try (lexeme (char ')') <* eof))
+      -- (noParens, _) <- char '(' *> manyTill_ anySingle (try (char ')' <* eof))
       return noParens
+    manyTillParen :: Parser (String, Char)
+    manyTillParen = char '(' *> manyTill_ anySingle (try (lexeme (char ')') <* eof))
 
--- | Parse a function symbol either until the first '(' or until the end of the string
+-- | Parse a function symbol either until the first '(' or as long as allowed characters are there
+-- Important: does not consume all input
 parseFunSymbol :: Parser String
 parseFunSymbol =
   try
     (funSymChars <* lookAhead (char '('))
-    <|> (funSymChars <* eof)
+    <|> funSymChars
     <?> "function symbol"
   where
     funSymChars :: Parser String
@@ -139,14 +149,10 @@ parseFunSymbol =
 -- Returns a list of the arguments. Also accepts an empty string or just whitespace, corresponding to an empty arguments list.
 -- e.g. "(a, b, c)" or "(a, b(c))"
 parseFunArgs :: Vars -> Parser [Term String String]
-parseFunArgs vs = (parseTerm vs `sepBy` char ',') <* eof <?> "function arguments"
+parseFunArgs vs = parseTerm vs `sepBy` char ',' <* eof <?> "function arguments"
 
 -- | Parser for characters allowed after the first character of variables and for function symbols.
 --   Currently allows any character except for '(', ')', ',', and whitespace.
 --   TODO: block all whitespace and special characters, not just a single space
 allowedFunVarChars :: Parser Char
 allowedFunVarChars = noneOf ['(', ')', ' ', ',']
-
--- | Parser which breaks on characters @(@, @)@, and @,@
-identWST :: Stream s m Char => ParsecT s u m String
-identWST = ident "()," []

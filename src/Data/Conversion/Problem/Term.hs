@@ -1,11 +1,9 @@
 module Data.Conversion.Problem.Term
-  ( 
-    Term (..),
+  ( Term (..),
+    parseVariable,
     parseTerm,
-    identWST
   )
 where
 
-
-import Data.Conversion.Problem.Term.Type
 import Data.Conversion.Problem.Term.Parse
+import Data.Conversion.Problem.Term.Type

@@ -1,4 +1,11 @@
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
+
+module Data.Conversion.Problem.Term.Parse
+  ( parseTerm,
+    parseVariable,
+  )
+where
 
 import Control.Monad (guard)
 import Data.Rewriting.Term.Type
@@ -20,15 +27,18 @@ import Text.Megaparsec
     noneOf,
     parse,
     parseTest,
+    satisfy,
     sepBy,
+    skipMany,
     some,
     try,
     (<?>),
     (<|>),
   )
-import Text.Megaparsec.Char (alphaNumChar, char, letterChar, space1, spaceChar, string)
+import Text.Megaparsec.Char (char, letterChar, space1, spaceChar)
 import qualified Text.Megaparsec.Char.Lexer as L
-import Text.Megaparsec.Error (ErrorFancy (..), ErrorItem, errorBundlePretty)
+import Text.Megaparsec.Error (ErrorFancy (..), errorBundlePretty)
+import Prelude hiding (lex)
 
 type Parser = Parsec Void Text
 
@@ -52,10 +62,11 @@ lexeme = L.lexeme sc
 -- Tries to parse the expression as a variable first
 parseTerm :: Vars -> Parser (Term String String)
 parseTerm vs =
-  choice
-    [ parens (parseTerm vs),
-      parseTermHelper
-    ]
+  stripSpaces $
+    choice
+      [ -- stripSpaces $ parens (parseTerm vs),
+        {-stripSpaces-} parseTermHelper
+      ]
   where
     -- \| Try to parse the given string as a variable, then as a function application, then as a constant
     parseTermHelper :: Parser (Term String String)
@@ -63,7 +74,7 @@ parseTerm vs =
       try (parseVariable vs)
         <|> try (parseFunApplication vs)
         <|> try parseConstant
-        <|> try parseDebug
+    -- <|> try parseDebug
     parseDebug :: Parser (Term String String)
     parseDebug = do
       input <- many anySingle
@@ -95,31 +106,41 @@ parseFunApplication vs =
   do
     fsym <- parseFunSymbol
     argsStr <- stripOuterParens -- Remove outer parentheses
+    -- input <- many anySingle
+    -- return (Var input)
     case parse (parseFunArgs vs <* eof) "" (pack argsStr) of
       Left err -> fancyFailure (Set.singleton (ErrorFail (errorBundlePretty err)))
       Right args -> return (Fun fsym args)
 
--- \| Recursively strip outer parentheses of a function application, even if nested
+-- | Strip spaces at start and end of a string
+stripSpaces :: Parser a -> Parser a
+stripSpaces p = lexeme (many spaceChar *> p)
+
+-- | Recursively strip outer parentheses of a function application, even if nested
 -- Done in a slightly weird way with megaparsec as this library expects to always process streams from front to back
 stripOuterParens :: Parser String
 stripOuterParens = do
   out <- aux
   let output = case parse stripOuterParens "" (pack out) of
-        Left xs -> out -- Original output was ok
+        Left _ -> out -- Original output was ok
         Right xs -> xs
   return output
   where
     aux :: Parser String
     aux = do
-      (noParens, _) <- char '(' *> manyTill_ anySingle (try (char ')' <* eof))
+      (noParens, _) <- char '(' *> manyTill_ anySingle (try (lexeme (char ')') <* eof))
+      -- (noParens, _) <- char '(' *> manyTill_ anySingle (try (char ')' <* eof))
       return noParens
+    manyTillParen :: Parser (String, Char)
+    manyTillParen = char '(' *> manyTill_ anySingle (try (lexeme (char ')') <* eof))
 
--- | Parse a function symbol either until the first '(' or until the end of the string
+-- | Parse a function symbol either until the first '(' or as long as allowed characters are there
+-- Important: does not consume all input
 parseFunSymbol :: Parser String
 parseFunSymbol =
   try
     (funSymChars <* lookAhead (char '('))
-    <|> (funSymChars <* eof)
+    <|> funSymChars
     <?> "function symbol"
   where
     funSymChars :: Parser String
@@ -130,7 +151,7 @@ parseFunSymbol =
 -- Returns a list of the arguments. Also accepts an empty string or just whitespace, corresponding to an empty arguments list.
 -- e.g. "(a, b, c)" or "(a, b(c))"
 parseFunArgs :: Vars -> Parser [Term String String]
-parseFunArgs vs = (parseTerm vs `sepBy` char ',') <* eof <?> "function arguments"
+parseFunArgs vs = parseTerm vs `sepBy` char ',' <* eof <?> "function arguments"
 
 -- | Parser for characters allowed after the first character of variables and for function symbols.
 --   Currently allows any character except for '(', ')', ',', and whitespace.
@@ -138,80 +159,25 @@ parseFunArgs vs = (parseTerm vs `sepBy` char ',') <* eof <?> "function arguments
 allowedFunVarChars :: Parser Char
 allowedFunVarChars = noneOf ['(', ')', ' ', ',']
 
-{-t1 = parseTest (parseVariable ["x", "y"] :: Parser (Term String String)) "x"
+t0 = parseTest (parseTerm ["x", "y"] <* eof) "f(c,y,z)"
 
-t2 = parseTest (parseVariable ["x", "y"] :: Parser (Term String String)) "xz"
+t02 = parseTest (parseTerm ["x", "y"] <* eof) " "
 
-t3 = parseTest (parseVariable ["x", "y"] :: Parser (Term String String)) "xt"
+t03 = parseTest (parseTerm ["x", "y"] <* eof) "c "
 
-t4 = parseTest (parseVariable ["x", "y"] :: Parser (Term String String)) "y "
+t04 = parseTest (parseTerm ["x", "y"] <* eof) "x "
 
-t5 = parseTest (parseVariable ["x", "y"] :: Parser (Term String String)) " y"
+-- t05 = parseTest (lexeme (many (noneOf [' '])) <* eof) "f(c,y,z) "
+-- t06 = parseTest (stripSpaces (many (noneOf [' '])) <* eof) "f(c,y,z) "
 
-t6 = parseTest (parseVariable ["x", "y"] :: Parser (Term String String)) "y x"
+t1 = parseTest (parseTerm ["x", "y"] <* eof) "f(c,y,z) "
 
-t7 = parseTest (parseVariable ["x'", "y"] :: Parser (Term String String)) "x'"
+t15 = parseTest (lexeme (parseTerm ["x", "y"]) <* eof) "f(c,y,z) "
 
-t8 = parseTest parseFunSymbol "x'"
+t2 = parseTest (parseFunArgs ["x", "y"] <* eof) "f(x,y,z)"
 
-t9 = parseTest parseFunSymbol "x' "
+t3 = parseTest (parseFunArgs ["x", "y"] <* eof) "f(x,y,z) "
 
-t10 = parseTest parseFunSymbol " x'"-}
+t4 = parseTest (stripSpaces (parseTerm ["x", "y"] <* eof)) " c"
 
-vars :: Vars
-vars = ["x", "y", "z"]
-
--- Working
-g4 = parseTest (parseTerm vars <* eof) "x"
-
-g5 = parseTest (parseTerm vars <* eof) "c"
-
-g0 = parseTest (parseTerm vars <* eof) "f(x,y,z)"
-
-g7 = parseTest (parseTerm vars <* eof) ",c"
-
-g8 = parseTest (parseTerm vars <* eof) "c,"
-
-g1 = parseTest (parseTerm vars <* eof) "f(c,y,z)"
-
-g1a = parseTest (parseTerm vars <* eof) "c,y,z"
-
-g6 = parseTest (parseTerm vars <* eof) "f()"
-
-g4a = parseTest (parseTerm vars <* eof) "(x)"
-
-g5a = parseTest (parseTerm vars <* eof) "(c)"
-
-g5b = parseTest (parseTerm vars <* eof) "((c))"
-
-g9 = parseTest (parseFunApplication vars) "f(c,asdas,f(g))"
-
-g2 = parseTest (parseTerm vars <* eof) "f(x,y,b(d))"
-
-g3 = parseTest (parseTerm vars <* eof) "f(x,y,b(d,e))"
-
-g5c = parseTest (parseTerm vars <* eof) "((c)"
-
-g5d = parseTest (parseTerm vars <* eof) "(c))"
-
-g1b = parseTest (parseTerm vars <* eof) "f((c,y,z)"
-
-g1c = parseTest (parseTerm vars <* eof) "f(c,y,z))"
-
-g1d = parseTest (parseTerm vars <* eof) "f(c,(y,z)"
-
-g1e = parseTest (parseTerm vars <* eof) "f(c,y,z))"
-
-w1 = parseTest stripOuterParens "(abc)"
-
-w0 = parseTest stripOuterParens "(((abc)))"
-
-w2 = parseTest stripOuterParens "((abc))"
-
-w3 = parseTest stripOuterParens "((abc)"
-
-w4 = parseTest stripOuterParens "(abc))"
-
-w5 = parseTest stripOuterParens "(ab)c)"
-
-w6 = parseTest stripOuterParens "(c)"
+t5 = parseTest (parseTerm ["x", "y"] <* eof) " c"

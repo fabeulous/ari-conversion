@@ -9,14 +9,14 @@ import qualified Data.Conversion.Problem.TRS as TRS
 import Data.Conversion.Problem.TRS (TRS(..))
 import qualified Data.Conversion.Problem.Rule as Rule
 import Data.Conversion.Problem.Rule (Rule(..))
-import Data.Conversion.Problem.Term (parseTerm, identWST)
+import Data.Conversion.Problem.Term (parseTerm, parseVariable)
 
 import Data.List (partition, union)
 import Data.Maybe (isJust)
 import Prelude hiding (lex, catch)
 import Control.Exception (catch)
 import Control.Monad.Error
-import Control.Monad (liftM, liftM3)
+import Control.Monad (liftM, liftM3, fail)
 import Text.Parsec hiding (parse)
 import System.IO (readFile)
 import Data.Conversion.Utils (lex, par, ident)
@@ -74,29 +74,29 @@ parse = spaces >> parseDecls >> eof >> getState where
 
 
 -- | Parser to extract variables from a VARS block of the COPS TRS format
---   For example, from a block @(VAR x y zs)@ we wnt to extract a list @["x","y","zs"]@
+--   For example, from a block @(VAR x y zs)@ we want to extract a list @["x","y","zs"]@
 parseVars :: (Stream s (Either ProblemParseError) Char) => WSTParser s [String]
-parseVars = many (lex identWST) 
+parseVars = undefined -- many (lex identWST) 
 
 -- | Parser to extract the signature from a SIG block of the COPS TRS format
 --   For example, from a block @(SIG (f 2) (a 0) (b 1))@ we wnt to extract a list @[("f",2),("a",0),("b",1)]@
 parseSig :: (Stream s (Either ProblemParseError) Char) => WSTParser s [(String,Int)]
 parseSig = many fundecl
     where
-        fundecl = par (do
+        fundecl = undefined {-par (do
             fsym  <- lex identWST
             arity <- lex (read <$> many1 digit)
-            return (fsym,arity))
+            return (fsym,arity))-}
 
 -- | Parser to extract the 'Rule's from a RULES block of the COPS TRS format
 --   Expects format @lhs -> rhs@ and calls the 'Term' parser 'parseTerm' on each side of the rule
 parseRules :: (Stream s (Either ProblemParseError) Char) => WSTParser s [Rule String String]
 parseRules = do vars <- parsedVariables
                 many $ parseRule vars 
-  where parseRule vs = do l <- parseTerm vs
+  where parseRule vs = undefined {-do l <- parseTerm vs
                           _ <- lex $ string "->"
                           r <- parseTerm vs
-                          return $ Rule {lhs = l, rhs = r}
+                          return $ Rule {lhs = l, rhs = r}-}
 
 -- | Parser to extract get comments as a @String@ from a @COMMENT@ block of the COPS TRS format
 parseComment :: (Stream s (Either ProblemParseError) Char) => WSTParser s String

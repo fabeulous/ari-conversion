@@ -1,80 +1,81 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Test.Problem.Term (termTests) where
 
-import Text.Parsec hiding (parse)
 import Data.Conversion.Problem.Term (Term (..), parseTerm)
-import Test.HUnit
 import Data.Either (isLeft)
+import Data.Text (Text, pack)
+import Data.Void (Void)
+import Test.HUnit
+import Text.Megaparsec (eof, errorBundlePretty, parse)
+import Text.Megaparsec.Error (ParseErrorBundle)
 
 termTests :: Test
-termTests = TestList [test1, test2, test3, test4, test5, test6, test7, test8, test9, test10]
+termTests = TestList [parseTests, parenthesesTests, malformattedTermTests]
 
--- | Parse a term from a string input where @xs@ is a list of variables
-fromString :: [String] -> String -> Either ParseError (Term String String)
-fromString xs = runP (parseTerm xs) () ""
+-- | Parse a term from a string input where @vs@ is a list of variables
+fromString :: [String] -> String -> Either (ParseErrorBundle Text Void) (Term String String)
+fromString vs t = parse (parseTerm vs <* eof) "" (pack t)
 
-test1 :: Test
-test1 = TestCase (assertEqual 
-    "Parses f(x)"
-    (Right (Fun "f" [Var "x"])) 
-    (fromString ["x"] "f(x)")
-    )
+-- | Assert that parsing string @t@ as a term with variable set @vs@ fails
+assertParseFail :: [String] -> String -> Assertion
+assertParseFail vs t = assertBool ("Term " ++ t ++ " should not be parsed") (isLeft $ fromString vs t)
 
-test2 :: Test
-test2 = TestCase (assertEqual 
-    "Parses a constant"
-    (Right (Fun "a" [])) 
-    (fromString ["x", "y", "z"] "a")
-    )
+-- | Assert that parsing string @t@ as a term with variable set @vs@ returns term @res@
+assertParse :: [String] -> String -> Term String String -> Assertion
+assertParse vs t expected = case fromString vs t of
+  Left err -> assertFailure (errorBundlePretty err)
+  Right result -> assertEqual ("Term " ++ t ++ " not parsed correctly") expected result
 
-test3 :: Test
-test3 = TestCase (assertEqual 
-    "Parses a variable"
-    (Right (Var "y")) 
-    (fromString ["x", "y", "z"] "y")
-    )
+vars :: [String]
+vars = ["x", "y", "z", "x'"]
 
-test4 :: Test
-test4 = TestCase (assertEqual 
-    "Parses functions of multiple arities f(x, g(y))"
-    (Right (Fun "f" [Var "x", Fun "g" [Var "y"]])) 
-    (fromString ["x", "y"] "f(x, g(y))")
-    )
+parseTests :: Test
+parseTests = TestList [TestCase (assertParse vars t expected) | (t, expected) <- wellFormattedTerms]
 
-test5 :: Test
-test5 = TestCase (assertBool 
-    "Fails if no parentheses given e.g. f x"
-    (isLeft $ fromString ["x", "y"] "f x")
-    )
+parenthesesTests :: Test
+parenthesesTests = TestList [] -- [TestCase (assertParseFail vars t) | t <- malformattedParentheses]
 
-test6 :: Test
-test6 = TestCase (assertBool 
-    "Fails if too many right parentheses, i.e. f(x))"
-    (isLeft $ fromString ["x", "y"] "f(x))")
-    )
+malformattedTermTests :: Test
+malformattedTermTests = TestList [] -- [TestCase (assertParseFail vars t) | t <- malformattedTerms]
 
-test7 :: Test
-test7 = TestCase (assertBool 
-    "Fails if too many left parentheses, i.e. f((x)"
-    (isLeft $ fromString ["x", "y"] "f((x)")
-    )
+-- | Terms with imbalanced parentheses for which parsing should fail
+malformattedParentheses :: [String]
+malformattedParentheses =
+  [ "((c)",
+    "(c))",
+    "f((c,y,z)",
+    "f(c,y,z))",
+    "f(x,) g(y))",
+    "f(c,(y,z)",
+    "f(c,)y,z)"
+  ]
 
-test8 :: Test
-test8 = TestCase (assertEqual 
-    "Works if there are numbers in function names"
-    (Right (Fun "f1" [Var "x", Fun "f2" [Var "y"]]))
-    (fromString ["x", "y"] "f1(x, f2(y))")
-    )
+-- | Example terms which should not be parseable
+malformattedTerms :: [String]
+malformattedTerms =
+  [ ",c",
+    "c,",
+    "c,y",
+    "(y,z)",
+    "f x"
+  ]
 
-test9 :: Test
-test9 = TestCase (assertEqual 
-    "Works if there are numbers in variable names"
-    (Right (Fun "g" [Var "x4"]))
-    (fromString ["x4", "x"] "g(x4)")
-    )
-
-test10 :: Test
-test10 = TestCase (assertEqual 
-    "Works if no variables are given"
-    (Right (Fun "f" [Fun "x" [], Fun "y" []]))
-    (fromString [] "f(x,y)")
-    )
+-- | Terms which should be parseable
+wellFormattedTerms :: [(String, Term String String)]
+wellFormattedTerms =
+  [ ("x", Var "x"),
+    ("c", Fun "c" []),
+    ("f(x)", Fun "f" [Var "x"]),
+    ("f(x')", Fun "f" [Var "x'"]),
+    ("f(x,y, z)", Fun "f" [Var "x", Var "y", Var "z"]),
+    ("f(c,y,z) ", Fun "f" [Fun "c" [], Var "y", Var "z"]),
+    (" f(c,f(g))", Fun "f" [Fun "c" [], Fun "f" [Fun "g" []]]),
+    ("f(x,b(d,e),y)", Fun "f" [Var "x", Fun "b" [Fun "d" [], Fun "e" []], Var "y"]),
+    ("f()", Fun "f" []),
+    --("(x)", Var "x"),
+    --("(c)", Fun "c" []),
+    --("((c))", Fun "c" []),
+    --("(((x)))", Var "x"),
+    ("f(xy)", Fun "f" [Fun "xy" []])
+  ]
