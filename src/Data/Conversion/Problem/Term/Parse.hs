@@ -4,6 +4,7 @@
 module Data.Conversion.Problem.Term.Parse
   ( parseTerm,
     parseVariable,
+    parseFunSymbol,
   )
 where
 

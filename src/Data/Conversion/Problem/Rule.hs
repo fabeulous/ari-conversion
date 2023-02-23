@@ -1,7 +1,8 @@
 module Data.Conversion.Problem.Rule
   ( 
     Rule (..),
-    parseRule
+    parseRule,
+    ruleFunArities
   )
 where
 
