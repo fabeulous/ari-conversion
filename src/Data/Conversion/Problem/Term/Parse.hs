@@ -25,8 +25,9 @@ import Text.Megaparsec
     many,
     manyTill_,
     noneOf,
+    notFollowedBy,
     parse,
-    sepBy, 
+    sepBy,
     some,
     try,
     (<?>),
@@ -97,12 +98,8 @@ parseFunApplication :: Vars -> Parser (Term String String)
 parseFunApplication vs =
   do
     fsym <- parseFunSymbol
-    argsStr <- stripOuterParens -- Remove outer parentheses
-    -- input <- many anySingle
-    -- return (Var input)
-    case parse (parseFunArgs vs <* eof) "" (pack argsStr) of
-      Left err -> fancyFailure (Set.singleton (ErrorFail (errorBundlePretty err)))
-      Right args -> return (Fun fsym args)
+    args <- symbol "(" *> parseFunArgs vs <* symbol ")" -- <* notFollowedBy (symbol ")")
+    return (Fun fsym args)
 
 -- | Strip spaces at start and end of a string
 stripSpaces :: Parser a -> Parser a
@@ -140,10 +137,11 @@ parseFunSymbol =
 -- Returns a list of the arguments. Also accepts an empty string or just whitespace, corresponding to an empty arguments list.
 -- e.g. "(a, b, c)" or "(a, b(c))"
 parseFunArgs :: Vars -> Parser [Term String String]
-parseFunArgs vs = parseTerm vs `sepBy` char ',' <* eof <?> "function arguments"
+parseFunArgs vs = parseTerm vs `sepBy` char ',' <?> "function arguments"
 
 -- | Parser for characters allowed after the first character of variables and for function symbols.
 --   Currently allows any character except for '(', ')', ',', and whitespace.
 --   TODO: block all whitespace and special characters, not just a single space
+--   Currently forbids '-' as this might clash with "->" in rule definitions
 allowedFunVarChars :: Parser Char
-allowedFunVarChars = noneOf ['(', ')', ' ', ',']
+allowedFunVarChars = noneOf ['(', ')', ' ', ',', '-']
