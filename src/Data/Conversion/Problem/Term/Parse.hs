@@ -8,6 +8,7 @@ module Data.Conversion.Problem.Term.Parse
 where
 
 import Control.Monad (guard)
+import Data.Conversion.Utils (lexeme, sc)
 import Data.Rewriting.Term.Type
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -20,7 +21,6 @@ import Text.Megaparsec
     choice,
     eof,
     errorBundlePretty,
-    fancyFailure,
     lookAhead,
     many,
     manyTill_,
@@ -33,28 +33,16 @@ import Text.Megaparsec
     (<?>),
     (<|>),
   )
-import Text.Megaparsec.Char (char, letterChar, space1, spaceChar)
+import Text.Megaparsec.Char (char, letterChar, spaceChar)
 import qualified Text.Megaparsec.Char.Lexer as L
-import Text.Megaparsec.Error (ErrorFancy (..), errorBundlePretty)
-import Prelude hiding (lex)
-
-type Parser = Parsec Void Text
-
-type Vars = [String]
-
-sc :: Parser ()
-sc =
-  L.space
-    space1 -- (2)
-    (L.skipLineComment "//") -- (3)
-    (L.skipBlockComment "/*" "*/") -- (4)
+import Text.Megaparsec.Error (ErrorFancy (..), errorBundlePretty) 
 
 symbol :: Text -> Parser Text
 symbol = L.symbol sc
 
--- | lexeme is a lexeme that consumes all trailing whitespace
-lexeme :: Parser a -> Parser a
-lexeme = L.lexeme sc
+type Parser = Parsec Void Text
+
+type Vars = [String]
 
 -- | Parse a term given a list of variables by calling 'parseVariable' and 'parseFunApplication'
 -- Tries to parse the expression as a variable first
@@ -144,4 +132,4 @@ parseFunArgs vs = parseTerm vs `sepBy` char ',' <?> "function arguments"
 --   TODO: block all whitespace and special characters, not just a single space
 --   Currently forbids '-' as this might clash with "->" in rule definitions
 allowedFunVarChars :: Parser Char
-allowedFunVarChars = noneOf ['(', ')', ' ', ',', '-']
+allowedFunVarChars = noneOf ['(', ')', ' ', ',', '-', '\n']
