@@ -1,109 +1,101 @@
-{-# LANGUAGE FlexibleContexts#-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 module Data.Conversion.Parser.Parse.COPS
-  ( parseIO
+  (
   )
 where
 
-
-import qualified Data.Conversion.Problem.TRS as TRS
-import Data.Conversion.Problem.TRS (TRS(..))
-import qualified Data.Conversion.Problem.Rule as Rule
-import Data.Conversion.Problem.Rule (Rule(..))
-import Data.Conversion.Problem.Term (parseTerm, parseVariable)
-
-import Data.List (partition, union)
-import Data.Maybe (isJust)
-import Prelude hiding (lex, catch)
-import Control.Exception (catch)
 import Control.Monad.Error
-import Control.Monad (liftM, liftM3, fail)
-import Text.Parsec hiding (parse)
-import System.IO (readFile)
-import Data.Conversion.Utils (lex, par, ident)
+import Data.Conversion.Problem.Rule (Rule (..), parseRule)
+import qualified Data.Conversion.Problem.Rule as Rule
+import Data.Conversion.Problem.TRS (TRS (..))
+import qualified Data.Conversion.Problem.TRS as TRS
+import Data.Conversion.Problem.Term (parseTerm, parseVariable)
+import Data.Conversion.Utils (lex, lexeme, par, sc)
+import Data.Rewriting.Term.Type
+import Data.Set (Set)
+import qualified Data.Set as Set
+import Data.Text (Text, pack)
+import Data.Void (Void)
+import Text.Megaparsec
+  ( Parsec,
+    anySingle,
+    between,
+    eof,
+    many,
+    noneOf,
+    optional,
+    parseTest,
+    some,
+    try,
+    (<?>),
+    (<|>),
+  )
+import Text.Megaparsec.Char
+  ( char,
+    spaceChar,
+    string,
+  )
+import qualified Text.Megaparsec.Char.Lexer as L
+import Text.Megaparsec.Error (ErrorFancy (..))
+import Prelude hiding (lex)
 
-data ProblemParseError = UnknownParseError String 
-                       | SomeParseError ParseError deriving (Show)
+type Parser = Parsec Void Text
 
-instance Error ProblemParseError where strMsg = UnknownParseError
-
-parseIO :: String -> IO (TRS String String)
-parseIO str = case fromString str of
-                    Left err -> do { putStrLn "following error occured:"; print err; mzero }
-                    Right t  -> return t
-
-
-fromString :: String -> Either ProblemParseError (TRS String String)
-fromString = fromCharStream "supplied string"
-
-fromCharStream :: (Stream s (Either ProblemParseError) Char)
-                   => SourceName -> s -> Either ProblemParseError (TRS String String)
-fromCharStream sourcename input =
-  case runParserT parse initialState sourcename input of
-    Right (Left e)  -> Left $ SomeParseError e
-    Right (Right p) -> Right p
-    Left e          -> Left e
-  where initialState = TRS.TRS { TRS.rules      = [] ,
-                                      TRS.variables  = [] ,
-                                      TRS.signature  = Nothing,
-                                      TRS.comment    = Nothing }
-
--- | Type synonym for a TRS with @string@ function symbols and variables
-type ParserState = TRS String String
-
-type WSTParser s a = ParsecT s ParserState (Either ProblemParseError) a
-
-
--- | Return a parser for the variables identified so far during parsing
-parsedVariables :: WSTParser s [String]
-parsedVariables = fmap TRS.variables getState
-
-parse :: (Stream s (Either ProblemParseError) Char) => WSTParser s (TRS String String)
-parse = spaces >> parseDecls >> eof >> getState where
-  parseDecls = many1 parseDecl
-  parseDecl =  decl "VAR"       parseVars   (\ e p -> p {TRS.variables = e `union` TRS.variables p})
-           <|> decl "SIG"       parseSig    (\ e p -> p {TRS.signature = maybeAppend TRS.signature e p})
-           <|> decl "RULES"     parseRules  (\ e p -> p {TRS.rules   = e  -- qqjf multiple RULES blocks?
-                                                         })
-           <|> (decl "COMMENT"   parseComment   (\ e p -> p {TRS.comment = maybeAppend TRS.comment e p}) <?> "comment")
-           <|> (par parseComment >>= modifyState . (\ e p -> p {TRS.comment = maybeAppend TRS.comment e p}) <?> "comment")
-  decl name p f = try (par $ do
-      _ <- lex $ string name
-      r <- p
-      modifyState $ f r) <?> (name ++ " block")
-  maybeAppend fld e p = Just $ maybe [] id (fld p) ++ e
-
-
--- | Parser to extract variables from a VARS block of the COPS TRS format
---   For example, from a block @(VAR x y zs)@ we want to extract a list @["x","y","zs"]@
-parseVars :: (Stream s (Either ProblemParseError) Char) => WSTParser s [String]
-parseVars = undefined -- many (lex identWST) 
-
--- | Parser to extract the signature from a SIG block of the COPS TRS format
---   For example, from a block @(SIG (f 2) (a 0) (b 1))@ we wnt to extract a list @[("f",2),("a",0),("b",1)]@
-parseSig :: (Stream s (Either ProblemParseError) Char) => WSTParser s [(String,Int)]
-parseSig = many fundecl
-    where
-        fundecl = undefined {-par (do
-            fsym  <- lex identWST
-            arity <- lex (read <$> many1 digit)
-            return (fsym,arity))-}
+type Vars = [String]
 
 -- | Parser to extract the 'Rule's from a RULES block of the COPS TRS format
 --   Expects format @lhs -> rhs@ and calls the 'Term' parser 'parseTerm' on each side of the rule
-parseRules :: (Stream s (Either ProblemParseError) Char) => WSTParser s [Rule String String]
-parseRules = do vars <- parsedVariables
-                many $ parseRule vars 
-  where parseRule vs = undefined {-do l <- parseTerm vs
-                          _ <- lex $ string "->"
-                          r <- parseTerm vs
-                          return $ Rule {lhs = l, rhs = r}-}
+-- qqjf succeeds on no rules
+parseRules :: Vars -> Parser [Rule String String]
+parseRules vs = many (parseRule vs)
 
--- | Parser to extract get comments as a @String@ from a @COMMENT@ block of the COPS TRS format
-parseComment :: (Stream s (Either ProblemParseError) Char) => WSTParser s String
-parseComment = withParens <|> liftM2 (++) idents parseComment <|> return ""
-  where idents = many1 (noneOf "()")
-        withParens = do _ <- char '('
-                        pre <- parseComment
-                        _ <- char ')'
-                        suf <- parseComment
-                        return $ "(" ++ pre ++ ")" ++ suf
+-- | Strip spaces at start and end of a string
+stripSpaces :: Parser a -> Parser a
+stripSpaces p = lexeme (many spaceChar *> p)
+
+-- | Parse a problem in COPS format
+-- qqjf copy in COPS grammar
+parseCOPS :: Parser (TRS String String)
+parseCOPS = stripSpaces $ do
+  vs <- try $ block "VAR" (many parseVariable)
+  rules <- block "RULES" (parseRules vs)
+  comment <- optional (block "COMMENT" parseComment)
+  return
+    ( TRS
+        { rules = rules,
+          variables = vs,
+          signature = [], -- [(f, Int)]
+          comment = comment
+        }
+    )
+  where
+    block :: String -> Parser a -> Parser a
+    block name p = parens (parseBlockName *> lexeme p) <?> (name ++ " block")
+      where
+        parseBlockName = lexeme $ string (pack name)
+
+-- | Parser to extract comments as a @String@ from a @COMMENT@ block of the COPS TRS format
+-- Runs recursively to allow for parentheses inside comments qqjf
+-- Copied from library term-rewriting
+parseComment :: Parser String
+parseComment =
+  withParens
+    <|> (++) <$> some (noneOf ['(', ')']) <*> parseComment
+    <|> return ""
+  where
+    withParens :: Parser String
+    withParens = do
+      _ <- char '('
+      pre <- parseComment
+      _ <- char ')'
+      suf <- parseComment
+      return $ "(" ++ pre ++ ")" ++ suf
+
+symbol :: Text -> Parser Text
+symbol = L.symbol sc
+
+-- | Strip outer parentheses
+parens :: Parser a -> Parser a
+parens = between (lexeme $ symbol "(") (lexeme $ symbol ")")

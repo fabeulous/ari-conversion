@@ -20,7 +20,6 @@ import Text.Megaparsec
     between,
     choice,
     eof,
-    errorBundlePretty,
     lookAhead,
     many,
     manyTill_,
@@ -35,7 +34,6 @@ import Text.Megaparsec
   )
 import Text.Megaparsec.Char (char, letterChar, spaceChar)
 import qualified Text.Megaparsec.Char.Lexer as L
-import Text.Megaparsec.Error (ErrorFancy (..), errorBundlePretty) 
 
 symbol :: Text -> Parser Text
 symbol = L.symbol sc
@@ -57,10 +55,15 @@ parseTerm vs =
     -- \| Try to parse the given string as a variable, then as a function application, then as a constant
     parseTermHelper :: Parser (Term String String)
     parseTermHelper =
-      try (parseVariable vs)
+      try (parseVar vs)
         <|> try (parseFunApplication vs)
         <|> try parseConstant
-
+    -- \| Parse a single variable and require that it is a member of the variable set @vs@
+    parseVar :: Vars -> Parser (Term f String)
+    parseVar vs = do
+      varStr <- parseVariable
+      guard (varStr `elem` vs)
+      return (Var varStr)
     parseConstant :: Parser (Term String String)
     parseConstant = do
       input <- parseFunSymbol
@@ -70,14 +73,10 @@ parseTerm vs =
 parens :: Parser a -> Parser a
 parens = between (symbol "(") (symbol ")" *> eof)
 
--- | Parse a single variable
---   Currently requires the first character to be a letter
--- Uses @lexeme@ to comsume trailing whitespace
-parseVariable :: Vars -> Parser (Term f String)
-parseVariable vs = do
-  varStr <- (:) <$> letterChar <*> lexeme (many allowedFunVarChars) <?> "variable"
-  guard (varStr `elem` vs)
-  return (Var varStr)
+-- | Parse a single variable name and returns a string
+--   Currently requires the first character to be a letter and comsumes trailing whitespace
+parseVariable :: Parser String
+parseVariable = (:) <$> letterChar <*> lexeme (many allowedFunVarChars) <?> "variable"
 
 -- | Parse a function application and return a 'Term'
 -- Assumes that everything until the first @'('@ is a function symbol
@@ -131,5 +130,6 @@ parseFunArgs vs = parseTerm vs `sepBy` char ',' <?> "function arguments"
 --   Currently allows any character except for '(', ')', ',', and whitespace.
 --   TODO: block all whitespace and special characters, not just a single space
 --   Currently forbids '-' as this might clash with "->" in rule definitions
+-- COPS: vars can not contain whitespace,  (   )   "   ,   |   \ and the sequences  ->   ==   COMMENT   VAR   RULES
 allowedFunVarChars :: Parser Char
 allowedFunVarChars = noneOf ['(', ')', ' ', ',', '-', '\n']
