@@ -10,6 +10,7 @@ import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Conversion.Problem.Trs.Trs (Trs (..))
+import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
@@ -27,7 +28,7 @@ parseTrsTests = assertParseList wellFormattedTrss parseCops
           Trs
             { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Fun "c" []]}],
               variables = ["x", "y"],
-              signature = [Sig "f" 2, Sig "g" 1, Sig "c" 0],
+              signature = Vars ["x", "y"],
               comment = Nothing
             }
         ),
@@ -35,15 +36,15 @@ parseTrsTests = assertParseList wellFormattedTrss parseCops
           Trs
             { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}],
               variables = ["x", "y"],
-              signature = [Sig "f" 2, Sig "a" 0, Sig "b" 1],
+              signature = FullSig ["x", "y"] [Sig "f" 2, Sig "a" 0, Sig "b" 1],
               comment = Just "A TRS (with SIG given)"
             }
         ),
-        ( "(RULES f(x)->x)", -- A TRS is ground if no VAR block is given
+        ( "(RULES f(x)->x)",
           Trs
             { rules = [Rule {lhs = Fun "f" [Fun "x" []], rhs = Fun "x" []}],
               variables = [],
-              signature = [Sig "f" 1, Sig "x" 0],
+              signature = Vars [], -- A TRS is ground if no VAR block is given
               comment = Nothing
             }
         )

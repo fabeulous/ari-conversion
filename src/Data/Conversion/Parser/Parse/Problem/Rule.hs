@@ -15,6 +15,7 @@ import Data.Conversion.Parser.Parse.Problem.Term (parseTerm)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme)
 import Data.Conversion.Problem.Common.Rule (Rule (..), inferRulesSignature)
 import Data.Conversion.Problem.Trs.Sig (Sig)
+import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Text.Megaparsec (many, (<?>))
 import Text.Megaparsec.Char (string)
 
@@ -36,27 +37,32 @@ parseRule vs = do
   return $ Rule {lhs = l, rhs = r}
 
 -- | Parser to extract the rules from a @RULES@ block of the [COPS TRS](http://project-coco.uibk.ac.at/problems/trs.php) format.
--- Takes a list of variables and calls 'parseRule' 0 or more times on the input until no more rules can be parsed.
+-- Takes a 'TrsSig' and calls 'parseRule' 0 or more times on the input until no more rules can be parsed.
 -- Does not necessarily consume all input.
--- 
--- If given @Nothing@ as a second argument, then the signature of the rules is inferred and returned.
--- Otherwise, if @Just sig@ is given (corresponding to @SIG@ in the COPS [extended TRS format](http://project-coco.uibk.ac.at/problems/trs.php#extended)),
--- then every symbol in the rules must be in the variable set or appear in @sig@ with the correct arity.
-parseRules :: Vars -> Maybe [Sig String] -> Parser ([Rule String String], [Sig String])
-parseRules vs maybeSig = do
-  rules <- many (parseRule vs)
-  case inferRulesSignature rules of
-    Left err -> fail err
-    Right inferredSig -> checkSignatureSubset inferredSig rules
+--
+-- * If given @Vars vs@ as a signatue, then parse rules with this variable set
+-- * If given @FullSig vs fs@ as a signature, then infers a function signature from the rules using @vs@ and then checks that this inferred function signature is a subset of @fs@.
+-- * If given @FunSig [qqjf]
+parseRules :: TrsSig String String -> Parser [Rule String String]
+parseRules trsSig = case trsSig of
+  Vars vs -> do
+    rules <- many (parseRule vs)
+    case inferRulesSignature rules of
+      Left err -> fail err
+      Right _ -> return rules
+  FullSig vs fs -> do
+    rules <- many (parseRule vs)
+    case inferRulesSignature rules of
+      Left err -> fail err
+      Right inferredSig -> checkSignatureSubset inferredSig fs rules
+  FunSig fs -> fail "FunSig not supported yet"
   where
     -- 'subList' returns whether every element of the first list is contained in the second list
     subList :: Eq a => [a] -> [a] -> Bool
     subList xs ys = all (`elem` ys) xs
     -- 'checkSignatureSubset' asserts that maybeSig is contained in inferredSig
-    checkSignatureSubset :: [Sig String] -> [Rule String String] -> Parser ([Rule String String], [Sig String])
-    checkSignatureSubset inferredSig rs = case maybeSig of
-      Just sig ->
-        if inferredSig `subList` sig
-          then return (rs, sig)
-          else fail $ "Inferred signature " ++ show inferredSig ++ " not contained in input signature " ++ show sig
-      Nothing -> return (rs, inferredSig)
+    checkSignatureSubset :: [Sig String] -> [Sig String] -> [Rule String String] -> Parser [Rule String String]
+    checkSignatureSubset inferredSig funSig rs =
+      if inferredSig `subList` funSig
+        then return rs
+        else fail $ "Inferred signature " ++ show inferredSig ++ " not contained in input signature " ++ show funSig

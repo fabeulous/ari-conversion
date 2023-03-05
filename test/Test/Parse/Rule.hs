@@ -9,6 +9,7 @@ import Data.Conversion.Parser.Parse.Problem.Rule (parseRule, parseRules)
 import Data.Conversion.Parser.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
+import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
@@ -41,7 +42,7 @@ parseRuleTests = assertParseList validRules ruleParser
 -- Non-exhaustive, but intended to be used as a sanity check
 badRulesTests :: Test
 badRulesTests = assertFailParseList badRules ruleParser
-  where 
+  where
     badRules :: [String]
     badRules =
       [ "f(x,y)",
@@ -66,9 +67,7 @@ parseMultipleRules :: Test
 parseMultipleRules = assertParseList validRules rulesParser
   where
     rulesParser :: Parser [Rule String String]
-    rulesParser = do
-      (rs, _) <- parseRules ["x", "y", "z", "x'"] Nothing
-      return rs
+    rulesParser = parseRules $ Vars ["x", "y", "z", "x'"]
     r1 = Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}
     r2 = Rule {lhs = Fun "g" [Var "x", Var "y"], rhs = Fun "f" [Var "y"]}
     r3 = Rule {lhs = Fun "a" [], rhs = Fun "b" []}
