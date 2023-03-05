@@ -105,6 +105,7 @@ parsePrefixTermTests = assertParseList wellFormattedTerms prefixTermParser
       [ ("x", Var "x"),
         ("a", Fun "a" []),
         ("f x", Fun "f" [Var "x"]),
+        ("(f x)", Fun "f" [Var "x"]),
         ("f (x)", Fun "f" [Var "x"]),
         ("f (f (f x))", Fun "f" [Fun "f" [Fun "f" [Var "x"]]]),
         ("f x'", Fun "f" [Var "x'"]),
@@ -113,7 +114,7 @@ parsePrefixTermTests = assertParseList wellFormattedTerms prefixTermParser
         ("g a z ", Fun "g" [Fun "a" [], Var "z"]),
         (" f a (f z)", Fun "f" [Fun "a" [], Fun "f" [Var "z"]]),
         ("g (g x a) y", Fun "g" [Fun "g" [Var "x", Fun "a" []], Var "y"]),
-        ("g x (f y)", Fun "g" [Var "x", Fun "f" [Var "y"]]), 
+        ("g x (f y)", Fun "g" [Var "x", Fun "f" [Var "y"]]),
         ("h x (g x' z ) y", Fun "h" [Var "x", Fun "g" [Var "x'", Var "z"], Var "y"]),
         ("a ", Fun "a" []),
         ("(x)", Var "x"),
@@ -129,4 +130,14 @@ malformattedPrefixTermTests = assertFailParseList badTerms prefixTermParser
   where
     badTerms :: [String]
     badTerms =
-      []
+      [ "f(x)",
+        "g(x,y)",
+        "f(",
+        "f)",
+        "f (x(",
+        "(f x) x",
+        "",
+        " ",
+        "\n",
+        "x x"
+      ]

@@ -149,7 +149,7 @@ parsePrefixFunApplication funSig = do
   if arity == 0
     then return $ Fun fsym [] -- Special case for constants (no arguments)
     else do
-      args <- recursivelyParsePrefixTerm funSig `sepEndBy` some spaceChar <?> "function arguments"
+      args <- spaceChar *> recursivelyParsePrefixTerm funSig `sepEndBy` some spaceChar <?> "function arguments"
       return $ Fun fsym args
   where
     -- Parse a single function symbol and assert that it is in the function signature @funSig@.
