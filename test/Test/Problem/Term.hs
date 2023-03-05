@@ -1,8 +1,7 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Test.Problem.Term (termTests) where
 
-import Data.Conversion.Problem.Term (Term (..), parseTerm)
+import Data.Conversion.Parser.Parse.Problem.Term (parseTerm)
+import Data.Conversion.Problem.Term (Term (..))
 import Data.Either (isLeft)
 import Data.Text (Text, pack)
 import Data.Void (Void)

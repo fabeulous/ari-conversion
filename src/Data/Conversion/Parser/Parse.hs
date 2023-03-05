@@ -3,10 +3,9 @@ module Data.Conversion.Parser.Parse
   )
 where
 
-import Data.Conversion.Problem.TRS 
-import Data.Conversion.Parser.Parse.COPS
+import Data.Conversion.Problem.Trs.Trs
 
-exampleParse :: IO (TRS String String)
+exampleParse :: IO (Trs String String)
 exampleParse = undefined-- parseIO exampleTrs
 
 exampleTrs :: String

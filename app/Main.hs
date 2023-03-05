@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Data.Conversion.Problem.Rule (Rule (..))
-import Data.Conversion.Problem.Term (Term (..), parseTerm)
+import Data.Conversion.Problem.Term (Term (..))
 import Data.Conversion.Parser.Parse (exampleParse)
 import Prettyprinter
 import Text.Parsec hiding (parse)

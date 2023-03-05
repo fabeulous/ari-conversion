@@ -26,17 +26,16 @@ library
   exposed-modules:
       Data.Conversion.Parser.Parse
       Data.Conversion.Parser.Parse.COPS
+      Data.Conversion.Parser.Parse.Problem.Rule
+      Data.Conversion.Parser.Parse.Problem.Sig
+      Data.Conversion.Parser.Parse.Problem.Term
+      Data.Conversion.Parser.Parse.Utils
       Data.Conversion.Parser.Unparse
       Data.Conversion.Parser.Unparse.ARI
       Data.Conversion.Problem.Rule
-      Data.Conversion.Problem.Rule.Type
-      Data.Conversion.Problem.Sig
-      Data.Conversion.Problem.Sig.Type
       Data.Conversion.Problem.Term
-      Data.Conversion.Problem.Term.Parse
-      Data.Conversion.Problem.Term.Type
-      Data.Conversion.Problem.TRS
-      Data.Conversion.Utils
+      Data.Conversion.Problem.Trs.Sig
+      Data.Conversion.Problem.Trs.Trs
   other-modules:
       Paths_trs_conversion
   autogen-modules:

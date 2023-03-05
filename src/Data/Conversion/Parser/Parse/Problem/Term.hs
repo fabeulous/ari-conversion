@@ -1,7 +1,6 @@
-{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Data.Conversion.Problem.Term.Parse
+module Data.Conversion.Parser.Parse.Problem.Term
   ( parseTerm,
     parseVariable,
     parseFunSymbol,
@@ -9,15 +8,11 @@ module Data.Conversion.Problem.Term.Parse
 where
 
 import Control.Monad (guard)
-import Data.Conversion.Utils (lexeme, sc)
-import Data.Rewriting.Term.Type
-import Data.Set (Set)
-import qualified Data.Set as Set
-import Data.Text (Text, pack)
-import Data.Void (Void)
+import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, stripSpaces, symbol)
+import Data.Conversion.Problem.Term (Term (..))
+import Data.Text (pack)
 import Text.Megaparsec
-  ( Parsec,
-    anySingle,
+  ( anySingle,
     between,
     choice,
     eof,
@@ -25,7 +20,6 @@ import Text.Megaparsec
     many,
     manyTill_,
     noneOf,
-    notFollowedBy,
     parse,
     sepBy,
     some,
@@ -33,13 +27,7 @@ import Text.Megaparsec
     (<?>),
     (<|>),
   )
-import Text.Megaparsec.Char (char, letterChar, spaceChar)
-import qualified Text.Megaparsec.Char.Lexer as L
-
-symbol :: Text -> Parser Text
-symbol = L.symbol sc
-
-type Parser = Parsec Void Text
+import Text.Megaparsec.Char (char, letterChar)
 
 type Vars = [String]
 
@@ -49,7 +37,7 @@ parseTerm :: Vars -> Parser (Term String String)
 parseTerm vs =
   stripSpaces $
     choice
-      [ parens (parseTerm vs),
+      [ outerParens (parseTerm vs),
         parseTermHelper
       ]
   where
@@ -71,8 +59,8 @@ parseTerm vs =
       return (Fun input [])
 
 -- | Strip outer parentheses
-parens :: Parser a -> Parser a
-parens = between (symbol "(") (symbol ")" *> eof)
+outerParens :: Parser a -> Parser a
+outerParens = between (symbol "(") (symbol ")" *> eof)
 
 -- | Parse a single variable name and returns a string
 --   Currently requires the first character to be a letter and comsumes trailing whitespace
@@ -88,10 +76,6 @@ parseFunApplication vs =
     fsym <- parseFunSymbol
     args <- symbol "(" *> parseFunArgs vs <* symbol ")" -- <* notFollowedBy (symbol ")")
     return (Fun fsym args)
-
--- | Strip spaces at start and end of a string
-stripSpaces :: Parser a -> Parser a
-stripSpaces p = lexeme (many spaceChar *> p)
 
 -- | Recursively strip outer parentheses of a function application, even if nested
 -- Done in a slightly weird way with megaparsec as this library expects to always process streams from front to back
