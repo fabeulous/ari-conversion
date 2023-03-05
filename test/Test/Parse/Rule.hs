@@ -28,7 +28,9 @@ parseRuleTests = assertParseList validRules ruleParser
         ("f(x)->x ", Rule {lhs = fx, rhs = Var "x"}),
         ("  f(x)  ->    x ", Rule {lhs = fx, rhs = Var "x"}),
         ("x->f(x)", Rule {lhs = Var "x", rhs = fx}),
-        ("f(x)->f(x)", Rule {lhs = fx, rhs = fx})
+        ("f(x)->f(x)", Rule {lhs = fx, rhs = fx}),
+        ("x->x", Rule {lhs = Var "x", rhs = Var "x"}), -- Currently allowed
+        ("a()->b", Rule {lhs = Fun "a" [], rhs = Fun "b" []})
       ]
 
 -- | qqjf

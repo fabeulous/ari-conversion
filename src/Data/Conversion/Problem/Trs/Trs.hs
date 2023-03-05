@@ -17,4 +17,4 @@ data Trs f v = Trs
     -- | This is the documentation for the 'comment' constructor
     comment :: Maybe String
   }
-  deriving (Show)
+  deriving (Show, Eq)

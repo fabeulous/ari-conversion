@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Data.Conversion.Parser.Parse.COPS
-  ( parseCOPS,
+module Data.Conversion.Parser.Parse.Cops
+  ( parseCops,
   )
 where
 
@@ -36,8 +36,8 @@ r2 = Rule {lhs = Fun "g" [Var "x", Fun "f" [Fun "f" [Var "y"]]], rhs = Fun "f" [
 -- | Parse a problem in COPS format
 -- qqjf copy in COPS grammar and add detailed documentation, especially about sig
 -- Should deduce
-parseCOPS :: Parser (Trs String String)
-parseCOPS = stripSpaces $ do
+parseCops :: Parser (Trs String String)
+parseCops = stripSpaces $ do
   vs <- try (block "VAR" (many parseVariable)) <|> return []
   inputSig <- optional (try $ block "SIG" parseSig)
   (rs, sig) <- block "RULES" (parseRules vs inputSig)
@@ -76,9 +76,9 @@ parseComment =
       suf <- parseComment
       return $ "(" ++ pre ++ ")" ++ suf
 
-t0 = parseTest parseCOPS "(VAR x y)(SIG (f 2) (a 0) (b 1))(RULES f(x,y)->y)" -- (COMMENT a test comment (with parens))" -- "
+t0 = parseTest parseCops "(VAR x y)(SIG (f 2) (a 0) (b 1))(RULES f(x,y)->y)" -- (COMMENT a test comment (with parens))" -- "
 
-t1 = parseTest parseCOPS "(VAR x y) (RULES f(x)->y \n f(x,y)->y )" -- (COMMENT a test comment (with parens))" -- "
+t1 = parseTest parseCops "(VAR x y) (RULES f(x)->y \n f(x,y)->y )" -- (COMMENT a test comment (with parens))" -- "
 
-t2 = parseTest parseCOPS "(VAR x y) (RULES f(x,y)->f(x) \n f(x,y)->y )" -- (COMMENT a test comment (with parens))" -- "
+t2 = parseTest parseCops "(VAR x y) (RULES f(x,y)->f(x) \n f(x,y)->y )" -- (COMMENT a test comment (with parens))" -- "
 --
