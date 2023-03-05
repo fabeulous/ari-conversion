@@ -7,7 +7,7 @@ module Test.Parse.Term (termTests) where
 
 import Data.Conversion.Parser.Parse.Problem.Term (parseTerm)
 import Data.Conversion.Parser.Parse.Utils (Parser)
-import Data.Conversion.Problem.Term (Term (..))
+import Data.Conversion.Problem.Common.Term (Term (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 

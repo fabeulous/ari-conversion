@@ -8,7 +8,7 @@ module Data.Conversion.Problem.Trs.Trs
   )
 where
 
-import Data.Conversion.Problem.Rule (Rule)
+import Data.Conversion.Problem.Common.Rule (Rule)
 import Data.Conversion.Problem.Trs.Sig (Sig)
 
 -- | Datatype for first-order term rewriting systems (TRSs). 

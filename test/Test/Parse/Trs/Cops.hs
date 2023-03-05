@@ -5,9 +5,9 @@
 -- This module defines test cases for the function 'parseCops'. It is non-exhaustive, but intended to highlight any obvious errors.
 module Test.Parse.Trs.Cops (parseCopsTests) where
 
-import Data.Conversion.Parser.Parse.Cops (parseCops)
-import Data.Conversion.Problem.Rule (Rule (..))
-import Data.Conversion.Problem.Term (Term (..))
+import Data.Conversion.Parser.Parse.ParseTrs (parseCops)
+import Data.Conversion.Problem.Common.Rule (Rule (..))
+import Data.Conversion.Problem.Common.Term (Term (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Test.HUnit

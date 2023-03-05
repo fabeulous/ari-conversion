@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Problem.Rule
+-- Module      : Data.Conversion.Problem.Common.Rule
 -- Description : Rule type definition
 --
 -- This module contains the 'Rule' type definition and helper functions for Rules.
-module Data.Conversion.Problem.Rule
+module Data.Conversion.Problem.Common.Rule
   ( -- * Types
     Rule (..),
 
@@ -13,7 +13,7 @@ module Data.Conversion.Problem.Rule
   )
 where
 
-import Data.Conversion.Problem.Term (Term (..), termFunArities)
+import Data.Conversion.Problem.Common.Term (Term (..), termFunArities)
 import Data.Conversion.Problem.Trs.Sig (Sig, checkConsistentSig)
 import Data.List (nub)
 import Prettyprinter (Pretty, hang, pretty, (<+>))
