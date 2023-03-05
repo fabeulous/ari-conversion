@@ -1,4 +1,9 @@
-module Test.Parse.Term (termTests) where -- qqjf module description
+-- |
+-- Module      : Test.Parse.Term
+-- Description : Parsing tests for terms
+--
+-- This module defines test cases for the function 'parseTerm'. Tests are non-exhaustive, but cover common cases and some useful checks.
+module Test.Parse.Term (termTests) where
 
 import Data.Conversion.Parser.Parse.Problem.Term (parseTerm)
 import Data.Conversion.Parser.Parse.Utils (Parser)
@@ -6,19 +11,19 @@ import Data.Conversion.Problem.Term (Term (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
+-- | Tests for 'parseTerm' including tests for which parsing should succeed and for which parsing should fail
 termTests :: Test
-termTests = TestList [parseTests, parenthesesTests, malformattedTermTests]
+termTests = TestList [parseTermTests, parenthesesTests, malformattedTermTests]
 
--- | qqjf parser for testing with a given set of variables
+-- | Parser for testing 'parseTerm' with a fixed set of variables
 termParser :: Parser (Term String String)
 termParser = parseTerm ["x", "y", "z", "x'"]
 
--- | qqjf
-parseTests :: Test
-parseTests = assertParseList wellFormattedTerms termParser
+-- | Tests for cases when 'parseTerm' should succeed and produce a term as output
+parseTermTests :: Test
+parseTermTests = assertParseList wellFormattedTerms termParser
   where
-    -- \| Terms which should be parseable
-    -- Non-exhaustive, but covers most common cases
+    -- Terms which should be parseable (non-exhaustive) and their expected Haskell representation
     wellFormattedTerms :: [(String, Term String String)]
     wellFormattedTerms =
       [ ("x", Var "x"),
@@ -42,11 +47,11 @@ parseTests = assertParseList wellFormattedTerms termParser
         -- ("(((x)))", Var "x"),
       ]
 
--- | qqjf
+-- | Tests in which the term parentheses are malformatted.
+-- When parsing /the entire string/, then parsing should fail for these examples.
 parenthesesTests :: Test
 parenthesesTests = assertFailParseList badParentheses termParser
   where
-    -- \| Terms with imbalanced parentheses for which parsing should fail if parsing the entire input
     badParentheses :: [String]
     badParentheses =
       [ "((c)",
@@ -58,12 +63,11 @@ parenthesesTests = assertFailParseList badParentheses termParser
         "f(c,)y,z)"
       ]
 
--- | qqjf
+-- | Tests in which the given example is not a valid term.
+-- It is asserted that parsing should fail for these examples.
 malformattedTermTests :: Test
 malformattedTermTests = assertFailParseList badTerms termParser
   where
-    -- \| Example terms which should not be parseable when parsing the enture input
-    -- This list is non-exhaustive, but provides some simple sanity checks
     badTerms :: [String]
     badTerms =
       [ ",c",

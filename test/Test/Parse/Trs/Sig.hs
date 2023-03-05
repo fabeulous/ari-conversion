@@ -1,4 +1,9 @@
-module Test.Parse.Trs.Sig (sigTests) where -- qqjf module description
+-- |
+-- Module      : Test.Parse.Trs.Sig
+-- Description : Parsing tests for TRS signatures
+--
+-- This module defines test cases for the function 'parseSig' (used in parsing the COCO TRS extended format) and for checking signature consistency.
+module Test.Parse.Trs.Sig (sigTests) where
 
 import Data.Conversion.Parser.Parse.Problem.Sig (parseSig)
 import Data.Conversion.Problem.Trs.Sig (Sig (..), checkConsistentSig)
@@ -6,10 +11,12 @@ import Data.Either (isLeft, isRight)
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
+-- | Test cases for TRS signature parsing and checking
 sigTests :: Test
 sigTests = TestList [parseSigTests, badSigTests, checkConsistentSigs, checkInconsistentSigs]
 
--- | qqjf
+-- | Test cases for which 'parseSig' should succeed and match the extended output.
+-- Expects signature strings in the COCO TRS (extended format)[http://project-coco.uibk.ac.at/problems/trs.php#extended].
 parseSigTests :: Test
 parseSigTests = assertParseList validSigs parseSig
   where
@@ -24,7 +31,7 @@ parseSigTests = assertParseList validSigs parseSig
         ("(g 25) (g 25)", [Sig "g" 25, Sig "g" 25])
       ]
 
--- | qqjf
+-- | Tests for which 'parseSig' should fail due to invalid signature formatsI
 badSigTests :: Test
 badSigTests = assertFailParseList badSigs parseSig
   where
@@ -34,12 +41,14 @@ badSigTests = assertFailParseList badSigs parseSig
         "f 1 g 2",
         "(f 1 g 2)",
         "h -1",
+        "h (-1)",
         "(g (1))",
         "(f 1 2)",
         "(f 1) (h 1"
       ]
 
--- | qqjf
+-- | Tests for the function 'checkConsistentSig' (used in TRS parsing to find duplicate function symbols in signatures).
+-- 'checkConsistentSig' should succeed for the tested examples.
 checkConsistentSigs :: Test
 checkConsistentSigs =
   TestList
@@ -55,7 +64,9 @@ checkConsistentSigs =
         []
       ]
 
--- | qqjf assertBool (xs ++ " should not be parseable. Got: " ++ show res) (isLeft res)
+-- | Tests for the function 'checkConsistentSig' (used in TRS parsing to find duplicate function symbols in signatures).
+-- 'checkConsistentSig' should fail (indicating that the given signature contains the same function symbol multiple times)
+-- for the given examples.
 checkInconsistentSigs :: Test
 checkInconsistentSigs = TestList [TestCase $ assertBadSig sig (checkConsistentSig sig) | sig <- badSigs]
   where

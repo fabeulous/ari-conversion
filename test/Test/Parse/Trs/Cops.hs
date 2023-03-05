@@ -1,4 +1,9 @@
-module Test.Parse.Trs.Cops (parseCopsTests) where -- qqjf module description
+-- |
+-- Module      : Test.Parse.Trs.Cops
+-- Description : Parsing tests for COPS TRSs
+--
+-- This module defines test cases for the function 'parseCops'. It is non-exhaustive, but intended to highlight any obvious errors.
+module Test.Parse.Trs.Cops (parseCopsTests) where
 
 import Data.Conversion.Parser.Parse.Cops (parseCops)
 import Data.Conversion.Problem.Rule (Rule (..))
@@ -8,14 +13,14 @@ import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
+-- | Test cases for 'parseCops' including cases which should be parseable and cases which should fail
 parseCopsTests :: Test
 parseCopsTests = TestList [parseTrsTests, badTrsTests]
 
--- | qqjf
+-- | Test cases for 'parseCops' which should succeed and match the expected output
 parseTrsTests :: Test
 parseTrsTests = assertParseList wellFormattedTrss parseCops
   where
-    -- \| TRSs in COPS format which should be parseable
     wellFormattedTrss :: [(String, Trs String String)]
     wellFormattedTrss =
       [ ( "(VAR x y)(RULES f(x,y)->g(c))",
@@ -44,11 +49,11 @@ parseTrsTests = assertParseList wellFormattedTrss parseCops
         )
       ]
 
--- | qqjf
+-- | Malformatted examples for which it is asserted that 'parseCops' should not succeed.
+-- This list is non-exhaustive, but checks for some common problems.
 badTrsTests :: Test
 badTrsTests = assertFailParseList badTrss parseCops
   where
-    -- \|  TRSs which are not in valid COPS format
     badTrss :: [String]
     badTrss =
       [ "(VAR x y) (RULES f(x)->y \n f(x,y)->y )", -- Mixed arities of f
