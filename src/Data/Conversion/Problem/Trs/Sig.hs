@@ -18,7 +18,7 @@ checkConsistentSig :: (Show f, Eq f) => [Sig f] -> Either String [Sig f]
 checkConsistentSig sig =
   if distinct (foldr (\(Sig fsym _) -> (fsym :)) [] sig)
     then Right sig
-    else Left $ "A function symbol appears with multiple arities in signature " ++ show sig
+    else Left $ "A function symbol appears multiple times in signature " ++ show sig
   where
     distinct :: Eq a => [a] -> Bool
     distinct xs = nub xs == xs
