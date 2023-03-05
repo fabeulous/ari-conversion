@@ -27,7 +27,7 @@ parseSig = stripSpaces $ many fundecl
       lexeme $
         parens
           ( do
-              fsym <- parseFunSymbol
+              fsym <- lexeme parseFunSymbol
               arity <- lexeme (read <$> some digitChar)
               return $ Sig fsym arity
           )

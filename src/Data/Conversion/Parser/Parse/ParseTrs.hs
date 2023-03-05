@@ -14,7 +14,7 @@ import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseComment)
 import Data.Conversion.Parser.Parse.Problem.Rule (parseRules)
 import Data.Conversion.Parser.Parse.Problem.Sig (parseSig)
 import Data.Conversion.Parser.Parse.Problem.Term (parseVariable)
-import Data.Conversion.Parser.Parse.Utils (Parser, parseBlock, stripSpaces)
+import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
 import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Text.Megaparsec
@@ -28,7 +28,7 @@ import Text.Megaparsec
 -- see the COCO website for details on the grammar and allowed characters.
 parseCops :: Parser (Trs String String)
 parseCops = stripSpaces $ do
-  vs <- try (parseBlock "VAR" (many parseVariable)) <|> return []
+  vs <- try (parseBlock "VAR" (many $ lexeme parseVariable)) <|> return []
   funSig <- optional (try $ parseBlock "SIG" parseSig)
   let trsSig = case funSig of
         Nothing -> Vars vs -- If no SIG block is given
