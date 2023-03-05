@@ -83,6 +83,7 @@ test-suite trs-conversion-test
   other-modules:
       Test.Parse.Rule
       Test.Parse.Term
+      Test.Parse.Trs.Sig
       Test.Parse.Utils
       Paths_trs_conversion
   autogen-modules:

@@ -33,12 +33,12 @@ parseRuleTests = assertParseList validRules ruleParser
 
 -- | qqjf
 badRulesTests :: Test
-badRulesTests = assertFailParseList malformattedRules ruleParser
+badRulesTests = assertFailParseList badRules ruleParser
   where
     -- \| Example rules which should not be parseable when parsing the enture input
     -- This list is non-exhaustive, but provides some simple sanity checks
-    malformattedRules :: [String]
-    malformattedRules =
+    badRules :: [String]
+    badRules =
       [ "f(x,y)",
         "f(x,y) g(x)",
         "f(x)->",

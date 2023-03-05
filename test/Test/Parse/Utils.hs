@@ -18,8 +18,10 @@ parseFromString :: String -> Parser a -> Either (ParseErrorBundle Text Void) a
 parseFromString xs p = parse (p <* eof) "" (pack xs)
 
 -- | Assert that parsing string @xs@ using parser @p@ fails qqjf
-assertParseFail :: String -> Parser a -> Assertion
-assertParseFail xs p = assertBool (xs ++ " should not be parseable.") (isLeft $ parseFromString xs p)
+assertParseFail :: Show a => String -> Parser a -> Assertion
+assertParseFail xs p = assertBool (xs ++ " should not be parseable. Got: " ++ show res) (isLeft res)
+  where
+    res = parseFromString xs p
 
 -- | Assert that parsing string @xs@ with parser @p@ returns result @expected@
 assertParse :: (Eq a, Show a) => String -> Parser a -> a -> Assertion
@@ -32,5 +34,5 @@ assertParseList :: (Eq a, Show a) => [(String, a)] -> Parser a -> Test
 assertParseList xs p = TestList [TestCase (assertParse val p expected) | (val, expected) <- xs]
 
 -- | Assert qqjf
-assertFailParseList :: [String] -> Parser a -> Test
+assertFailParseList :: Show a => [String] -> Parser a -> Test
 assertFailParseList xs p = TestList [TestCase (assertParseFail val p) | val <- xs]
