@@ -9,6 +9,7 @@ module Data.Conversion.Problem.Rule
 
     -- * Helper functions
     ruleFunArities,
+    inferRulesSignature,
   )
 where
 
@@ -43,3 +44,18 @@ ruleFunArities (Rule l r) = do
   lhsArities <- termFunArities l
   rhsArities <- termFunArities r
   checkConsistentSig $ nub (lhsArities ++ rhsArities)
+
+-- | Infer a signature from a list of rules by applying 'ruleFunArities' to each rule and then
+-- checking that the union of the inferred signatures contain consistent arities.
+--
+-- >>> inferRulesSignature [Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}, Rule {lhs = Fun "g" [Var "x"], rhs = Var "x"}]
+-- Right [Sig "f" 1,Sig "g" 1]
+--
+-- >>> inferRulesSignature [Rule {lhs = Fun "a" [Var "x"], rhs = Var "x"}, Rule {lhs = Fun "a" [], rhs = Fun "b" []}]
+-- Left "A function symbol appears multiple times in signature...
+inferRulesSignature :: (Eq f, Show f) => [Rule f v] -> Either String [Sig f]
+inferRulesSignature rs = do
+  case mapM ruleFunArities rs of
+    -- Each individual signature might be consistent but we need to check their union
+    Right sigLists -> checkConsistentSig $ nub (concat sigLists)
+    Left err -> Left err

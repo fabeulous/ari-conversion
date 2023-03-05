@@ -26,13 +26,12 @@ source-repository head
 
 library
   exposed-modules:
-      Data.Conversion.Parser.Parse
       Data.Conversion.Parser.Parse.Cops
+      Data.Conversion.Parser.Parse.Problem.MetaInfo
       Data.Conversion.Parser.Parse.Problem.Rule
       Data.Conversion.Parser.Parse.Problem.Sig
       Data.Conversion.Parser.Parse.Problem.Term
       Data.Conversion.Parser.Parse.Utils
-      Data.Conversion.Parser.Unparse
       Data.Conversion.Parser.Unparse.ARI
       Data.Conversion.Problem.Rule
       Data.Conversion.Problem.Term
