@@ -10,17 +10,13 @@ where
 import Control.Monad (guard)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, stripSpaces, symbol)
 import Data.Conversion.Problem.Term (Term (..))
-import Data.Text (pack)
 import Text.Megaparsec
-  ( anySingle,
-    between,
+  ( between,
     choice,
     eof,
     lookAhead,
     many,
-    manyTill_,
     noneOf,
-    parse,
     sepBy,
     some,
     try,
@@ -44,12 +40,12 @@ parseTerm vs =
     -- \| Try to parse the given string as a variable, then as a function application, then as a constant
     parseTermHelper :: Parser (Term String String)
     parseTermHelper =
-      try (parseVar vs)
+      try parseVar
         <|> try (parseFunApplication vs)
         <|> try parseConstant
     -- \| Parse a single variable and require that it is a member of the variable set @vs@
-    parseVar :: Vars -> Parser (Term f String)
-    parseVar vs = do
+    parseVar :: Parser (Term f String)
+    parseVar = do
       varStr <- parseVariable
       guard (varStr `elem` vs)
       return (Var varStr)
@@ -76,21 +72,6 @@ parseFunApplication vs =
     fsym <- parseFunSymbol
     args <- symbol "(" *> parseFunArgs vs <* symbol ")" -- <* notFollowedBy (symbol ")")
     return (Fun fsym args)
-
--- | Recursively strip outer parentheses of a function application, even if nested
--- Done in a slightly weird way with megaparsec as this library expects to always process streams from front to back
-stripOuterParens :: Parser String
-stripOuterParens = do
-  out <- aux
-  let output = case parse stripOuterParens "" (pack out) of
-        Left _ -> out -- Original output was ok
-        Right xs -> xs
-  return output
-  where
-    aux :: Parser String
-    aux = do
-      (noParens, _) <- char '(' *> manyTill_ anySingle (try (lexeme (char ')') <* eof))
-      return noParens
 
 -- | Parse a function symbol either until the first '(' or as long as allowed characters are there
 -- Important: does not consume all input

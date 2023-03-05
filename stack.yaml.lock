@@ -26,20 +26,6 @@ packages:
   original:
     hackage: prettyprinter-1.7.1
 - completed:
-    hackage: parsec-3.1.16.1@sha256:5769242043b01bf759b07b7efedcb19607837ee79015fcddde34645664136aed,4691
-    pantry-tree:
-      sha256: aee875443fc603500dcfcb5bea5c116ebcb990037abcf17e8d7020e493a51476
-      size: 2698
-  original:
-    hackage: parsec-3.1.16.1
-- completed:
-    hackage: mtl-2.2.2@sha256:1050fb71acd9f5d67da7d992583f5bd0eb14407b9dc7acc122af1b738b706ca3,2261
-    pantry-tree:
-      sha256: b8bdc2259e2f943a7252fb164805666fe108ac959d398e0af27b43ba2ebc241c
-      size: 1713
-  original:
-    hackage: mtl-2.2.2
-- completed:
     hackage: megaparsec-9.3.0@sha256:5836aed85cdc87025c2e947040331f2a3cde32911db3b841161c6f3dc4fc5f4f,3219
     pantry-tree:
       sha256: 5373bad5ded9d65b4947b0cda8720e73bcb2321f3e45e6487596803bc56d65f9

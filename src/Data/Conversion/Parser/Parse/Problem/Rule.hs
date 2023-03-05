@@ -40,8 +40,6 @@ parseRules vs maybeSig = do
         else fail $ "Inferred signature " ++ show inferredSig ++ " not contained in input signature " ++ show sig
     Nothing -> return (rules, inferredSig)
   where
-    checkSignature :: [Sig String] -> [Sig String] -> [Rule String String] -> Parser ([Rule String String], [Sig String])
-    checkSignature sig inferredSig rs = undefined
     -- \| Infer signature from a list of rules
     inferSignature :: [Rule String String] -> Parser [Sig String]
     inferSignature rs = do

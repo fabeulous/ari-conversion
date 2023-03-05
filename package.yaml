@@ -23,12 +23,9 @@ dependencies:
 - base >= 4.7 && < 5
 - term-rewriting >= 0.4.0.2 && < 0.5
 - prettyprinter >= 1.7.1 && < 1.8
-- ansi-wl-pprint >= 0.6.9 && < 0.7 # For term rewriting pretty printing
-- parsec >= 3.1.16.1 && < 3.1.17 # To parse inputs
-- mtl >= 2.2.2 && < 2.3  # Handle monad errors
 - megaparsec >=9.3.0 && < 9.4
 - containers >= 0.6.6 && < 0.7 # For Data.Set
--  text >= 2.0.1 && < 2.1 # For Data.Text
+- text >= 2.0.1 && < 2.1 # For Data.Text
 ghc-options:
 - -Wall
 - -Wcompat
