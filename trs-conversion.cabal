@@ -48,7 +48,6 @@ library
     , containers >=0.6.6 && <0.7
     , megaparsec >=9.3.0 && <9.4
     , prettyprinter >=1.7.1 && <1.8
-    , term-rewriting >=0.4.0.2 && <0.5
     , text >=2.0.1 && <2.1
   default-language: Haskell2010
 
@@ -66,7 +65,6 @@ executable trs-conversion-exe
     , containers >=0.6.6 && <0.7
     , megaparsec >=9.3.0 && <9.4
     , prettyprinter >=1.7.1 && <1.8
-    , term-rewriting >=0.4.0.2 && <0.5
     , text >=2.0.1 && <2.1
     , trs-conversion
   default-language: Haskell2010
@@ -92,7 +90,6 @@ test-suite trs-conversion-test
     , containers >=0.6.6 && <0.7
     , megaparsec >=9.3.0 && <9.4
     , prettyprinter >=1.7.1 && <1.8
-    , term-rewriting >=0.4.0.2 && <0.5
     , text >=2.0.1 && <2.1
     , trs-conversion
   default-language: Haskell2010

@@ -1,14 +1,14 @@
-name:                trs-conversion
-version:             0.1.0.0
-github:              "j-f-ox/trs-conversion"
-license:             NONE
-author:              "jamie Fox"
-maintainer:          "foxjamiek@gmail.com"
-copyright:           "2023 Jamie Fox"
+name: trs-conversion
+version: 0.1.0.0
+github: "j-f-ox/trs-conversion"
+license: NONE
+author: "jamie Fox"
+maintainer: "foxjamiek@gmail.com"
+copyright: "2023 Jamie Fox"
 
 extra-source-files:
-- README.md
-- CHANGELOG.md
+  - README.md
+  - CHANGELOG.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -17,49 +17,47 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/j-f-ox/trs-conversion#readme>
+description: Please see the README on GitHub at <https://github.com/j-f-ox/trs-conversion#readme>
 
 dependencies:
-- base >= 4.7 && < 5
-- term-rewriting >= 0.4.0.2 && < 0.5
-- prettyprinter >= 1.7.1 && < 1.8
-- megaparsec >=9.3.0 && < 9.4
-- containers >= 0.6.6 && < 0.7 # For Data.Set
-- text >= 2.0.1 && < 2.1 # For Data.Text
+  - base >= 4.7 && < 5
+  - prettyprinter >= 1.7.1 && < 1.8
+  - megaparsec >=9.3.0 && < 9.4
+  - containers >= 0.6.6 && < 0.7 # For Data.Set
+  - text >= 2.0.1 && < 2.1 # For Data.Text
 ghc-options:
-- -Wall
-- -Wcompat
-- -Widentities
-- -Wincomplete-record-updates
-- -Wincomplete-uni-patterns
-- -Wmissing-export-lists
-- -Wmissing-home-modules
-- -Wpartial-fields
-- -Wredundant-constraints
+  - -Wall
+  - -Wcompat
+  - -Widentities
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wmissing-export-lists
+  - -Wmissing-home-modules
+  - -Wpartial-fields
+  - -Wredundant-constraints
 
 library:
   source-dirs: src
 
 executables:
   trs-conversion-exe:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - trs-conversion
+      - trs-conversion
 
 tests:
   trs-conversion-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
     dependencies:
-    - trs-conversion
-    - HUnit >= 1.6.2.0 && < 1.6.3
-
+      - trs-conversion
+      - HUnit >= 1.6.2.0 && < 1.6.3

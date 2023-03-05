@@ -5,20 +5,6 @@
 
 packages:
 - completed:
-    hackage: term-rewriting-0.4.0.2@sha256:5412f6aa29c5756634ee30e8df923c83ab9f012a4b8797c460af3d7078466764,2740
-    pantry-tree:
-      sha256: 15a74c023b9caebbea2bda44141a060e78d46673c5768101c14fcd332c2408a0
-      size: 3012
-  original:
-    hackage: term-rewriting-0.4.0.2
-- completed:
-    hackage: union-find-array-0.1.0.3@sha256:242e066ec516d61f262947e5794edc7bbc11fd538a0415c03ac0c01b028cfa8a,1372
-    pantry-tree:
-      sha256: 1c53fba1445e9dde2d72979a049438213c0c500e40189c76818314600fb9d875
-      size: 482
-  original:
-    hackage: union-find-array-0.1.0.3
-- completed:
     hackage: prettyprinter-1.7.1@sha256:9c43c9d8c3cd9f445596e5a2379574bba87f935a4d1fa41b5407ee3cf4edc743,6987
     pantry-tree:
       sha256: cd6f393bf7cba603a1958a139915fc343efd5488e36fd7b3b5c6956c002d04fa
