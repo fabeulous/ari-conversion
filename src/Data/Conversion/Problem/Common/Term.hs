@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Problem.Term
+-- Module      : Data.Conversion.Problem.Common.Term
 -- Description : Term type definition
 --
 -- This module contains the 'Term' type definition and helper functions for Terms.
-module Data.Conversion.Problem.Term
+module Data.Conversion.Problem.Common.Term
   ( -- * Types
     Term (..),
 

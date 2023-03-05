@@ -14,7 +14,7 @@ where
 
 import Control.Monad (guard)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, stripSpaces, symbol)
-import Data.Conversion.Problem.Term (Term (..))
+import Data.Conversion.Problem.Common.Term (Term (..))
 import Text.Megaparsec
   ( between,
     choice,

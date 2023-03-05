@@ -7,8 +7,8 @@ module Test.Parse.Rule (ruleTests) where
 
 import Data.Conversion.Parser.Parse.Problem.Rule (parseRule, parseRules)
 import Data.Conversion.Parser.Parse.Utils (Parser)
-import Data.Conversion.Problem.Rule (Rule (..))
-import Data.Conversion.Problem.Term (Term (..))
+import Data.Conversion.Problem.Common.Rule (Rule (..))
+import Data.Conversion.Problem.Common.Term (Term (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 

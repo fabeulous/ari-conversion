@@ -13,7 +13,7 @@ where
 
 import Data.Conversion.Parser.Parse.Problem.Term (parseTerm)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme)
-import Data.Conversion.Problem.Rule (Rule (..), inferRulesSignature)
+import Data.Conversion.Problem.Common.Rule (Rule (..), inferRulesSignature)
 import Data.Conversion.Problem.Trs.Sig (Sig)
 import Text.Megaparsec (many, (<?>))
 import Text.Megaparsec.Char (string)

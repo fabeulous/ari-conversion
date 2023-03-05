@@ -13,6 +13,7 @@ module Data.Conversion.Parser.Parse.Utils
     sc,
     lexeme,
     stripSpaces,
+    parseBlock,
 
     -- * Other Helpers
     parens,
@@ -20,10 +21,10 @@ module Data.Conversion.Parser.Parse.Utils
   )
 where
 
-import Data.Text (Text)
+import Data.Text (Text, pack)
 import Data.Void (Void)
-import Text.Megaparsec (Parsec, between, many)
-import Text.Megaparsec.Char (space1, spaceChar)
+import Text.Megaparsec (Parsec, between, many, (<?>))
+import Text.Megaparsec.Char (space1, spaceChar, string)
 import qualified Text.Megaparsec.Char.Lexer as L
 
 -- | Type alias for a 'Megaparsec' parser which uses error handler of type 'Void' and
@@ -52,6 +53,16 @@ stripSpaces p = lexeme (many spaceChar *> p)
 -- that parses 'Text', wrapping it in a 'Parser' and consuming trailing whitespace.
 symbol :: Text -> Parser Text
 symbol = L.symbol sc
+
+-- | Parse a block in the format @(name contents)@ by applying parser @p@ to @contents@ and returning the result.
+-- Ignores trailing whitespace after the block name and before the closing @')'@.
+parseBlock :: String -> Parser a -> Parser a
+parseBlock name p =
+  parens
+    ( lexeme (string $ pack name) -- Parse block name
+        *> lexeme p -- Parse block contents
+    )
+    <?> (name ++ " block")
 
 -- | Takes a given a given parser and applies it [between](https://hackage.haskell.org/package/parser-combinators-1.3.0/docs/Control-Monad-Combinators.html#v:between)
 -- parentheses.
