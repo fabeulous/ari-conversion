@@ -6,11 +6,13 @@ cabal-version: 2.2
 
 name:           trs-conversion
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/j-f-ox/trs-conversion#readme>
+synopsis:       TRS format converter
+description:    Package to convert between the COPS and ARI rewriting problem formats.
+                Please see the README on GitHub at <https://github.com/j-f-ox/trs-conversion#readme>
 homepage:       https://github.com/j-f-ox/trs-conversion#readme
 bug-reports:    https://github.com/j-f-ox/trs-conversion/issues
-author:         jamie Fox
-maintainer:     foxjamiek@gmail.com
+author:         Jamie Fox
+maintainer:     Jamie Fox <foxjamiek@gmail.com>
 copyright:      2023 Jamie Fox
 license:        NONE
 build-type:     Simple

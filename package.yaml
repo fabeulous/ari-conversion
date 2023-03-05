@@ -2,8 +2,8 @@ name: trs-conversion
 version: 0.1.0.0
 github: "j-f-ox/trs-conversion"
 license: NONE
-author: "jamie Fox"
-maintainer: "foxjamiek@gmail.com"
+author: "Jamie Fox"
+maintainer: "Jamie Fox <foxjamiek@gmail.com>"
 copyright: "2023 Jamie Fox"
 
 extra-source-files:
@@ -11,13 +11,16 @@ extra-source-files:
   - CHANGELOG.md
 
 # Metadata used when publishing your package
-# synopsis:            Short description of your package
+synopsis:  TRS format converter
 # category:            Web
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description: Please see the README on GitHub at <https://github.com/j-f-ox/trs-conversion#readme>
+description: 
+  Package to convert between the COPS and ARI rewriting problem formats.
+  
+  Please see the README on GitHub at <https://github.com/j-f-ox/trs-conversion#readme>
 
 dependencies:
   - base >= 4.7 && < 5
