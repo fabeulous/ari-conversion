@@ -81,7 +81,9 @@ test-suite trs-conversion-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Test.Problem.Term
+      Test.Parse.Rule
+      Test.Parse.Term
+      Test.Parse.Utils
       Paths_trs_conversion
   autogen-modules:
       Paths_trs_conversion

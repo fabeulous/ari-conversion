@@ -14,9 +14,9 @@ data Sig f = Sig f Int -- qqjf fsym, arity
   deriving (Ord, Eq, Show)
 
 -- | Check that a list of function symbols contains each function symbol at most once
-checkConsistentSig :: (Show f) => [Sig f] -> Either String [Sig f]
+checkConsistentSig :: (Show f, Eq f) => [Sig f] -> Either String [Sig f]
 checkConsistentSig sig =
-  if distinct (foldr (\(Sig _ arity) xs -> arity : xs) [] sig)
+  if distinct (foldr (\(Sig fsym _) -> (fsym :)) [] sig)
     then Right sig
     else Left $ "A function symbol appears with multiple arities in signature " ++ show sig
   where
