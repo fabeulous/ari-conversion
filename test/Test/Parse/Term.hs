@@ -2,12 +2,13 @@
 -- Module      : Test.Parse.Term
 -- Description : Parsing tests for terms
 --
--- This module defines test cases for the function 'parseTerm'. Tests are non-exhaustive, but cover common cases and some useful checks.
-module Test.Parse.Term (termTests) where
+-- This module defines test cases for the functions 'parseTerm' and 'parsePrefixTerm'. Tests are non-exhaustive, but cover common cases and some useful checks.
+module Test.Parse.Term (termTests, prefixTermTests) where
 
-import Data.Conversion.Parser.Parse.Problem.Term (parseTerm)
+import Data.Conversion.Parser.Parse.Problem.Term (parsePrefixTerm, parseTerm)
 import Data.Conversion.Parser.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Term (Term (..))
+import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
@@ -15,9 +16,17 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 termTests :: Test
 termTests = TestList [parseTermTests, parenthesesTests, malformattedTermTests]
 
+-- | Tests for 'parsePrefixTerm' including tests for which parsing should succeed and for which parsing should fail
+prefixTermTests :: Test
+prefixTermTests = TestList [parsePrefixTermTests, malformattedPrefixTermTests]
+
 -- | Parser for testing 'parseTerm' with a fixed set of variables
 termParser :: Parser (Term String String)
 termParser = parseTerm ["x", "y", "z", "x'"]
+
+-- | Parser for testing 'prefixTermParser' with a fixed set of function symbols
+prefixTermParser :: Parser (Term String String)
+prefixTermParser = parsePrefixTerm [Sig "a" 0, Sig "f" 1, Sig "g" 2, Sig "h" 3]
 
 -- | Tests for cases when 'parseTerm' should succeed and produce a term as output
 parseTermTests :: Test
@@ -82,5 +91,54 @@ malformattedTermTests = assertFailParseList badTerms termParser
         "f(x)->x",
         "",
         " ",
-        "\n"
+        "\n",
+        "x(x)" -- x is in vars and function symbols
+      ]
+
+-- | Tests for which 'prefixTermParser' should succeed and match the expected output
+parsePrefixTermTests :: Test
+parsePrefixTermTests = assertParseList wellFormattedTerms prefixTermParser
+  where
+    -- Terms which should be parseable (non-exhaustive) and their expected Haskell representation
+    wellFormattedTerms :: [(String, Term String String)]
+    wellFormattedTerms =
+      [ ("x", Var "x"),
+        ("a", Fun "a" []),
+        ("f x", Fun "f" [Var "x"]),
+        ("(f x)", Fun "f" [Var "x"]),
+        ("f (x)", Fun "f" [Var "x"]),
+        ("f (f (f x))", Fun "f" [Fun "f" [Fun "f" [Var "x"]]]),
+        ("f x'", Fun "f" [Var "x'"]),
+        (" g x y", Fun "g" [Var "x", Var "y"]),
+        ("  g  z   a   ", Fun "g" [Var "z", Fun "a" []]),
+        ("g a z ", Fun "g" [Fun "a" [], Var "z"]),
+        (" f a (f z)", Fun "f" [Fun "a" [], Fun "f" [Var "z"]]),
+        ("g (g x a) y", Fun "g" [Fun "g" [Var "x", Fun "a" []], Var "y"]),
+        ("g x (f y)", Fun "g" [Var "x", Fun "f" [Var "y"]]),
+        ("h x (g x' z ) y", Fun "h" [Var "x", Fun "g" [Var "x'", Var "z"], Var "y"]),
+        ("(x)", Var "x"),
+        ("(a)", Fun "a" []),
+        (" f ( xy  ) ", Fun "f" [Var "xy"]),
+        ("((a))", Fun "a" []),
+        ("(((x)))", Var "x"),
+        ("f (g x y)", Fun "f" [Fun "g" [Var "x", Var "y"]]),
+        ("g (f x) (f y)", Fun "g" [Fun "f" [Var "x"], Fun "f" [Var "y"]])
+      ]
+
+-- | Tests for which 'prefixTermParser' should fail
+malformattedPrefixTermTests :: Test
+malformattedPrefixTermTests = assertFailParseList badTerms prefixTermParser
+  where
+    badTerms :: [String]
+    badTerms =
+      [ "f(x)",
+        "g(x,y)",
+        "f(",
+        "f)",
+        "f (x(",
+        "",
+        " ",
+        "\n",
+        "x x",
+        "a " -- Trailing space is not consumed
       ]

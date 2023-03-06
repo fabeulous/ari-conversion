@@ -2,10 +2,10 @@
 -- Module      : Test.Parse.Trs.Sig
 -- Description : Parsing tests for TRS signatures
 --
--- This module defines test cases for the function 'parseSig' (used in parsing the COCO TRS extended format) and for checking signature consistency.
+-- This module defines test cases for signature parsing functions and for checking signature consistency.
 module Test.Parse.Trs.Sig (sigTests) where
 
-import Data.Conversion.Parser.Parse.Problem.Sig (parseSig)
+import Data.Conversion.Parser.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
 import Data.Conversion.Problem.Trs.Sig (Sig (..), checkConsistentSig)
 import Data.Either (isLeft, isRight)
 import Test.HUnit
@@ -13,12 +13,23 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Test cases for TRS signature parsing and checking
 sigTests :: Test
-sigTests = TestList [parseSigTests, badSigTests, checkConsistentSigs, checkInconsistentSigs]
+sigTests = TestList [parseCopsSigTests, badCopsSigTests, checkConsistentSigs, checkInconsistentSigs, parseFsymArityTests]
 
--- | Test cases for which 'parseSig' should succeed and match the extended output.
+-- | Simple test cases for whick 'parseFsymArity' should succeed and match the extended output.
+parseFsymArityTests :: Test
+parseFsymArityTests = assertParseList validFsymArities parseFsymArity
+  where
+    validFsymArities :: [(String, Sig String)]
+    validFsymArities =
+      [ ("f 1", Sig "f" 1),
+        (" + 2", Sig "+" 2),
+        ("fun   3 ", Sig "fun" 3)
+      ]
+
+-- | Test cases for which 'parseCopsSig' should succeed and match the extended output.
 -- Expects signature strings in the COCO TRS (extended format)[http://project-coco.uibk.ac.at/problems/trs.php#extended].
-parseSigTests :: Test
-parseSigTests = assertParseList validSigs parseSig
+parseCopsSigTests :: Test
+parseCopsSigTests = assertParseList validSigs parseCopsSig
   where
     validSigs :: [(String, [Sig String])]
     validSigs =
@@ -31,9 +42,9 @@ parseSigTests = assertParseList validSigs parseSig
         ("(g 25) (g 25)", [Sig "g" 25, Sig "g" 25])
       ]
 
--- | Tests for which 'parseSig' should fail due to invalid signature formatsI
-badSigTests :: Test
-badSigTests = assertFailParseList badSigs parseSig
+-- | Tests for which 'parseCopsSig' should fail due to invalid signature formatsI
+badCopsSigTests :: Test
+badCopsSigTests = assertFailParseList badSigs parseCopsSig
   where
     badSigs :: [String]
     badSigs =
@@ -44,7 +55,8 @@ badSigTests = assertFailParseList badSigs parseSig
         "h (-1)",
         "(g (1))",
         "(f 1 2)",
-        "(f 1) (h 1"
+        "(f 1) (h 1",
+        "(f 1 (h 1)"
       ]
 
 -- | Tests for the function 'checkConsistentSig' (used in TRS parsing to find duplicate function symbols in signatures).

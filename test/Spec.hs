@@ -1,18 +1,25 @@
 import Test.HUnit
-import Test.Parse.Rule (ruleTests)
-import Test.Parse.Term (termTests)
+import Test.Parse.Rule (ariRuleTests, copsRuleTests)
+import Test.Parse.Term (prefixTermTests, termTests)
+import Test.Parse.Trs.Ari (parseAriTests)
 import Test.Parse.Trs.Cops (parseCopsTests)
 import Test.Parse.Trs.Sig (sigTests)
 
 -- | The testing entry point. Runs each test in turn and logs output to the console.
 main :: IO ()
 main = do
-  putStrLn "Testing term parsing"
+  putStrLn "Testing term parsing in applicative format"
   _ <- runTestTT termTests
-  putStrLn "Testing rule parsing"
-  _ <- runTestTT ruleTests
+  putStrLn "Testing term parsing in prefix format"
+  _ <- runTestTT prefixTermTests
+  putStrLn "Testing parsing COPS rules"
+  _ <- runTestTT copsRuleTests
+  putStrLn "Testing parsing ARI rules"
+  _ <- runTestTT ariRuleTests
   putStrLn "Testing signature parsing"
   _ <- runTestTT sigTests
   putStrLn "Testing parsing TRSs in COPS format"
   _ <- runTestTT parseCopsTests
+  putStrLn "Testing parsing TRSs in ARI format"
+  _ <- runTestTT parseAriTests
   putStrLn "Testing complete."
