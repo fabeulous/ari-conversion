@@ -116,7 +116,6 @@ parsePrefixTermTests = assertParseList wellFormattedTerms prefixTermParser
         ("g (g x a) y", Fun "g" [Fun "g" [Var "x", Fun "a" []], Var "y"]),
         ("g x (f y)", Fun "g" [Var "x", Fun "f" [Var "y"]]),
         ("h x (g x' z ) y", Fun "h" [Var "x", Fun "g" [Var "x'", Var "z"], Var "y"]),
-        ("a ", Fun "a" []),
         ("(x)", Var "x"),
         ("(a)", Fun "a" []),
         (" f ( xy  ) ", Fun "f" [Var "xy"]),
@@ -139,5 +138,6 @@ malformattedPrefixTermTests = assertFailParseList badTerms prefixTermParser
         "",
         " ",
         "\n",
-        "x x"
+        "x x",
+        "a " -- Trailing space is not consumed
       ]

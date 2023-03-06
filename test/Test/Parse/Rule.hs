@@ -2,10 +2,10 @@
 -- Module      : Test.Parse.Rule
 -- Description : Parsing tests for rules
 --
--- This module defines test cases for the functions 'parseRule' and 'parseRules'. Tests are non-exhaustive, but cover common cases and some useful checks.
+-- This module defines test cases for the functions 'parsCopsRule' and 'parseCopsRules'. Tests are non-exhaustive, but cover common cases and some useful checks.
 module Test.Parse.Rule (ruleTests) where
 
-import Data.Conversion.Parser.Parse.Problem.Rule (parseRule, parseRules)
+import Data.Conversion.Parser.Parse.Problem.Rule (parseCopsRule, parseCopsRules)
 import Data.Conversion.Parser.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
@@ -19,9 +19,9 @@ ruleTests = TestList [parseRuleTests, badRulesTests, parseMultipleRules]
 
 -- | A rule parser for testing with a fixed set of variables
 ruleParser :: Parser (Rule String String)
-ruleParser = parseRule ["x", "y", "z", "x'"]
+ruleParser = parseCopsRule ["x", "y", "z", "x'"]
 
--- | Test cases for which 'parseRule' should succeed and match the given expected output
+-- | Test cases for which 'parseCopsRule' should succeed and match the given expected output
 parseRuleTests :: Test
 parseRuleTests = assertParseList validRules ruleParser
   where
@@ -61,13 +61,13 @@ badRulesTests = assertFailParseList badRules ruleParser
         "\n"
       ]
 
--- | Tests for the 'parseRules' function (used in TRS parsing to parse blocks containing 0 or more rules).
+-- | Tests for the 'parseCopsRules' function (used in TRS parsing to parse blocks containing 0 or more rules).
 -- Asserts that the test cases are parseable and match the expected output.
 parseMultipleRules :: Test
 parseMultipleRules = assertParseList validRules rulesParser
   where
     rulesParser :: Parser [Rule String String]
-    rulesParser = parseRules $ Vars ["x", "y", "z", "x'"]
+    rulesParser = parseCopsRules $ Vars ["x", "y", "z", "x'"]
     r1 = Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}
     r2 = Rule {lhs = Fun "g" [Var "x", Var "y"], rhs = Fun "f" [Var "y"]}
     r3 = Rule {lhs = Fun "a" [], rhs = Fun "b" []}

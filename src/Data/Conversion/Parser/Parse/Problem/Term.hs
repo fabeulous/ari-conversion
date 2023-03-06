@@ -122,15 +122,10 @@ allowedFunVarChars = noneOf ['(', ')', ' ', ',', '-', '\n']
 --
 -- Consumes trailing white space only after the term has been recursively parsed as far as possible.
 parsePrefixTerm :: [Sig String] -> Parser (Term String String)
-parsePrefixTerm funSig = lexeme $ recursivelyParsePrefixTerm funSig
-
--- | Helper function for the recursive steps of ''.
--- This function strips only leading spaces as arguments are separated by whitespace  in prefix notation.
-recursivelyParsePrefixTerm :: [Sig String] -> Parser (Term String String)
-recursivelyParsePrefixTerm funSig =
+parsePrefixTerm funSig =
   many spaceChar
     *> choice
-      [ char '(' *> parsePrefixTerm funSig <* char ')', -- Important not to strip whitespace here
+      [ between (char '(') (char ')') (lexeme $ parsePrefixTerm funSig), -- Strip parentheses
         try (parsePrefixFunApplication funSig) <|> try parseVar
       ]
   where
@@ -149,7 +144,7 @@ parsePrefixFunApplication funSig = do
   if arity == 0
     then return $ Fun fsym [] -- Special case for constants (no arguments)
     else do
-      args <- spaceChar *> recursivelyParsePrefixTerm funSig `sepEndBy` some spaceChar <?> "function arguments"
+      args <- spaceChar *> parsePrefixTerm funSig `sepEndBy` some spaceChar <?> "function arguments"
       return $ Fun fsym args
   where
     -- Parse a single function symbol and assert that it is in the function signature @funSig@.

@@ -11,7 +11,7 @@ module Data.Conversion.Parser.Parse.ParseTrs
 where
 
 import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseComment)
-import Data.Conversion.Parser.Parse.Problem.Rule (parseRules)
+import Data.Conversion.Parser.Parse.Problem.Rule (parseCopsRules)
 import Data.Conversion.Parser.Parse.Problem.Sig (parseSig)
 import Data.Conversion.Parser.Parse.Problem.Term (parseVariable)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
@@ -33,7 +33,7 @@ parseCops = stripSpaces $ do
   let trsSig = case funSig of
         Nothing -> Vars vs -- If no SIG block is given
         Just inputFunSig -> FullSig vs inputFunSig
-  rs <- parseBlock "RULES" (parseRules trsSig)
+  rs <- parseBlock "RULES" (parseCopsRules trsSig)
   metaInfo <- optional (parseBlock "COMMENT" parseComment)
   return
     ( Trs

@@ -4,20 +4,21 @@
 -- Module      : Data.Conversion.Parser.Parse.Problem.Rule
 -- Description : Rule parsers
 --
--- This module defines parsers 'parseRule' to parse a single rule and 'parseRules' to parse a block of rules.
+-- This module defines parsers 'parseCopsRule' to parse a single rule and 'parseCopsRules' to parse a block of rules.
 module Data.Conversion.Parser.Parse.Problem.Rule
-  ( parseRule,
-    parseRules,
+  ( parseCopsRule,
+    parseCopsRules,
+    parseAriRule,
   )
 where
 
-import Data.Conversion.Parser.Parse.Problem.Term (parseTerm)
+import Data.Conversion.Parser.Parse.Problem.Term (parsePrefixTerm, parseTerm)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme)
 import Data.Conversion.Problem.Common.Rule (Rule (..), inferRulesSignature)
 import Data.Conversion.Problem.Trs.Sig (Sig)
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
-import Text.Megaparsec (many, (<?>))
-import Text.Megaparsec.Char (string)
+import Text.Megaparsec (many, some, (<?>))
+import Text.Megaparsec.Char (spaceChar, string)
 
 -- | Type synonym for a list of variables
 type Vars = [String]
@@ -27,35 +28,45 @@ type Vars = [String]
 --
 -- Ignores whitespace around the @"->"@ and does not necessarily consume all input.
 --
--- >>> parseRule "f(x) -> x"
+-- >>> parseCopsRule "f(x) -> x"
 -- Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}
-parseRule :: Vars -> Parser (Rule String String)
-parseRule vs = do
+parseCopsRule :: Vars -> Parser (Rule String String)
+parseCopsRule vs = do
   l <- parseTerm vs <?> "left-hand side"
   _ <- lexeme (string "->")
   r <- parseTerm vs <?> "right-hand side"
   return $ Rule {lhs = l, rhs = r}
 
+-- | Parse a rule block constisting of two terms in prefix notation separated by at least one space character.
+--
+-- qqjf (rule prefixTerm prefixTerm) separated by at least one whitespace. Prefix notation.
+parseAriRule :: [Sig String] -> Parser (Rule String String)
+parseAriRule funSig = do
+  l <- parsePrefixTerm funSig <?> "left-hand side"
+  _ <- some spaceChar
+  r <- parsePrefixTerm funSig <?> "right-hand side"
+  return $ Rule {lhs = l, rhs = r}
+
 -- | Parser to extract the rules from a @RULES@ block of the [COPS TRS](http://project-coco.uibk.ac.at/problems/trs.php) format.
--- Takes a 'TrsSig' and calls 'parseRule' 0 or more times on the input until no more rules can be parsed.
+-- Takes a 'TrsSig' and calls 'parseCopsRule' 0 or more times on the input until no more rules can be parsed.
 -- Does not necessarily consume all input.
 --
 -- * If given @Vars vs@ as a signatue, then parse rules with this variable set
 -- * If given @FullSig vs fs@ as a signature, then infers a function signature from the rules using @vs@ and then checks that this inferred function signature is a subset of @fs@.
 -- * If given @FunSig [qqjf]
-parseRules :: TrsSig String String -> Parser [Rule String String]
-parseRules trsSig = case trsSig of
+parseCopsRules :: TrsSig String String -> Parser [Rule String String]
+parseCopsRules trsSig = case trsSig of
   Vars vs -> do
-    rules <- many (parseRule vs)
+    rules <- many (parseCopsRule vs)
     case inferRulesSignature rules of
       Left err -> fail err
       Right _ -> return rules
   FullSig vs fs -> do
-    rules <- many (parseRule vs)
+    rules <- many (parseCopsRule vs)
     case inferRulesSignature rules of
       Left err -> fail err
       Right inferredSig -> checkSignatureSubset inferredSig fs rules
-  FunSig fs -> fail "FunSig not supported yet"
+  FunSig _ -> fail "The COPS formal does not allow only specifying a function signature"
   where
     -- 'subList' returns whether every element of the first list is contained in the second list
     subList :: Eq a => [a] -> [a] -> Bool
