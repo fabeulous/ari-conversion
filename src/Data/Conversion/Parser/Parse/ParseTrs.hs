@@ -42,13 +42,12 @@ parseCops = stripSpaces $ do
         Just inputFunSig -> FullSig vs inputFunSig
   rs <- parseBlock "RULES" (parseCopsRules trsSig)
   maybeMetaInfo <- optional (parseBlock "COMMENT" parseCopsMetaInfo)
-  return
-    ( Trs
-        { rules = rs,
-          signature = trsSig,
-          metaInfo = fromMaybe emptyMetaInfo maybeMetaInfo
-        }
-    )
+  return $
+    Trs
+      { rules = rs,
+        signature = trsSig,
+        metaInfo = fromMaybe emptyMetaInfo maybeMetaInfo
+      }
 
 -- | Parse a first-order TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt)
 -- and the tests for more examples.
@@ -62,10 +61,9 @@ parseAri = stripSpaces $ do
   guard (format == "TRS") -- Assert correct format
   funSig <- many (try $ parseBlock "fun " parseFsymArity)
   rs <- many (try $ parseBlock "rule " (parseAriRule funSig))
-  return
-    ( Trs
-        { rules = rs,
-          signature = FunSig funSig,
-          metaInfo = trsMetaInfo
-        }
-    )
+  return $
+    Trs
+      { rules = rs,
+        signature = FunSig funSig,
+        metaInfo = trsMetaInfo
+      }

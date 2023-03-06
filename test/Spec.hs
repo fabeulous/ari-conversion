@@ -4,6 +4,7 @@ import Test.Parse.Term (prefixTermTests, termTests)
 import Test.Parse.Trs.Ari (parseAriTests)
 import Test.Parse.Trs.Cops (parseCopsTests)
 import Test.Parse.Trs.Sig (sigTests)
+import Test.Parse.MetaInfo (metaInfoParsingTests)
 
 -- | The testing entry point. Runs each test in turn and logs output to the console.
 main :: IO ()
@@ -12,6 +13,8 @@ main = do
   _ <- runTestTT termTests
   putStrLn "Testing term parsing in prefix format"
   _ <- runTestTT prefixTermTests
+  putStrLn "Testing parsing MetaInfo"
+  _ <- runTestTT metaInfoParsingTests
   putStrLn "Testing parsing COPS rules"
   _ <- runTestTT copsRuleTests
   putStrLn "Testing parsing ARI rules"
