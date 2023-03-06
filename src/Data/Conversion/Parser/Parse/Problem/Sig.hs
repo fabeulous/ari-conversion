@@ -13,7 +13,7 @@ import Data.Conversion.Parser.Parse.Problem.Term (parseFunSymbol)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parens, stripSpaces)
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (many, some)
-import Text.Megaparsec.Char (digitChar, spaceChar)
+import Text.Megaparsec.Char (digitChar)
 
 -- | Parser to extract the signature from a @SIG@ block of the COPS [extended TRS format](http://project-coco.uibk.ac.at/problems/trs.php#extended).
 -- Expects a sequence of blocks @(fsym Int)@ where the @Int@ is the arity of the given symbol (see example below).

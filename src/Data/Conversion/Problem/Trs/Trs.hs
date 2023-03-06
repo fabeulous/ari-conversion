@@ -16,9 +16,7 @@ import Data.Conversion.Problem.Trs.TrsSig (TrsSig)
 -- Function symbols have type @f@ and variables have type @v@ in the system.
 data Trs f v = Trs
   { -- | A list of the TRS rewrite rules
-    rules :: [Rule f v],
-    -- | A list of variables. Symbols in 'variables' will be interpreted as variables during parsing.
-    variables :: [v],
+    rules :: [Rule f v], 
     -- | The signature (function symbols and arities) of the TRS. qqjf: complete or not?
     signature :: TrsSig f v,
     -- | 'comment' is set to @Nothing@ if no comment is provided, otherwise @Just str@ if a comment @str@ is provided for the TRS.

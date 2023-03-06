@@ -111,10 +111,13 @@ parseAriRuleTests = assertParseList validRules ariRuleParser
       [ ("(s x) (x)", Rule {lhs = sx, rhs = Var "x"}),
         ("  ( s   x  )   ( x )", Rule {lhs = sx, rhs = Var "x"}),
         ("  (s sx) (x)", Rule {lhs = Fun "s" [Var "sx"], rhs = Var "x"}),
-        ("(x) (s   x)", Rule {lhs = Var "x", rhs = sx}),
+        ("x (s   x)", Rule {lhs = Var "x", rhs = sx}),
         ("(s x)  ( s x )", Rule {lhs = sx, rhs = sx}),
         ("(x) (x)", Rule {lhs = Var "x", rhs = Var "x"}), -- qqjf Currently allowed
-        ("(0) (nil)", Rule {lhs = Fun "0" [], rhs = Fun "nil" []})
+        ("(0) (nil)", Rule {lhs = Fun "0" [], rhs = Fun "nil" []}),
+        ("(f x y) s x", Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = sx}),
+        ("0 (s x)", Rule {lhs = Fun "0" [], rhs = sx}),
+        ("(s x) x", Rule {lhs = sx, rhs = Var "x"})
       ]
 
 -- | Example test cases of malformatted rules for which parsing should fail
@@ -129,7 +132,6 @@ badAriRulesTests = assertFailParseList badRules ariRuleParser
         "s(x)->s",
         "(f x y)",
         "f x y s x",
-        "(f x y) s x",
         "f x y (s x)",
         "(s x)",
         "(0)",

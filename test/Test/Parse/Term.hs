@@ -120,7 +120,9 @@ parsePrefixTermTests = assertParseList wellFormattedTerms prefixTermParser
         ("(a)", Fun "a" []),
         (" f ( xy  ) ", Fun "f" [Var "xy"]),
         ("((a))", Fun "a" []),
-        ("(((x)))", Var "x")
+        ("(((x)))", Var "x"),
+        ("f (g x y)", Fun "f" [Fun "g" [Var "x", Var "y"]]),
+        ("g (f x) (f y)", Fun "g" [Fun "f" [Var "x"], Fun "f" [Var "y"]])
       ]
 
 -- | Tests for which 'prefixTermParser' should fail
@@ -134,7 +136,6 @@ malformattedPrefixTermTests = assertFailParseList badTerms prefixTermParser
         "f(",
         "f)",
         "f (x(",
-        "(f x) x",
         "",
         " ",
         "\n",
