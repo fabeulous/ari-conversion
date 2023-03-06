@@ -2,28 +2,35 @@
 -- Module      : Test.Parse.Rule
 -- Description : Parsing tests for rules
 --
--- This module defines test cases for the functions 'parsCopsRule' and 'parseCopsRules'. Tests are non-exhaustive, but cover common cases and some useful checks.
-module Test.Parse.Rule (ruleTests) where
+-- This module defines test cases for functions used to parse TRS rules.
+-- Tests are non-exhaustive, but cover common cases and some useful checks.
+module Test.Parse.Rule (copsRuleTests, ariRuleTests) where
 
-import Data.Conversion.Parser.Parse.Problem.Rule (parseCopsRule, parseCopsRules)
+import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsRule, parseCopsRules)
 import Data.Conversion.Parser.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
+import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
--- | Tests for parsing rules, including tests for which parsing should succeed and for which parsing should fail
-ruleTests :: Test
-ruleTests = TestList [parseRuleTests, badRulesTests, parseMultipleRules]
+-- | Tests for parsing rules in COPS format, including tests for which parsing should succeed and for which parsing should fail
+copsRuleTests :: Test
+copsRuleTests = TestList [parseCopsRuleTests, badCopsRulesTests, parseMultipleCopsRules]
 
--- | A rule parser for testing with a fixed set of variables
-ruleParser :: Parser (Rule String String)
-ruleParser = parseCopsRule ["x", "y", "z", "x'"]
+-- | Tests for parsing rules in ARI format, including tests for which parsing should succeed and for which parsing should fail
+ariRuleTests :: Test
+ariRuleTests = TestList [parseAriRuleTests, badAriRulesTests]
 
--- | Test cases for which 'parseCopsRule' should succeed and match the given expected output
-parseRuleTests :: Test
-parseRuleTests = assertParseList validRules ruleParser
+-- | A rule parser for testing 'parseCopsRule' with a fixed set of variables
+copsRuleParser :: Parser (Rule String String)
+copsRuleParser = parseCopsRule ["x", "y", "z", "x'"]
+
+-- | Test cases for which 'parseCopsRule' should succeed and
+-- match the given expected output
+parseCopsRuleTests :: Test
+parseCopsRuleTests = assertParseList validRules copsRuleParser
   where
     fx = Fun "f" [Var "x"]
     validRules :: [(String, Rule String String)]
@@ -38,10 +45,11 @@ parseRuleTests = assertParseList validRules ruleParser
         ("a()->b", Rule {lhs = Fun "a" [], rhs = Fun "b" []})
       ]
 
--- | Example test cases of malformatted rules for which parsing should fail when parsing the entire input
--- Non-exhaustive, but intended to be used as a sanity check
-badRulesTests :: Test
-badRulesTests = assertFailParseList badRules ruleParser
+-- | Example test cases of malformatted rules for which parsing should fail
+-- when parsing the entire input according to COPS format.
+-- Non-exhaustive, but intended to be used as a sanity check.
+badCopsRulesTests :: Test
+badCopsRulesTests = assertFailParseList badRules copsRuleParser
   where
     badRules :: [String]
     badRules =
@@ -61,10 +69,11 @@ badRulesTests = assertFailParseList badRules ruleParser
         "\n"
       ]
 
--- | Tests for the 'parseCopsRules' function (used in TRS parsing to parse blocks containing 0 or more rules).
+-- | Tests for the 'parseCopsRules' function (used in COPS TRS parsing
+-- to parse blocks containing 0 or more rules).
 -- Asserts that the test cases are parseable and match the expected output.
-parseMultipleRules :: Test
-parseMultipleRules = assertParseList validRules rulesParser
+parseMultipleCopsRules :: Test
+parseMultipleCopsRules = assertParseList validRules rulesParser
   where
     rulesParser :: Parser [Rule String String]
     rulesParser = parseCopsRules $ Vars ["x", "y", "z", "x'"]
@@ -78,4 +87,60 @@ parseMultipleRules = assertParseList validRules rulesParser
         ("f(x)->x g(x,y)->f(y)\na->b", [r1, r2, r3]),
         ("a->b\na->b", [r3, r3]),
         ("", [])
+      ]
+
+-- | A rule parser for testing 'parseAriRule' with a fixed function signature
+ariRuleParser :: Parser (Rule String String)
+ariRuleParser =
+  parseAriRule
+    [ Sig "0" 0,
+      Sig "s" 1,
+      Sig "nil" 0,
+      Sig ":" 2,
+      Sig "f" 2
+    ]
+
+-- | Test cases for which 'parseAriRule' should succeed and
+-- match the given expected output
+parseAriRuleTests :: Test
+parseAriRuleTests = assertParseList validRules ariRuleParser
+  where
+    sx = Fun "s" [Var "x"]
+    validRules :: [(String, Rule String String)]
+    validRules =
+      [ ("(s x) (x)", Rule {lhs = sx, rhs = Var "x"}),
+        ("  ( s   x  )   ( x )", Rule {lhs = sx, rhs = Var "x"}),
+        ("  (s sx) (x)", Rule {lhs = Fun "s" [Var "sx"], rhs = Var "x"}),
+        ("(x) (s   x)", Rule {lhs = Var "x", rhs = sx}),
+        ("(s x)  ( s x )", Rule {lhs = sx, rhs = sx}),
+        ("(x) (x)", Rule {lhs = Var "x", rhs = Var "x"}), -- qqjf Currently allowed
+        ("(0) (nil)", Rule {lhs = Fun "0" [], rhs = Fun "nil" []})
+      ]
+
+-- | Example test cases of malformatted rules for which parsing should fail
+-- when parsing the entire input according to ARI format.
+-- Non-exhaustive, but intended to be used as a sanity check.
+badAriRulesTests :: Test
+badAriRulesTests = assertFailParseList badRules ariRuleParser
+  where
+    badRules :: [String]
+    badRules =
+      [ "f x y",
+        "s(x)->s",
+        "(f x y)",
+        "f x y s x",
+        "(f x y) s x",
+        "f x y (s x)",
+        "(s x)",
+        "(0)",
+        " (0) ",
+        "(f x y) (: x y) (s x)",
+        "() (s x)",
+        "(s x) ()",
+        "() ()",
+        "(s x)(x)", -- No space qqjf
+        "((f x y) (s x))",
+        "",
+        " ",
+        "\n"
       ]

@@ -17,8 +17,8 @@ import Data.Conversion.Parser.Parse.Utils (Parser, lexeme)
 import Data.Conversion.Problem.Common.Rule (Rule (..), inferRulesSignature)
 import Data.Conversion.Problem.Trs.Sig (Sig)
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
-import Text.Megaparsec (many, some, (<?>))
-import Text.Megaparsec.Char (spaceChar, string)
+import Text.Megaparsec (between, many, some, (<?>))
+import Text.Megaparsec.Char (char, spaceChar, string)
 
 -- | Type synonym for a list of variables
 type Vars = [String]
@@ -37,15 +37,22 @@ parseCopsRule vs = do
   r <- parseTerm vs <?> "right-hand side"
   return $ Rule {lhs = l, rhs = r}
 
--- | Parse a rule block constisting of two terms in prefix notation separated by at least one space character.
+-- | Parse a rule block consisting of two terms in prefix notation
+-- separated by at least one space character.
+-- Uses 'parsePrefixTerm' to parse each term and consumes leading spaces.
+-- Also consumes spaces surrounding the term inside the parentheses.
 --
--- qqjf (rule prefixTerm prefixTerm) separated by at least one whitespace. Prefix notation.
+-- For example, @parseAriRule [Sig f 1]@ applied to @(f x) (x)@ should be
+-- parsed as @Rule {lhs=Fun "f" [Var "x"], rhs=Var "x"}@
 parseAriRule :: [Sig String] -> Parser (Rule String String)
 parseAriRule funSig = do
-  l <- parsePrefixTerm funSig <?> "left-hand side"
+  _ <- many spaceChar
+  l <- parensWrap (parsePrefixTerm funSig) <?> "left-hand side"
   _ <- some spaceChar
-  r <- parsePrefixTerm funSig <?> "right-hand side"
+  r <- parensWrap (parsePrefixTerm funSig) <?> "right-hand side"
   return $ Rule {lhs = l, rhs = r}
+  where
+    parensWrap = between (lexeme $ char '(') (many spaceChar *> char ')')
 
 -- | Parser to extract the rules from a @RULES@ block of the [COPS TRS](http://project-coco.uibk.ac.at/problems/trs.php) format.
 -- Takes a 'TrsSig' and calls 'parseCopsRule' 0 or more times on the input until no more rules can be parsed.

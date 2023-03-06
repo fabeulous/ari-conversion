@@ -1,5 +1,5 @@
 import Test.HUnit
-import Test.Parse.Rule (ruleTests)
+import Test.Parse.Rule (copsRuleTests, ariRuleTests)
 import Test.Parse.Term (termTests, prefixTermTests)
 import Test.Parse.Trs.Cops (parseCopsTests)
 import Test.Parse.Trs.Sig (sigTests)
@@ -11,8 +11,10 @@ main = do
   _ <- runTestTT termTests
   putStrLn "Testing term parsing in prefix format"
   _ <- runTestTT  prefixTermTests
-  putStrLn "Testing rule parsing"
-  _ <- runTestTT ruleTests
+  putStrLn "Testing parsing COPS rules"
+  _ <- runTestTT copsRuleTests
+  putStrLn "Testing parsing ARI rules"
+  _ <- runTestTT ariRuleTests
   putStrLn "Testing signature parsing"
   _ <- runTestTT sigTests
   putStrLn "Testing parsing TRSs in COPS format"
