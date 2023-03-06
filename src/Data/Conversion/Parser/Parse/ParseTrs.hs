@@ -12,7 +12,7 @@ where
 
 import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseComment)
 import Data.Conversion.Parser.Parse.Problem.Rule (parseCopsRules)
-import Data.Conversion.Parser.Parse.Problem.Sig (parseSig)
+import Data.Conversion.Parser.Parse.Problem.Sig (parseCopsSig)
 import Data.Conversion.Parser.Parse.Problem.Term (parseVariable)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
 import Data.Conversion.Problem.Trs.Trs (Trs (..))
@@ -29,7 +29,7 @@ import Text.Megaparsec
 parseCops :: Parser (Trs String String)
 parseCops = stripSpaces $ do
   vs <- try (parseBlock "VAR" (many $ lexeme parseVariable)) <|> return []
-  funSig <- optional (try $ parseBlock "SIG" parseSig)
+  funSig <- optional (try $ parseBlock "SIG" parseCopsSig)
   let trsSig = case funSig of
         Nothing -> Vars vs -- If no SIG block is given
         Just inputFunSig -> FullSig vs inputFunSig
