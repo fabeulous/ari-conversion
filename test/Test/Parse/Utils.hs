@@ -21,7 +21,7 @@ import Text.Megaparsec.Error (ParseErrorBundle)
 -- @Left err@ if parsing fails or or @Right result@ if parsing succeeds.
 --
 -- __'parseFromString' requires the parser to consume the entire input__ (until @eof@).
--- This can result in different behaviour to if the parser were allowed to consume part of the input.
+-- This can result in different behaviour to if the parser were allowed to consume only part of the input.
 parseFromString :: String -> Parser a -> Either (ParseErrorBundle Text Void) a
 parseFromString xs p = parse (p <* eof) "" (pack xs)
 

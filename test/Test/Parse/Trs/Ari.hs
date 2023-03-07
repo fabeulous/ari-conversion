@@ -7,6 +7,7 @@
 module Test.Parse.Trs.Ari (parseAriTests) where
 
 import Data.Conversion.Parser.Parse.ParseTrs (parseAri)
+import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
@@ -32,14 +33,14 @@ parseAriTrsTests = assertParseList wellFormattedTrss parseAri
           Trs
             { rules = [Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}],
               signature = FunSig [Sig "f" 1],
-              comment = Just "(comment \"A simple TRS\")" -- qqjf
+              metaInfo = emptyMetaInfo {comments = Just ["A simple TRS"]}
             }
         ),
         ( "(format TRS)", -- Minimal definition
           Trs
             { rules = [],
               signature = FunSig [],
-              comment = Nothing
+              metaInfo = emptyMetaInfo
             }
         ),
         ( "(meta-info (origin \"COPS #20\")) \
@@ -68,7 +69,13 @@ parseAriTrsTests = assertParseList wellFormattedTrss parseAri
                   Rule {lhs = Fun "inc" [Fun "tl" [Fun "nats" []]], rhs = Fun "tl" [Fun "inc" [Fun "nats" []]]}
                 ],
               signature = FunSig [Sig "0" 0, Sig "nats" 0, Sig "hd" 1, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2],
-              comment = Just "(origin \"COPS #20\")(doi \"10.1007/11805618_6\")(comment \"[7] Example 2\")(submitted \"Takahito Aoto\" \"Junichi Yoshida\" \"Yoshihito Toyama\")"
+              metaInfo =
+                emptyMetaInfo
+                  { comments = Just ["[7] Example 2"],
+                    doi = Just "10.1007/11805618_6",
+                    origin = Just "COPS #20",
+                    submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"]
+                  }
             }
         )
       ]

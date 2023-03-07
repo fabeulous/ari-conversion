@@ -12,13 +12,15 @@ module Data.Conversion.Parser.Parse.ParseTrs
 where
 
 import Control.Monad (guard)
-import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseComment)
+import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
 import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsRules)
 import Data.Conversion.Parser.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
 import Data.Conversion.Parser.Parse.Problem.Term (parseVariable)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
+import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Maybe (fromMaybe)
 import Text.Megaparsec
   ( many,
     optional,
@@ -39,14 +41,13 @@ parseCops = stripSpaces $ do
         Nothing -> Vars vs -- If no SIG block is given
         Just inputFunSig -> FullSig vs inputFunSig
   rs <- parseBlock "RULES" (parseCopsRules trsSig)
-  metaInfo <- optional (parseBlock "COMMENT" parseComment)
-  return
-    ( Trs
-        { rules = rs,
-          signature = trsSig,
-          comment = metaInfo
-        }
-    )
+  maybeMetaInfo <- optional (parseBlock "COMMENT" parseCopsMetaInfo)
+  return $
+    Trs
+      { rules = rs,
+        signature = trsSig,
+        metaInfo = fromMaybe emptyMetaInfo maybeMetaInfo
+      }
 
 -- | Parse a first-order TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt)
 -- and the tests for more examples.
@@ -55,15 +56,14 @@ parseCops = stripSpaces $ do
 -- Leading and trailing spaces are removed.
 parseAri :: Parser (Trs String String)
 parseAri = stripSpaces $ do
-  metaInfo <- many (try $ parseBlock "meta-info" parseComment)
+  trsMetaInfo <- parseAriMetaInfo
   format <- parseBlock "format" (many alphaNumChar)
   guard (format == "TRS") -- Assert correct format
   funSig <- many (try $ parseBlock "fun " parseFsymArity)
   rs <- many (try $ parseBlock "rule " (parseAriRule funSig))
-  return
-    ( Trs
-        { rules = rs,
-          signature = FunSig funSig,
-          comment = if null metaInfo then Nothing else Just $ concat metaInfo -- qqjf
-        }
-    )
+  return $
+    Trs
+      { rules = rs,
+        signature = FunSig funSig,
+        metaInfo = trsMetaInfo
+      }
