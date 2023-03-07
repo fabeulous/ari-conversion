@@ -65,5 +65,6 @@ parseCopsMetaTests = assertParseList validMetaInfo parseCopsMetaInfo
         ("comment (with parentheses)", emptyMetaInfo {comments = Just ["comment (with parentheses)"]}),
         ("comment (with (nested parentheses) and \\ escaped \n symbols)", emptyMetaInfo {comments = Just ["comment (with (nested parentheses) and \\ escaped \n symbols)"]}),
         ("comment \"with quotation marks\"", emptyMetaInfo {comments = Just ["comment \"with quotation marks\""]}),
-        ("", emptyMetaInfo {comments = Just [""]})
+        ("", emptyMetaInfo {comments = Just [""]}),
+        (" ", emptyMetaInfo {comments = Just [" "]})
       ]
