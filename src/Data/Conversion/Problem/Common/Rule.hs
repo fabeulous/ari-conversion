@@ -10,13 +10,13 @@ module Data.Conversion.Problem.Common.Rule
     -- * Helper functions
     ruleFunArities,
     inferRulesSignature,
+    ruleVars,
   )
 where
 
 import Data.Conversion.Problem.Common.Term (Term (..), termFunArities)
 import Data.Conversion.Problem.Trs.Sig (Sig, checkConsistentSig)
 import Data.List (nub)
-import Prettyprinter (Pretty, hang, pretty, (<+>))
 
 -- | Datatype representing a rewrite rule @lhs->rhs@.
 data Rule f v = Rule
@@ -26,10 +26,6 @@ data Rule f v = Rule
     rhs :: Term f v
   }
   deriving (Ord, Eq, Show)
-
--- | Make 'Rule' an instance of @Pretty@
-instance (Pretty f, Pretty v) => Pretty (Rule f v) where
-  pretty (Rule l r) = hang 2 $ pretty l <+> pretty "->" <+> pretty r
 
 -- | Returns a list of the function symbols appearing on both sides of a 'Rule' and their arities (number of arguments).
 -- Removes duplicates and asserts that each function symbol name has at most one arity.
@@ -59,3 +55,16 @@ inferRulesSignature rs = do
     -- Each individual signature might be consistent but we need to check their union
     Right sigLists -> checkConsistentSig $ nub (concat sigLists)
     Left err -> Left err
+
+-- | Extract a list of variables appearing in both sides of a list of rules.
+-- Duplicates are removed with 'nub'. 
+-- qqjf not efficient, but it works.
+--
+-- >>> ruleVars [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "x"}
+-- ["x", "y"]
+ruleVars :: Eq v => [Rule f v] -> [v]
+ruleVars rs = nub $ concatMap (\(Rule l r) -> termVars l ++ termVars r) rs
+  where
+    termVars :: Term f v -> [v]
+    termVars (Var x) = [x]
+    termVars (Fun f ts) = concatMap termVars ts
