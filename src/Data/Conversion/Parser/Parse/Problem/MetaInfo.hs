@@ -76,7 +76,7 @@ parseAriMetaInfo = go emptyMetaInfo
 -- The parsers for each block type are deliberately left flexible
 -- to allow adding additional validation checks or constraints later.
 --
--- qqjf Currently overwrites duplicate doi, origin, and submitted values. 
+-- qqjf Currently overwrites duplicate doi, origin, and submitted values.
 -- I was unsure what the desired behaviour is here.
 parseAriMetaInfoBlock :: MetaInfo -> Parser MetaInfo
 parseAriMetaInfoBlock meta@(MetaInfo oldComments _ _ _) = lexeme (try parseAriComment <|> try parseDoi <|> try parseOrigin <|> try parseSubmitters) <?> "meta-info"
