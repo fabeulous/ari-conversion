@@ -2,9 +2,9 @@
 
 -- |
 -- Module      : Data.Conversion.Parser.Parse.ParseTrs
--- Description : Parser for TRSs in COPS format
+-- Description : Parser for first-order TRSs
 --
--- This module defines function 'parseCops' to parse a first-order TRS in COPS format.
+-- This module defines functions to parse a first-order TRS in COPS and ARI format.
 module Data.Conversion.Parser.Parse.ParseTrs
   ( parseCops,
     parseAri,
