@@ -15,6 +15,7 @@ import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Prettyprinter (Pretty)
 import Test.HUnit
+import Test.Unparse.Utils (assertUnparseList)
 
 -- | A TRS for testing with only variables specified with 'Vars'
 trsVarSig :: Trs String String
@@ -72,19 +73,9 @@ trsFunSig =
           }
     }
 
- 
-
 -- | Unparser for COPS format
 unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> String
 unparseCopsTrs trs = show $ unparseCops trs
-
--- | qqjf unparser tester
-assertUnparse :: Show a => a -> (a -> String) -> String -> Assertion
-assertUnparse obj unparser expected = assertEqual (show obj ++ " not unparsed correctly") expected (unparser obj)
-
--- | qqjf
-assertUnparseList :: Show a => [(a, String)] -> (a -> String) -> Test
-assertUnparseList xs p = TestList [TestCase (assertUnparse val p expected) | (val, expected) <- xs]
 
 -- | Tests for converting some example 'Trs's to COPS format
 unparseCopsTrsTests :: Test
@@ -94,7 +85,7 @@ unparseCopsTrsTests = assertUnparseList trss unparseCopsTrs
     trss =
       [ (trsVarSig, "(VAR x y)\n(RULES \n  f(x,y) -> g(c)\n)"),
         (trsNoRules, "(VAR x)"),
-        (trsEmptySig, "(VAR )\n(RULES \n  a -> b\n)\n(COMMENT \nsubmitted by: Person 1)"), 
+        (trsEmptySig, "(VAR )\n(RULES \n  a -> b\n)\n(COMMENT \nsubmitted by: Person 1)"),
         (trsFullSig, "(VAR x y)\n(SIG (f 2) (a 0) (b 1))\n(RULES \n  f(x,y) -> y\n)\n(COMMENT \nA TRS (with SIG given))"),
         ( trsFunSig,
           "(VAR x y)\n\
