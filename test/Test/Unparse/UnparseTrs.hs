@@ -17,62 +17,6 @@ import Prettyprinter (Pretty)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparseList)
 
--- | A TRS for testing with only variables specified with 'Vars'
-trsVarSig :: Trs String String
-trsVarSig =
-  Trs
-    { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Fun "c" []]}],
-      signature = Vars ["x", "y"],
-      metaInfo = emptyMetaInfo
-    }
-
--- | A TRS for testing with no 'rules'
-trsNoRules :: Trs String String
-trsNoRules =
-  Trs
-    { rules = [],
-      signature = Vars ["x"],
-      metaInfo = emptyMetaInfo
-    }
-
--- | A TRS for testing with an empty signature
-trsEmptySig :: Trs String String
-trsEmptySig =
-  Trs
-    { rules = [Rule {lhs = Fun "a" [], rhs = Fun "b" []}],
-      signature = Vars [],
-      metaInfo = emptyMetaInfo {submitted = Just ["Person 1"]}
-    }
-
--- | A TRS for testing with both variables and function symbols specified with 'FullSig'
-trsFullSig :: Trs String String
-trsFullSig =
-  Trs
-    { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}],
-      signature = FullSig ["x", "y"] [Sig "f" 2, Sig "a" 0, Sig "b" 1],
-      metaInfo = emptyMetaInfo {comments = Just ["A TRS (with SIG given)"]}
-    }
-
--- | A TRS for testing with just function symbols specified
-trsFunSig :: Trs String String
-trsFunSig =
-  Trs
-    { rules =
-        [ Rule {lhs = Fun "nats" [], rhs = Fun ":" [Fun "0" [], Fun "inc" [Fun "nats" []]]},
-          Rule {lhs = Fun "inc" [Fun ":" [Var "x", Var "y"]], rhs = Fun ":" [Fun "s" [Var "x"], Fun "inc" [Var "y"]]},
-          Rule {lhs = Fun "tl" [Fun ":" [Var "x", Var "y"]], rhs = Var "y"},
-          Rule {lhs = Fun "inc" [Fun "tl" [Fun "nats" []]], rhs = Fun "tl" [Fun "inc" [Fun "nats" []]]}
-        ],
-      signature = FunSig [Sig "0" 0, Sig "nats" 0, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2],
-      metaInfo =
-        emptyMetaInfo
-          { comments = Just ["[7] Example 2"],
-            doi = Just "10.1007/11805618_6",
-            origin = Just "COPS #20",
-            submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"]
-          }
-    }
-
 -- | Unparser for COPS format
 unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> String
 unparseCopsTrs trs = show $ unparseCops trs
@@ -103,3 +47,63 @@ unparseCopsTrsTests = assertUnparseList trss unparseCopsTrs
           \submitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama)" -- qqjf does not exactly match COPS comment
         )
       ]
+
+------------------------
+--- Test data ----------
+------------------------
+
+-- | A TRS for testing with only variables specified in the signature with 'Vars'
+trsVarSig :: Trs String String
+trsVarSig =
+  Trs
+    { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Fun "c" []]}],
+      signature = Vars ["x", "y"],
+      metaInfo = emptyMetaInfo
+    }
+
+-- | A TRS for testing with no 'rules'
+trsNoRules :: Trs String String
+trsNoRules =
+  Trs
+    { rules = [],
+      signature = Vars ["x"],
+      metaInfo = emptyMetaInfo
+    }
+
+-- | A TRS for testing with an empty 'Vars' signature
+trsEmptySig :: Trs String String
+trsEmptySig =
+  Trs
+    { rules = [Rule {lhs = Fun "a" [], rhs = Fun "b" []}],
+      signature = Vars [],
+      metaInfo = emptyMetaInfo {submitted = Just ["Person 1"]}
+    }
+
+-- | A TRS for testing with both variables and function symbols specified with 'FullSig'
+trsFullSig :: Trs String String
+trsFullSig =
+  Trs
+    { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}],
+      signature = FullSig ["x", "y"] [Sig "f" 2, Sig "a" 0, Sig "b" 1],
+      metaInfo = emptyMetaInfo {comments = Just ["A TRS (with SIG given)"]}
+    }
+
+-- | A TRS for testing with just function symbols specified with 'FunSig'
+trsFunSig :: Trs String String
+trsFunSig =
+  Trs
+    { rules =
+        [ Rule {lhs = Fun "nats" [], rhs = Fun ":" [Fun "0" [], Fun "inc" [Fun "nats" []]]},
+          Rule {lhs = Fun "inc" [Fun ":" [Var "x", Var "y"]], rhs = Fun ":" [Fun "s" [Var "x"], Fun "inc" [Var "y"]]},
+          Rule {lhs = Fun "tl" [Fun ":" [Var "x", Var "y"]], rhs = Var "y"},
+          Rule {lhs = Fun "inc" [Fun "tl" [Fun "nats" []]], rhs = Fun "tl" [Fun "inc" [Fun "nats" []]]}
+        ],
+      signature = FunSig [Sig "0" 0, Sig "nats" 0, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2],
+      metaInfo =
+        emptyMetaInfo
+          { comments = Just ["[7] Example 2"],
+            doi = Just "10.1007/11805618_6",
+            origin = Just "COPS #20",
+            submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"]
+          }
+    }
