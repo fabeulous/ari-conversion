@@ -8,6 +8,7 @@ import Test.Parse.MetaInfo (metaInfoParsingTests)
 import Test.Unparse.UnparseTrs (unparseCopsTrsTests)  
 import Test.Unparse.Problem.Term (unparseTermTests) 
 import Test.Unparse.Problem.Rule (unparseRuleTests) 
+import Test.Unparse.Problem.TrsSig (unparseSigTests)
 
 -- | The testing entry point. Runs each test in turn and logs output to the console.
 main :: IO ()
@@ -31,6 +32,8 @@ main = do
   putStrLn "Testing unparsing terms"
   _ <- runTestTT unparseTermTests
   putStrLn "Testing unparsing rules"
+  _ <- runTestTT unparseSigTests
+  putStrLn "Testing unparsing TRS signatures"
   _ <- runTestTT unparseRuleTests
   putStrLn "Testing converting TRSs to COPS format"
   _ <- runTestTT unparseCopsTrsTests

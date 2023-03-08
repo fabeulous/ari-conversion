@@ -15,38 +15,40 @@ import Test.Unparse.Utils (assertUnparseList)
 unparseRuleTests :: Test
 unparseRuleTests = TestList [unparseCopsRuleTests, unparseAriRuleTests]
 
--- | qqjf
+-- | Test unparsing example 'Rule's to COPS format using 'unparseCopsRule'
 unparseCopsRuleTests :: Test
 unparseCopsRuleTests = assertUnparseList testRules (show . unparseCopsRule)
   where
-    testRules :: [(Rule String String, String)]
-    testRules = [(t, expected) | (t, expected, _) <- exampleRules]
+    testRules :: [(Rule String String, String, String)]
+    testRules = [(r, expectedCops, label ++ " [COPS]") | (label, r, expectedCops, _) <- exampleRules]
 
--- | qqjf
+-- | Test unparsing example 'Rule's to ARI format using 'unparseAriRule'
 unparseAriRuleTests :: Test
 unparseAriRuleTests = assertUnparseList testRules (show . unparseAriRule)
   where
-    testRules :: [(Rule String String, String)]
-    testRules = [(t, expected) | (t, _, expected) <- exampleRules]
+    testRules :: [(Rule String String, String, String)]
+    testRules = [(r, expectedAri, label ++ " [ARI]") | (label, r, _, expectedAri) <- exampleRules]
 
 ------------------------
 --- Test data ----------
 ------------------------
 
 -- | Example 'Rule's for testing.
--- Consists of tuples @(rule, COPS format, ARI format)@
-exampleRules :: [(Rule String String, String, String)]
+-- Consists of tuples @(test label, rule, COPS format, ARI format)@
+exampleRules :: [(String, Rule String String, String, String)]
 exampleRules =
-  [ (Rule {lhs = Var "x", rhs = Var "x"}, "x -> x", "x x"),
-    (Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}, "f(x) -> x", "(f x) x"),
-    (Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Var "x"]}, "f(x,y) -> g(x)", "(f x y) (g x)"),
-    (Rule {lhs = Fun "a" [], rhs = Fun "b" []}, "a -> b", "a b"),
-    (Rule {lhs = Fun "a" [], rhs = Fun "f" [Fun "0" []]}, "a -> f(0)", "a (f 0)"),
-    ( Rule {lhs = Fun "inc" [Fun "tl" [Fun "nats" []]], rhs = Fun "tl" [Fun "inc" [Fun "nats" []]]},
+  [ ("Unparse rule with a variable lhs", Rule {lhs = Var "x", rhs = Var "x"}, "x -> x", "x x"),
+    ("Unparse unary function application", Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}, "f(x) -> x", "(f x) x"),
+    ("Unparse function application on rhs", Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Var "x"]}, "f(x,y) -> g(x)", "(f x y) (g x)"),
+    ("Unparse constant-to-constant rule", Rule {lhs = Fun "a" [], rhs = Fun "b" []}, "a -> b", "a b"),
+    ("Unparse constant to non-constant rule", Rule {lhs = Fun "a" [], rhs = Fun "f" [Fun "0" []]}, "a -> f(0)", "a (f 0)"),
+    ( "Unparse nested unary functions",
+      Rule {lhs = Fun "inc" [Fun "tl" [Fun "nats" []]], rhs = Fun "tl" [Fun "inc" [Fun "nats" []]]},
       "inc(tl(nats)) -> tl(inc(nats))",
       "(inc (tl nats)) (tl (inc nats))"
     ),
-    ( Rule {lhs = Fun "f" [Var "x", Fun "g" [Var "y"], Var "z"], rhs = Fun "f" [Var "x", Var "z", Fun "g" [Var "y"]]},
+    ( "Unparse ternary function",
+      Rule {lhs = Fun "f" [Var "x", Fun "g" [Var "y"], Var "z"], rhs = Fun "f" [Var "x", Var "z", Fun "g" [Var "y"]]},
       "f(x,g(y),z) -> f(x,z,g(y))",
       "(f x (g y) z) (f x z (g y))"
     )

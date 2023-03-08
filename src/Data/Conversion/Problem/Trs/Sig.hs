@@ -13,7 +13,7 @@ module Data.Conversion.Problem.Trs.Sig
 where
 
 import Data.List (nub)
-import Prettyprinter (Pretty, parens, pretty, (<+>))
+import Prettyprinter (Pretty, pretty, (<+>))
 
 -- | Datatype for the signature of a single function symbol.
 --
@@ -45,4 +45,4 @@ checkConsistentSig sig =
 
 -- | Make 'Sig' an instance of @Pretty@
 instance (Pretty f) => Pretty (Sig f) where
-  pretty (Sig fsym arity) = parens $ pretty fsym <+> pretty arity
+  pretty (Sig fsym arity) =  pretty fsym <+> pretty arity

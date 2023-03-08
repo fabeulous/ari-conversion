@@ -3,7 +3,7 @@
 --
 --  This module defines helper functions for testing unparsing functions
 --  with HUnit.
-module Test.Unparse.Utils (assertUnparseList) where
+module Test.Unparse.Utils (assertUnparseList, assertUnparse) where
 
 import Test.HUnit
 
@@ -19,11 +19,16 @@ assertUnparse val unparser expected = assertEqual (show val ++ " not unparsed co
 -- | Assert that each value in a list is correctly unparsed and wraps in a
 -- 'TestList'.
 --
--- Takes a list @xs@ of @(value to unparse, expected result)@ tuples
+-- Takes a list @xs@ of @(value to unparse, expected result, test label)@ tuples
 -- and an unparser function @p@ and asserts that @p@ unparses every value in
 -- @xs@ to the expected string value. Calls 'assertUnparse' on each value in @xs@.
 --
--- >>> assertUnparseList [(Fun "f" [Var "x"], "f(x)"), (Var "x", "x")] unparseTerm
+-- >>> assertUnparseList [(Fun "f" [Var "x"], "f(x)", "Unparse unary function"), (Var "x", "x", "Unparse single variable")] unparseTerm
 -- should pass
-assertUnparseList :: Show a => [(a, String)] -> (a -> String) -> Test
-assertUnparseList xs p = TestList [TestCase (assertUnparse val p expected) | (val, expected) <- xs]
+assertUnparseList :: Show a => [(a, String, String)] -> (a -> String) -> Test
+assertUnparseList xs p =
+  TestList
+    [ TestLabel label (TestCase tc)
+      | (val, expected, label) <- xs,
+        let tc = assertUnparse val p expected
+    ]

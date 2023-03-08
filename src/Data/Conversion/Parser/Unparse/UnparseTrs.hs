@@ -21,12 +21,14 @@ import Prettyprinter (Doc, Pretty, vsep)
 --
 -- Uses functions 'unparseCopsTrsSig', 'unparseCopsRules', and 'unparseCopsMetaInfo' to
 -- unparse each part of the 'Trs'.
-unparseCops :: (Eq v, Pretty f, Pretty v) => Trs f v -> Doc ann
-unparseCops (Trs rs sig meta) =
-  vsep $ unparseCopsTrsSig sig rs : catMaybes [unparseCopsRules rs, unparseCopsMetaInfo meta]
+unparseCops :: (Eq v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
+unparseCops (Trs rs sig meta) = do
+  stringSig <- unparseCopsTrsSig sig rs
+  let trsElements = stringSig : catMaybes [unparseCopsRules rs, unparseCopsMetaInfo meta]
+  return $ vsep trsElements
 
 -- | qqjf
-unparseAri :: (Pretty f, Pretty v) => Trs f v -> Doc ann
+unparseAri :: (Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
 unparseAri = undefined
 
 {-

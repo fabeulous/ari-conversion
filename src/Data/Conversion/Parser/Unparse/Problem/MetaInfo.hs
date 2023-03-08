@@ -26,7 +26,7 @@ unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
     metaBlocks =
       filter
         (not . isEmptyDoc)
-        [ maybe emptyDoc (\d -> pretty "doi:" <> pretty d) ds, -- parseDoi "doi:" ds,
+        [ maybe emptyDoc (\d -> pretty "doi:" <> pretty d) ds,
           maybe emptyDoc (vsep . map pretty) cs,
           maybe emptyDoc (\org -> pretty "origin:" <+> pretty org) orig,
           maybe emptyDoc parseSubmitters sub

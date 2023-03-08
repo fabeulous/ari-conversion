@@ -19,18 +19,20 @@ import Test.Unparse.Utils (assertUnparseList)
 
 -- | Unparser for COPS format
 unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> String
-unparseCopsTrs trs = show $ unparseCops trs
+unparseCopsTrs trs = case unparseCops trs of
+  Right unparsed -> show unparsed
+  Left err -> show err -- qqjf Add error handling
 
 -- | Tests for converting some example 'Trs's to COPS format
 unparseCopsTrsTests :: Test
 unparseCopsTrsTests = assertUnparseList trss unparseCopsTrs
   where
-    trss :: [(Trs String String, String)]
+    trss :: [(Trs String String, String, String)]
     trss =
-      [ (trsVarSig, "(VAR x y)\n(RULES \n  f(x,y) -> g(c)\n)"),
-        (trsNoRules, "(VAR x)"),
-        (trsEmptySig, "(VAR )\n(RULES \n  a -> b\n)\n(COMMENT \nsubmitted by: Person 1)"),
-        (trsFullSig, "(VAR x y)\n(SIG (f 2) (a 0) (b 1))\n(RULES \n  f(x,y) -> y\n)\n(COMMENT \nA TRS (with SIG given))"),
+      [ (trsVarSig, "(VAR x y)\n(RULES \n  f(x,y) -> g(c)\n)", "Unparse simple COPS TRS"),
+        (trsNoRules, "(VAR x)", "Unparse a TRS with no rules"),
+        (trsEmptySig, "(VAR )\n(RULES \n  a -> b\n)\n(COMMENT \nsubmitted by: Person 1)", "Unparse COPS TRS with a comment block"),
+        (trsFullSig, "(VAR x y)\n(SIG (f 2) (a 0) (b 1))\n(RULES \n  f(x,y) -> y\n)\n(COMMENT \nA TRS (with SIG given))", "Unparse COPS TRS in extended format"),
         ( trsFunSig,
           "(VAR x y)\n\
           \(SIG (0 0) (nats 0) (s 1) (tl 1) (inc 1) (: 2))\n\
@@ -44,7 +46,8 @@ unparseCopsTrsTests = assertUnparseList trss unparseCopsTrs
           \doi:10.1007/11805618_6\n\
           \[7] Example 2\n\
           \origin: COPS #20\n\
-          \submitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama)" -- qqjf does not exactly match COPS comment
+          \submitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama)", -- qqjf does not exactly match COPS comment
+          "Unparse COPS TRS with MetaInfo"
         )
       ]
 
