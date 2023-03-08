@@ -31,14 +31,6 @@ unparseCopsSigTests =
       Right unparsedSig -> show unparsedSig
       Left err -> err -- qqjf Add error handling
 
-{-
-TestList
-    [ TestLabel label (TestCase tc)
-      | (val, expected, label) <- xs,
-        let tc = assertUnparse val p expected
-    ]
--}
-
 -- | Tests for converting some example 'TrsSig's to ARI format using 'unparseAriTrsSig'
 unparseAriSigTests :: Test
 unparseAriSigTests =

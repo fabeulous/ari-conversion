@@ -5,6 +5,7 @@
 -- This module defines functions to unparse 'MetaInfo' into the formats expected for the COPS and ARI formats.
 module Data.Conversion.Parser.Unparse.Problem.MetaInfo
   ( unparseCopsMetaInfo,
+    unparseAriMetaInfo,
   )
 where
 
@@ -33,3 +34,7 @@ unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
         ]
     parseSubmitters :: [String] -> Doc ann
     parseSubmitters xs = pretty "submitted by:" <+> hsep (punctuate comma $ map pretty xs)
+
+-- | Unparse 'MetaInfo' into ARI format
+unparseAriMetaInfo :: MetaInfo -> Maybe (Doc ann)
+unparseAriMetaInfo = undefined
