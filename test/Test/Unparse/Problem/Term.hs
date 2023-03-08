@@ -7,31 +7,26 @@
 module Test.Unparse.Problem.Term (unparseTermTests) where
 
 import Data.Conversion.Parser.Unparse.Problem.Term (unparsePrefixTerm, unparseTerm)
-import Data.Conversion.Problem.Common.Term (Term (..))
-import Prettyprinter (Pretty)
+import Data.Conversion.Problem.Common.Term (Term (..)) 
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparseList)
 
+-- | Tests for unparsing 'Term's into COPS format and ARI format
 unparseTermTests :: Test
 unparseTermTests = TestList [unparseAppTermTests, unparsePrefixTermTests]
 
--- | Unparser for applicative term. 'show's the result of 'unparseTerm'.
-appTermUnparser :: (Pretty f, Pretty v) => Term f v -> String
-appTermUnparser t = show $ unparseTerm t
+  
 
--- | Unparser for prefix terms. 'show's the result of '
-prefixTermUnparser :: (Pretty f, Pretty v) => Term f v -> String
-prefixTermUnparser t = show $ unparsePrefixTerm t
-
--- | Tests for converting some example 'Term's to applicative format
+-- | Tests for converting some example 'Term's to applicative notation using 'unparseTerm'
 unparseAppTermTests :: Test
-unparseAppTermTests = assertUnparseList testTerms appTermUnparser
+unparseAppTermTests = assertUnparseList testTerms (show . unparseTerm)
   where
     testTerms :: [(Term String String, String)]
     testTerms = [(t, expected) | (t, expected, _) <- exampleTerms]
 
+-- | Tests for converting some example 'Term's to prefix notation using 'unparsePrefixTerm'
 unparsePrefixTermTests :: Test
-unparsePrefixTermTests = assertUnparseList testTerms prefixTermUnparser
+unparsePrefixTermTests = assertUnparseList testTerms (show . unparsePrefixTerm)
   where
     testTerms :: [(Term String String, String)]
     testTerms = [(t, expected) | (t, _, expected) <- exampleTerms]
@@ -50,5 +45,6 @@ exampleTerms =
     (Fun "fun" [Var "xs", Var "xs"], "fun(xs,xs)", "fun xs xs"),
     (Fun "f" [Var "x", Fun "f2" [Var "y", Fun "0" []]], "f(x,f2(y,0))", "f x (f2 y 0)"),
     (Fun "f" [Fun "+" [Var "1", Fun "+" [Var "1", Var "2"]], Var "3"], "f(+(1,+(1,2)),3)", "f (+ 1 (+ 1 2)) 3"),
-    (Fun "f" [Fun "g" [Fun "h" [Fun "0" []]]], "f(g(h(0)))", "f g h 0")
+    (Fun "f" [Fun "g" [Fun "h" [Fun "0" []]]], "f(g(h(0)))", "f (g (h 0))"),
+    (Fun "f" [Var "x", Fun "g" [Var "y"], Var "z"], "f(x,g(y),z)", "f x (g y) z")
   ]
