@@ -6,6 +6,7 @@
 module Data.Conversion.Parser.Unparse.Utils
   ( isEmptyDoc,
     prettyBlock,
+    filterEmptyDocs,
   )
 where
 
@@ -21,3 +22,7 @@ isEmptyDoc = null . show
 -- Used as a helper for unparsing
 prettyBlock :: String -> Doc ann -> Doc ann
 prettyBlock name doc = parens $ pretty name <+> doc
+
+-- | Helper function to remove empty docs from a list
+filterEmptyDocs :: [Doc ann] -> [Doc ann]
+filterEmptyDocs = filter (not . isEmptyDoc)

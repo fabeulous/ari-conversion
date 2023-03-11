@@ -5,20 +5,22 @@
 -- This module defines functions to unparse terms into prefix and applicative formats.
 module Data.Conversion.Parser.Unparse.Problem.Term
   ( unparseTerm,
+    unparsePrefixTerm,
   )
 where
 
 import Data.Conversion.Problem.Common.Term (Term (..))
-import Prettyprinter (Doc, Pretty, comma, emptyDoc, encloseSep, lparen, pretty, rparen)
+import Prettyprinter (Doc, Pretty, comma, emptyDoc, encloseSep, hsep, lparen, parens, pretty, rparen, (<+>))
 
--- | Unparse 'Term's using applicative notation (see examples below).
--- See 'unparsePrefixTerm' to pretty print term in prefix notation.
+-- | Unparse 'Term's using applicative notation:
+-- see examples below and tests for more examples.
+-- Use 'unparsePrefixTerm' to pretty print term in prefix notation.
 --
 -- >>> unparseTerm [Var "x"]
 -- x
 --
--- >>> unparseTerm (Fun "f" [Var "x", Var "y"])
--- f(x,y)
+-- >>> unparseTerm (Fun "f" [Var "x", Fun "g" [Var "y", Var "z"]])
+-- f(x,g(y,z))
 --
 -- >>> unparseTerm (Fun "c" [])
 -- c
@@ -28,4 +30,31 @@ unparseTerm (Fun f ts) = pretty f <> args
   where
     args
       | null ts = emptyDoc -- Parse constants without parentheses
-      | otherwise = encloseSep lparen rparen comma [unparseTerm ti | ti <- ts]
+      | otherwise = encloseSep lparen rparen comma [unparseTerm t | t <- ts]
+
+-- | Unparse 'Term's into prefix applicative notation:
+-- see examples below and tests for more examples.
+-- Use 'unparseTerm' to pretty print term in applicative notation.
+--
+-- >>> unparsePrefixTerm [Var "x"]
+-- x
+--
+-- >>> unparsePrefixTerm (Fun "f" [Var "x", Fun "g" [Var "y", Var "z"]])
+-- f x (g y z)
+--
+-- >>> unparsePrefixTerm (Fun "c" [])
+-- c
+unparsePrefixTerm :: (Pretty f, Pretty v) => Term f v -> Doc ann
+unparsePrefixTerm (Var x) = pretty x
+unparsePrefixTerm (Fun fsym []) = pretty fsym -- Constant
+unparsePrefixTerm (Fun fsym args) = pretty fsym <+> unparseTerms args
+  where
+    -- Unparse a list of terms, adding parentheses to nested terms
+    unparseTerms :: (Pretty f, Pretty v) => [Term f v] -> Doc ann
+    unparseTerms ts = hsep $ map unparseArgs ts
+    -- Unparse a nested term, adding parentheses and spaces where needed.
+    unparseArgs :: (Pretty f, Pretty v) => Term f v -> Doc ann
+    unparseArgs (Var x) = pretty x
+    unparseArgs (Fun f ts)
+      | null ts = pretty f -- Constant (no spaces or parentheses)
+      | otherwise = parens (pretty f <+> unparseTerms ts)

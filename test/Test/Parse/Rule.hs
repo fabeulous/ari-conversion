@@ -47,7 +47,7 @@ parseCopsRuleTests = assertParseList validRules copsRuleParser
 
 -- | Example test cases of malformatted rules for which parsing should fail
 -- when parsing the entire input according to COPS format.
--- Non-exhaustive, but intended to be used as a sanity check.
+-- Non-exhaustive, but intended to be used to check that certain clearly wrong formats are not accepted.
 badCopsRulesTests :: Test
 badCopsRulesTests = assertFailParseList badRules copsRuleParser
   where
@@ -63,10 +63,12 @@ badCopsRulesTests = assertFailParseList badRules copsRuleParser
         "f(x)->g(x)h(x)",
         "f(x)<-g(x)",
         "(f(x)->x)",
+        "(f x) (x)", -- ARI format
         "",
         " ",
         "->",
-        "\n"
+        "\n",
+        "somestring"
       ]
 
 -- | Tests for the 'parseCopsRules' function (used in COPS TRS parsing
