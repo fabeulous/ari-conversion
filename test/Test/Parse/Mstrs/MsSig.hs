@@ -51,11 +51,11 @@ parseAriMsSigTests = assertParseList validSigs parseAriMsSig
   where
     validSigs :: [(String, MsSig String String)]
     validSigs =
-      [ ("(fun s :sort (Nat Nat))", MsSig "s" (["Nat"], "Nat")),
-        ("(fun 0 :sort (Nat))", MsSig "0" ([], "Nat")),
-        (" ( fun  node   :sort   (Nat  Tree Tree Tree) ) ", MsSig "node" (["Nat", "Tree", "Tree"], "Tree")),
-        ("(fun leaf :sort (Nat Tree))", MsSig "leaf" (["Nat"], "Tree")),
-        ("(fun sum :sort (Tree Nat))", MsSig "sum" (["Tree"], "Nat"))
+      [ ("s :sort (Nat Nat)", MsSig "s" (["Nat"], "Nat")),
+        ("0 :sort (Nat)", MsSig "0" ([], "Nat")),
+        ("  node   :sort   (Nat  Tree Tree Tree) ", MsSig "node" (["Nat", "Tree", "Tree"], "Tree")),
+        ("leaf :sort (Nat Tree)", MsSig "leaf" (["Nat"], "Tree")),
+        ("sum :sort (Tree Nat)", MsSig "sum" (["Tree"], "Nat"))
       ]
 
 -- | Example strings for which 'parseAriMsSig' should fail due to invalid signature formats
@@ -64,14 +64,13 @@ badAriMsSigTests = assertFailParseList badSigs parseAriMsSig
   where
     badSigs :: [String]
     badSigs =
-      [ "( s :sort (Nat Nat)))", -- No fun
-        "(fun s (Nat Nat)))", -- No :sort
-        "(fun s :sort ())", -- Empty sorts
-        "(fun 0 :sort Nat)", -- No parentheses around Nat
-        "(fun0 :sort Nat)", -- No space after fun
-        "(fun s :sort (Nat Nat ))", -- Space after final sort
-        "(fun s :sort(Nat Nat))", -- No space after :sort
-        "(fun f() :sort (Nat Nat))", -- ( ) not allowed in function name
+      [ "s (Nat Nat)", -- No :sort
+        "s :sort (Nat Nat))", -- Ectra ()
+        "s :sort ()", -- Empty sorts
+        "0 :sort Nat)", -- No parentheses around Nat
+        " s :sort (Nat Nat )", -- Space after final sort
+        "s :sort(Nat Nat))", -- No space after :sort
+        "f() :sort (Nat Nat)", -- ( ) not allowed in function name
         "f List -> List", -- COPS format
         ""
       ]

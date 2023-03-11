@@ -2,11 +2,11 @@
 -- Module      : Test.Parse.Trs.Ari
 -- Description : Parsing tests for ARI TRSs
 --
--- This module defines test cases for the function 'parseAri'.
+-- This module defines test cases for the function 'parseAriTrs'.
 -- It is non-exhaustive, but intended to highlight any obvious errors.
 module Test.Parse.Trs.Ari (parseAriTests) where
 
-import Data.Conversion.Parser.Parse.ParseTrs (parseAri)
+import Data.Conversion.Parser.Parse.ParseTrs (parseAriTrs)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
@@ -16,13 +16,13 @@ import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
--- | Test cases for 'parseAri' including cases which should be parseable and cases which should fail
+-- | Test cases for 'parseAriTrs' including cases which should be parseable and cases which should fail
 parseAriTests :: Test
 parseAriTests = TestList [parseAriTrsTests, badAriTrsTests]
 
--- | Test cases for 'parseAri' which should succeed and match the expected output
+-- | Test cases for 'parseAriTrs' which should succeed and match the expected output
 parseAriTrsTests :: Test
-parseAriTrsTests = assertParseList wellFormattedTrss parseAri
+parseAriTrsTests = assertParseList wellFormattedTrss parseAriTrs
   where
     wellFormattedTrss :: [(String, Trs String String)]
     wellFormattedTrss =
@@ -80,10 +80,10 @@ parseAriTrsTests = assertParseList wellFormattedTrss parseAri
         )
       ]
 
--- | Malformatted examples for which it is asserted that 'parseAri' should not succeed.
+-- | Malformatted examples for which it is asserted that 'parseAriTrs' should not succeed.
 -- This list is non-exhaustive, but checks for some common problems.
 badAriTrsTests :: Test
-badAriTrsTests = assertFailParseList badTrss parseAri
+badAriTrsTests = assertFailParseList badTrss parseAriTrs
   where
     badTrss :: [String]
     badTrss =

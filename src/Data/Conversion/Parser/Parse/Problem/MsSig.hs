@@ -49,25 +49,21 @@ parseCopsMsSig = stripSpaces $ do
   return $ MsSig fsym (inputSorts, outputSort)
 
 -- | Parser to extract the signature from a @fun@ block of the ARI [MSTRS format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
--- Expects a of blocks like @(fun fsym :sort (t1 ... tn t0)))@ where the @t1@,...,@tn@ are the input sorts of
+-- Expects a of blocks like @fsym :sort (t1 ... tn t0)@ where the @t1@,...,@tn@ are the input sorts of
 -- @fsym@ and the final sort @t0@ is the return type of the function.
 --
 -- Leading and trailing spaces are consumed.
 --
--- >>> parse parseAriMsSig "" (pack "(fun + :sort (Nat Nat Nat)))")
+-- >>> parse parseAriMsSig "" (pack "+ :sort (Nat Nat Nat))")
 -- Right [MsSig "+" (["Nat","Nat"] "Nat")]
 --
--- -- >>> parse parseAriMsSig "" (pack "(fun 0 :sort (Nat))")
+-- -- >>> parse parseAriMsSig "" (pack "0 :sort (Nat)")
 -- Right [MsSig "0" ([] "Nat")]
 parseAriMsSig :: Parser (MsSig String String)
 parseAriMsSig =
-  stripSpaces $
-    parens
-      ( do
-          _ <- lexeme $ string (pack "fun ")
-          fsym <- lexeme parseFunSymbol <?> "MsSig function symbol"
-          _ <- lexeme $ string (pack ":sort ")
-          args <- lexeme $ parens (parseFunSymbol `sepBy` some spaceChar)
-          guard (not $ null args)
-          return $ MsSig fsym (take (length args - 1) args, last args)
-      )
+  stripSpaces $ do
+    fsym <- lexeme parseFunSymbol <?> "MsSig function symbol"
+    _ <- lexeme $ string (pack ":sort ")
+    args <- lexeme $ parens (parseFunSymbol `sepBy` some spaceChar)
+    guard (not $ null args)
+    return $ MsSig fsym (take (length args - 1) args, last args)
