@@ -33,7 +33,21 @@ unparseAriMetaTests = assertUnparseList testMeta (maybe "" show . unparseAriMeta
 ------------------------
 
 -- | Example TRS signatures for testing along with expected output results.
--- Consists of tuples @(test label, sig, rules corresponding to sig, COPS format, ARI format)@
+-- Consists of tuples @(test label, sig, rules corresponding to @sig, COPS format, ARI format)@
 testMetas :: [(String, MetaInfo, String, String)]
 testMetas =
-  [("Unparse empty MetaInfo", emptyMetaInfo, "", "")]
+  [ ("Unparse empty MetaInfo", emptyMetaInfo, "", ""),
+    ("Unparse a single comment", emptyMetaInfo {comments = Just ["One comment"]}, "(COMMENT \nOne comment)", "(meta-info (comment \"One comment\"))"),
+    ("Unparse 2 comments", emptyMetaInfo {comments = Just ["C1", "C2"]}, "(COMMENT \nC1\nC2)", "(meta-info (comment \"C1\"))\n(meta-info (comment \"C2\"))"),
+    ("Unparse doi", emptyMetaInfo {doi = Just "10.1007/11805618_6"}, "(COMMENT \ndoi:10.1007/11805618_6)", "(meta-info (doi \"10.1007/11805618_6\"))"),
+    ( "Unparse comment and origin",
+      emptyMetaInfo {comments = Just ["comment (with parentheses)"], origin = Just "COPS #20"},
+      "(COMMENT \ncomment (with parentheses)\norigin: COPS #20)",
+      "(meta-info (origin \"COPS #20\"))\n(meta-info (comment \"comment (with parentheses)\"))"
+    ),
+    ( "Unparse all MetaInfo fields",
+      emptyMetaInfo {comments = Just ["[7] Example 2"], doi = Just "10.1007/11805618_6", origin = Just "COPS #20", submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"]},
+      "(COMMENT \ndoi:10.1007/11805618_6\n[7] Example 2\norigin: COPS #20\nsubmitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama)",
+      "(meta-info (origin \"COPS #20\"))\n(meta-info (doi \"10.1007/11805618_6\"))\n(meta-info (comment \"[7] Example 2\"))\n(meta-info (submitted \"Takahito Aoto\" \"Junichi Yoshida\" \"Yoshihito Toyama\"))"
+    )
+  ]
