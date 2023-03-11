@@ -2,7 +2,8 @@
 -- Module      : Data.Conversion.Problem.Trs.TrsSig
 -- Description : General TRS signature type definition
 --
--- This module contains the 'TrsSig' type definition
+-- This module contains the 'TrsSig' type definition. Signatures may be specified in different ways in different
+-- formats (i.e. only variables, only function symbols, or both) so 'TrsSig' supports all three.
 module Data.Conversion.Problem.Trs.TrsSig
   ( -- * Untyped Signature datatype
     TrsSig (..),

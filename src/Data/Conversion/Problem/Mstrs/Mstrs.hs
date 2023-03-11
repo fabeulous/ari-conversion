@@ -1,13 +1,25 @@
 -- |
 -- Module      : Data.Conversion.Problem.Mstrs.Mstrs
--- Description : qqjf
+-- Description : MSTRS type definition
 --
--- qqjf
+-- This module contains the 'Mstrs' type definition for many-sorted term rewriting systems.
 module Data.Conversion.Problem.Mstrs.Mstrs
   ( Mstrs (..),
   )
 where
 
--- import Data.Conversion.Problem.Mstrs.MsSig (MsSig)
+import Data.Conversion.Problem.Common.MetaInfo (MetaInfo)
+import Data.Conversion.Problem.Common.Rule (Rule)
+import Data.Conversion.Problem.Mstrs.MsSig (MsSig) 
 
-data Mstrs = Mstrs -- qqjf to do
+-- | Datatype for a many-sorted term rewriting system (MSTRS).
+-- Function symbols have type @f@, variables have type @v@, and term sorts have type @s@ in the system.
+data Mstrs f v s = Trs
+  { -- | A list of the MSTRS rewrite rules
+    rules :: [Rule f v],
+    -- | The signature (function symbols and sorts) for the MSTRS
+    signature :: MsSig f s,
+    -- | Additional information about the MSTRS (e.g. the origin and general comments). See 'MetaInfo' definition for more details.
+    metaInfo :: MetaInfo
+  }
+  deriving (Show, Eq)

@@ -11,5 +11,5 @@ where
 import Data.Conversion.Parser.Parse.Utils (Parser)
 import Data.Conversion.Problem.Mstrs.Mstrs (Mstrs)
 
-parseCops :: Parser Mstrs
+parseCops :: Parser (Mstrs String String String)
 parseCops = undefined -- to do

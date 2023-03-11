@@ -1,6 +1,6 @@
 -- |
 -- Module      : Data.Conversion.Problem.Trs.Trs
--- Description : Trs type definition
+-- Description : TRS type definition
 --
 -- This module contains the 'Trs' type definition for first-order term rewriting systems.
 module Data.Conversion.Problem.Trs.Trs
