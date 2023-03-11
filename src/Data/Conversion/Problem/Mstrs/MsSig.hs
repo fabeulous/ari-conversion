@@ -5,9 +5,13 @@
 -- This module contains the 'MsSig' type definition for specifying the signature of a many-sorted
 -- term rewriting system.
 module Data.Conversion.Problem.Mstrs.MsSig
-  ( MsSig (..),
+  ( -- * Many-sorted signature datatype
+    MsSig (..),
   )
 where
+
+import Data.Conversion.Problem.Trs.Sig (Sig (..))
+import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 
 -- | Datatype for the signature of a single function symbol in a many-sorted TRS ('Mstrs').
 --

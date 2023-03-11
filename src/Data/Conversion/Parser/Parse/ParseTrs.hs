@@ -6,14 +6,14 @@
 --
 -- This module defines functions to parse a first-order TRS in COPS and ARI format.
 module Data.Conversion.Parser.Parse.ParseTrs
-  ( parseCops,
+  ( parseCopsTrs,
     parseAri,
   )
 where
 
 import Control.Monad (guard)
 import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
-import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsRules)
+import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsTrsRules)
 import Data.Conversion.Parser.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
 import Data.Conversion.Parser.Parse.Problem.Term (parseVariable)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
@@ -33,14 +33,14 @@ import Text.Megaparsec.Char (alphaNumChar)
 -- see the COCO website for details on the grammar and allowed characters and the tests for more examples.
 --
 -- Leading and trailing spaces are removed.
-parseCops :: Parser (Trs String String)
-parseCops = stripSpaces $ do
+parseCopsTrs :: Parser (Trs String String)
+parseCopsTrs = stripSpaces $ do
   vs <- try (parseBlock "VAR" (many $ lexeme parseVariable)) <|> return []
   funSig <- optional (try $ parseBlock "SIG" parseCopsSig)
   let trsSig = case funSig of
         Nothing -> Vars vs -- If no SIG block is given
         Just inputFunSig -> FullSig vs inputFunSig
-  rs <- parseBlock "RULES" (parseCopsRules trsSig)
+  rs <- parseBlock "RULES" (parseCopsTrsRules trsSig)
   maybeMetaInfo <- optional (parseBlock "COMMENT" parseCopsMetaInfo)
   return $
     Trs

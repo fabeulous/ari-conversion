@@ -1,5 +1,6 @@
 import Test.HUnit
 import Test.Parse.MetaInfo (metaInfoParsingTests)
+import Test.Parse.Mstrs.Cops (parseCopsMstrsTests)
 import Test.Parse.Mstrs.MsSig (msSigTests)
 import Test.Parse.Rule (ariRuleTests, copsRuleTests)
 import Test.Parse.Term (prefixTermTests, termTests)
@@ -29,6 +30,8 @@ main = do
   putStrLn "Testing parsing TRSs"
   _ <- runTestTT parseCopsTests
   _ <- runTestTT parseAriTests
+  putStrLn "Testing parsing MSTRSs"
+  _ <- runTestTT parseCopsMstrsTests
   putStrLn "Testing unparsing terms"
   _ <- runTestTT unparseTermTests
   putStrLn "Testing unparsing rules"

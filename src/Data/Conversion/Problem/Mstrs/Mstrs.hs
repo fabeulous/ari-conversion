@@ -14,11 +14,11 @@ import Data.Conversion.Problem.Mstrs.MsSig (MsSig)
 
 -- | Datatype for a many-sorted term rewriting system (MSTRS).
 -- Function symbols have type @f@, variables have type @v@, and term sorts have type @s@ in the system.
-data Mstrs f v s = Trs
+data Mstrs f v s = Mstrs
   { -- | A list of the MSTRS rewrite rules
     rules :: [Rule f v],
     -- | The signature (function symbols and sorts) for the MSTRS
-    signature :: MsSig f s,
+    signature :: [MsSig f s],
     -- | Additional information about the MSTRS (e.g. the origin and general comments). See 'MetaInfo' definition for more details.
     metaInfo :: MetaInfo
   }

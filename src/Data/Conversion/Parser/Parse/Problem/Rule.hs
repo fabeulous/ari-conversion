@@ -4,17 +4,19 @@
 -- Module      : Data.Conversion.Parser.Parse.Problem.Rule
 -- Description : Rule parsers
 --
--- This module defines parsers 'parseCopsRule' to parse a single rule and 'parseCopsRules' to parse a block of rules.
+-- This module defines parsers to parse a single rule and a block of rules.
 module Data.Conversion.Parser.Parse.Problem.Rule
   ( parseCopsRule,
-    parseCopsRules,
+    parseCopsTrsRules,
+    parseCopsMstrsRules,
     parseAriRule,
   )
 where
 
-import Data.Conversion.Parser.Parse.Problem.Term (parsePrefixTerm, parseTerm)
+import Data.Conversion.Parser.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme)
 import Data.Conversion.Problem.Common.Rule (Rule (..), inferRulesSignature)
+import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
 import Data.Conversion.Problem.Trs.Sig (Sig)
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Text.Megaparsec (many, some, (<?>))
@@ -58,9 +60,9 @@ parseAriRule funSig = do
 --
 -- * If given @Vars vs@ as a signatue, then parse rules with this variable set
 -- * If given @FullSig vs fs@ as a signature, then infers a function signature from the rules using @vs@ and then checks that this inferred function signature is a subset of @fs@.
--- * If given @FunSig [qqjf]
-parseCopsRules :: TrsSig String String -> Parser [Rule String String]
-parseCopsRules trsSig = case trsSig of
+-- * @FunSig is not supported for the TRS format
+parseCopsTrsRules :: TrsSig String String -> Parser [Rule String String]
+parseCopsTrsRules trsSig = case trsSig of
   Vars vs -> do
     rules <- many (parseCopsRule vs)
     case inferRulesSignature rules of
@@ -71,7 +73,7 @@ parseCopsRules trsSig = case trsSig of
     case inferRulesSignature rules of
       Left err -> fail err
       Right inferredSig -> checkSignatureSubset inferredSig fs rules
-  FunSig _ -> fail "The COPS formal does not allow only specifying a function signature"
+  FunSig _ -> fail "The COPS format does not allow only specifying a function signature"
   where
     -- 'subList' returns whether every element of the first list is contained in the second list
     subList :: Eq a => [a] -> [a] -> Bool
@@ -82,3 +84,21 @@ parseCopsRules trsSig = case trsSig of
       if inferredSig `subList` funSig
         then return rs
         else fail $ "Inferred signature " ++ show inferredSig ++ " not contained in input signature " ++ show funSig
+
+-- | Parser to extract the rules from a @RULES@ block of the [COPS MSTRS](http://project-coco.uibk.ac.at/problems/mstrs.php) format.
+-- Takes an 'MsSig' parses 0 or more rules until no more rules can be parsed.
+--
+-- Does not necessarily consume all input and does not type check function applications.
+--
+-- Can not reuse the same logic as for (unsorted) TRSs as in that case variables are specified,
+-- whereas for MSTRSs function symbols are specified.
+parseCopsMstrsRules :: [MsSig String String] -> Parser [Rule String String]
+parseCopsMstrsRules msSigs = do many parseMstrsCopsRule
+  where
+    fsyms = map (\(MsSig fsym _) -> fsym) msSigs
+    parseMstrsCopsRule :: Parser (Rule String String)
+    parseMstrsCopsRule = do
+      l <- parseTermF fsyms <?> "left-hand side"
+      _ <- lexeme (string "->")
+      r <- parseTermF fsyms <?> "right-hand side"
+      return $ Rule {lhs = l, rhs = r}

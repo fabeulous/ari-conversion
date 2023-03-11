@@ -9,6 +9,7 @@ module Data.Conversion.Parser.Parse.Problem.Term
   ( parseTerm,
     parseVariable,
     parseFunSymbol,
+    parseTermF,
     parsePrefixTerm,
   )
 where
@@ -37,23 +38,29 @@ import Text.Megaparsec.Char (char, letterChar, spaceChar)
 -- | Type synonym for a list of variables
 type Vars = [String]
 
+-- | Type synonym for a list of function symbols
+type FSyms = [String]
+
 -- | Parses a term given a list of variables by calling 'parseVariable' and 'parseFunApplication'.
 -- Expects a term in applicative notation (e.g. @f(x,y)@) rather than in prefix notation.
 -- Tries to parse the expression as a variable first, then as a function application, and finally as a constant.
 --
 -- This order of priority is important as 'parseTerm' does not consume the entire input.
 -- For example, @f(x)@ should be parsed as @Fun "f" [Var "x"]@, rather than as a constant @f@ with trailing input @(x)@.
+--
+-- See the tests for examples of expected input.
+-- If only function symbols are known then use 'parseTermF'.
 parseTerm :: Vars -> Parser (Term String String)
 parseTerm vs =
   stripSpaces $
     choice
       [ outerParens (parseTerm vs),
-        try parseVar <|> try (parseFunApplication vs) <|> try parseConstant
+        try parseVarInVs <|> try (parseFunApplication vs) <|> try parseConstant
       ]
   where
     -- Parse a single variable and assert that it is a member of the variable set @vs@
-    parseVar :: Parser (Term f String)
-    parseVar = do
+    parseVarInVs :: Parser (Term f String)
+    parseVarInVs = do
       varStr <- parseVariable
       guard (varStr `elem` vs)
       return (Var varStr)
@@ -62,6 +69,29 @@ parseTerm vs =
     parseConstant = do
       input <- lexeme parseFunSymbol
       return (Fun input [])
+
+-- | Parses a term given a list of function symbols by calling 'parseFunApplicationF' and 'parseVar'.
+--
+-- Expects a term in applicative notation (e.g. @f(x,y)@) rather than in prefix notation.
+-- Tries to parse the expression as a a function application first, then as a constant, and finally as a variable.
+-- This order of priority is important as 'parseTermF' does not consume the entire input.
+--
+-- See the tests for examples of expected input.
+-- If only variables are known then use 'parseTerm'.
+parseTermF :: FSyms -> Parser (Term String String)
+parseTermF fs =
+  stripSpaces $
+    choice
+      [ outerParens (parseTermF fs),
+        try (parseFunApplicationF fs) <|> try parseConstantF <|> try parseVar
+      ]
+  where
+    -- Parse a constant (must be called after trying to parse input as a function application)
+    parseConstantF :: Parser (Term String String)
+    parseConstantF = do
+      fsym <- lexeme parseFunSymbol
+      guard (fsym `elem` fs)
+      return (Fun fsym [])
 
 -- | Parses a single variable name and returns a string.
 -- Currently requires the first character to be a letter.
@@ -73,13 +103,43 @@ parseVariable = (:) <$> letterChar <*> many allowedFunVarChars <?> "variable"
 
 -- | Parses a function application and returns a 'Term' by assuming that everything
 -- until the first @'('@ is a function symbol.
+--
 -- For example, @"f(x)"@ should be parsed as @Fun "f" [Var "x"]@ and
 --  @"f()"@ should be parsed as a constant @Fun "f" []@.
+--
+-- If only function symbols are known then use 'parseFunApplicationF'
 parseFunApplication :: Vars -> Parser (Term String String)
 parseFunApplication vs = do
   fsym <- lexeme parseFunSymbol
-  args <- symbol "(" *> parseFunArgs vs <* symbol ")"
+  args <- symbol "(" *> parseFunArgs <* symbol ")"
   return (Fun fsym args)
+  where
+    -- 'parseFunArgs' parses a comma-separated list of function arguments and returns a list of the arguments.
+    -- Also accepts an empty string or just whitespace, corresponding to an empty arguments list.
+    -- e.g. if @"x"@ is in the variable list and @"a"@ is not then "a, x" should be parsed as [Fun "a" [], Var "x"]
+    parseFunArgs :: Parser [Term String String]
+    parseFunArgs = parseTerm vs `sepBy` char ',' <?> "function arguments"
+
+-- | Parses a function application and returns a 'Term' by assuming that everything
+-- until the first @'('@ is a function symbol. Asserts that every function symbol is in @fs@
+-- and assumes that everything else is a variable.
+--
+-- For example, if @"f"@ is in @fs@ then @"f(x)"@ should be parsed as @Fun "f" [Var "x"]@ and
+--  @"f()"@ should be parsed as a constant @Fun "f" []@.
+--
+-- If only variables are known then use 'parseFunApplication'
+parseFunApplicationF :: FSyms -> Parser (Term String String)
+parseFunApplicationF fs = do
+  fsym <- lexeme parseFunSymbol
+  guard (fsym `elem` fs)
+  args <- symbol "(" *> parseFunArgsF <* symbol ")"
+  return (Fun fsym args)
+  where
+    -- 'parseFunArgsF' parses a comma-separated list of function arguments and returns a list of the arguments.
+    -- Also accepts an empty string or just whitespace, corresponding to an empty arguments list.
+    -- e.g. if @"a"@ is in the function symbol list and @"x"@ is not then "a, x" should be parsed as [Fun "a" [], Var "x"]
+    parseFunArgsF :: Parser [Term String String]
+    parseFunArgsF = parseTermF fs `sepBy` char ',' <?> "function arguments"
 
 -- | Parses a function symbol either until the first '(' or as long as characters in 'allowedFunVarChars' are present.
 -- Does not consume the final @'('@ and does not consume all input.
@@ -93,13 +153,6 @@ parseFunSymbol =
   where
     funSymChars :: Parser String
     funSymChars = some allowedFunVarChars
-
--- | Parses a comma-separated list of function arguments and returns a list of the arguments.
--- Also accepts an empty string or just whitespace, corresponding to an empty arguments list.
--- e.g. if @"x"@ is in the variable list and @"a"@ is not then "a, x" should be parsed as
--- [Fun "a" [], Var "x"]
-parseFunArgs :: Vars -> Parser [Term String String]
-parseFunArgs vs = parseTerm vs `sepBy` char ',' <?> "function arguments"
 
 -- Strip outer parentheses. Consumes the entire input.
 outerParens :: Parser a -> Parser a
@@ -128,10 +181,6 @@ parsePrefixTerm funSig =
       [ between (char '(') (char ')') (lexeme $ parsePrefixTerm funSig), -- Strip parentheses
         try (parsePrefixFunApplication funSig) <|> try parseVar
       ]
-  where
-    -- Parse a single variable and assert that it is a member of the variable set @vs@
-    parseVar :: Parser (Term f String)
-    parseVar = Var <$> parseVariable <?> "variable"
 
 -- | Parses a function application in prefix notation and returns a 'Term' by assuming that
 -- everything not contained in @funSig@ is a variable.
@@ -155,3 +204,7 @@ parsePrefixFunApplication funSig = do
       case find (\(Sig f _) -> f == fsym) funSig of
         Just sig -> return (fsym, sig)
         Nothing -> fail $ "Function symbol " ++ fsym ++ " not in signature " ++ show funSig
+
+-- Parse a single variable using 'parseVariable'
+parseVar :: Parser (Term f String)
+parseVar = Var <$> parseVariable <?> "variable"
