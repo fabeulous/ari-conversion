@@ -19,6 +19,8 @@ data Mstrs f v s = Mstrs
     rules :: [Rule f v],
     -- | The signature (function symbols and sorts) for the MSTRS
     signature :: [MsSig f s],
+    -- | A list of sorts (if given). Will be @Nothing@ for COPS format and @Just [sorts]@ for ARI format.
+    sorts :: Maybe [s],
     -- | Additional information about the MSTRS (e.g. the origin and general comments). See 'MetaInfo' definition for more details.
     metaInfo :: MetaInfo
   }

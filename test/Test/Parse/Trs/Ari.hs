@@ -88,6 +88,7 @@ badAriTrsTests = assertFailParseList badTrss parseAriTrs
     badTrss :: [String]
     badTrss =
       [ "(fun f 1) \n (rule (f x) x)", -- No format given
+        "(format MSTRS)(fun f 1)(rule (f x) (x))", -- Wrong format
         "(format TRS)\n(fun f 1)\n (rule (f x) x)\n(fun g 1) ", -- fun block after rule block
         "(rule (f x) x)\n(format TRS)\n(fun f 1)", -- rule before format
         "(format TRS)\n(fun f 1)\n(rule (g x) x)", -- function symbol g not in signature

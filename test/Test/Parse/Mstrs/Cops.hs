@@ -25,12 +25,22 @@ goodCopsMstrsTests = assertParseList wellFormattedTrss parseCopsMstrs
   where
     wellFormattedTrss :: [(String, Mstrs String String String)]
     wellFormattedTrss =
-      [ ("(SIG )(RULES )", Mstrs {rules = [], signature = [], metaInfo = emptyMetaInfo}),
+      [ ("(SIG )(RULES )", Mstrs {rules = [], signature = [], sorts = Nothing, metaInfo = emptyMetaInfo}),
         ( "(SIG (0 -> Nat))\n(RULES )\n(COMMENT An MSTRS with a comment)",
-          Mstrs {rules = [], signature = [MsSig "0" ([], "Nat")], metaInfo = emptyMetaInfo {comments = Just ["An MSTRS with a comment"]}}
+          Mstrs
+            { rules = [],
+              signature = [MsSig "0" ([], "Nat")],
+              sorts = Nothing,
+              metaInfo = emptyMetaInfo {comments = Just ["An MSTRS with a comment"]}
+            }
         ),
         ( "(SIG )(RULES a ->b)(COMMENT)",
-          Mstrs {rules = [Rule {lhs = Var "a", rhs = Var "b"}], signature = [], metaInfo = emptyMetaInfo {comments = Just [""]}}
+          Mstrs
+            { rules = [Rule {lhs = Var "a", rhs = Var "b"}],
+              signature = [],
+              sorts = Nothing,
+              metaInfo = emptyMetaInfo {comments = Just [""]}
+            }
         ),
         ( "(SIG \n\
           \(app   List List -> List)\n\
@@ -55,12 +65,12 @@ goodCopsMstrsTests = assertParseList wellFormattedTrss parseCopsMstrs
                   MsSig "s" (["Nat"], "Nat"),
                   MsSig "0" ([], "Nat")
                 ],
+              sorts = Nothing,
               metaInfo = emptyMetaInfo
             }
         )
       ]
 
-      
 -- | Malformatted examples for which it is asserted that 'parseCopsMstrs' should not succeed.
 -- This list is non-exhaustive, but checks for some common problems.
 badCopsMstrsTests :: Test

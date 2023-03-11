@@ -21,18 +21,24 @@ parseAriMstrsTests = TestList [goodAriMstrsTests, badAriMstrsTests]
 
 -- | Test cases for 'parseAriMstrs' which should succeed and match the expected output
 goodAriMstrsTests :: Test
-goodAriMstrsTests = assertParseList wellFormattedTrss parseAriMstrs
+goodAriMstrsTests = TestList [TestLabel "Parse ARI MSTRSs" $ assertParseList wellFormattedTrss parseAriMstrs]
   where
     wellFormattedTrss :: [(String, Mstrs String String String)]
     wellFormattedTrss =
-      [ ("(format MSTRS)", Mstrs {rules = [], signature = [], metaInfo = emptyMetaInfo}),
+      [ ("(format MSTRS)", Mstrs {rules = [], signature = [], sorts = Just [], metaInfo = emptyMetaInfo}),
         ( "(meta-info (comment \"An MSTRS (with no rules)\"))(format MSTRS)\n(sort Nat)",
-          Mstrs {rules = [], signature = [], metaInfo = emptyMetaInfo {comments = Just ["An MSTRS (with no rules)"]}}
+          Mstrs
+            { rules = [],
+              signature = [],
+              sorts = Just ["Nat"],
+              metaInfo = emptyMetaInfo {comments = Just ["An MSTRS (with no rules)"]}
+            }
         ),
         ( "(format MSTRS)(sort Nat)(fun + :sort (Nat Nat Nat))(fun a :sort (Nat))(fun c :sort (Nat))(fun b :sort (Nat))(rule (+ a b) c)",
           Mstrs
             { rules = [Rule {lhs = Fun "+" [Fun "a" [], Fun "b" []], rhs = Fun "c" []}],
               signature = [MsSig "+" (["Nat", "Nat"], "Nat"), MsSig "a" ([], "Nat"), MsSig "c" ([], "Nat"), MsSig "b" ([], "Nat")],
+              sorts = Just ["Nat"],
               metaInfo = emptyMetaInfo
             }
         ),
@@ -71,6 +77,7 @@ goodAriMstrsTests = assertParseList wellFormattedTrss parseAriMstrs
                   MsSig "leaf" (["Nat"], "Tree"),
                   MsSig "sum" (["Tree"], "Nat")
                 ],
+              sorts = Just ["Nat", "Tree"],
               metaInfo =
                 emptyMetaInfo
                   { comments = Just ["experiments for [125]"],
@@ -85,14 +92,11 @@ goodAriMstrsTests = assertParseList wellFormattedTrss parseAriMstrs
 -- | Malformatted examples for which it is asserted that 'parseAriMstrs' should not succeed.
 -- This list is non-exhaustive, but checks for some common problems.
 badAriMstrsTests :: Test
-badAriMstrsTests = assertFailParseList badTrss parseAriMstrs
+badAriMstrsTests = TestList [TestLabel "parseAriMstrs should fail" $ assertFailParseList badTrss parseAriMstrs]
   where
     badTrss :: [String]
     badTrss =
-      [ "(RULES a->b)", -- No SIG block
-        "(RULES f(x) -> x)(SIG (f Nat -> Nat))", -- SIG after rules
-        "(COMMENT a comment)(SIG (f Nat -> Nat))(RULES f(x)->x)", -- COMMENT block first
-        "(SIG (a -> Nat) (b -> Nat))(RULES a -> b)(RULES b -> a)", -- Two RULES blocks
-        "(SIG (f Nat -> Nat))(RULES f(x) -> g(x))", -- Function symbol g not in SIG
-        "(VAR x)(RULES f(x)->x)" -- COPS TRS format
+      [ "(sort Nat)(fun a :sort (Nat))(fun b :sort (Nat))(rule a b)", -- No format
+        "(format TRS)(sort Nat)(fun a :sort (Nat))(fun b :sort (Nat))(rule a b)", -- Wrong format
+        "(format TRS)(fun a :sort (Nat))(fun b :sort (Nat))(sort Nat)(rule a b)" -- sort defined after signature
       ]

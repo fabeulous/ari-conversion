@@ -38,6 +38,7 @@ parseCopsMstrs = stripSpaces $ do
     Mstrs
       { rules = rs,
         signature = msSigs,
+        sorts = Nothing, -- Not set for COPS format
         metaInfo = fromMaybe emptyMetaInfo maybeMetaInfo
       }
 
@@ -45,6 +46,7 @@ parseCopsMstrs = stripSpaces $ do
 -- Leading and trailing spaces are consumed. See the tests for more examples of the expected format.
 --
 -- Currently no type checking is performed: this is left to the user.
+-- It is also not checked if the sorts used in function symbols align with explicity defined sorts.
 -- Rules are parsed using 'parseAriRule' as in the untyped TRS setting.
 --
 -- qqjf I assume that there is a fixed order of blocks: @meta-info@ then @format@ then @sort@ then @fun@ then @rule@.
@@ -52,13 +54,14 @@ parseAriMstrs :: Parser (Mstrs String String String)
 parseAriMstrs = stripSpaces $ do
   mstrsMetaInfo <- parseAriMetaInfo
   _ <- parseBlock "format" (string $ pack "MSTRS")
-  sorts <- many (try $ parseBlock "sort " parseFunSymbol) -- qqjf assumed sorts have same constraints as fun symbols
+  sortsList <- many (try $ parseBlock "sort " parseFunSymbol) -- qqjf assumed sorts have same constraints as fun symbols
   msSigs <- many (try $ parseBlock "fun " parseAriMsSig)
   rs <- many (try $ parseBlock "rule " (parseAriRule $ msSigToSigList msSigs))
   return $
     Mstrs
       { rules = rs,
         signature = msSigs,
+        sorts = Just sortsList,
         metaInfo = mstrsMetaInfo
       }
   where
