@@ -9,7 +9,7 @@ module Data.Conversion.Parser.Unparse.Problem.MetaInfo
   )
 where
 
-import Data.Conversion.Parser.Unparse.Utils (isEmptyDoc, prettyBlock)
+import Data.Conversion.Parser.Unparse.Utils (isEmptyDoc, prettyBlock,filterEmptyDocs)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..))
 import Prettyprinter (Doc, comma, emptyDoc, hsep, parens, pretty, punctuate, vsep, (<+>))
 
@@ -69,7 +69,3 @@ unparseAriMetaInfo (MetaInfo cs ds orig sub) =
     unparseSubmitters xs = metaBlock "submitted" (hsep $ map (pretty . show) xs)
     metaBlock :: Show a => String -> a -> Doc ann
     metaBlock name xs = parens $ pretty "meta-info" <+> parens (pretty name <+> pretty (show xs))
-
--- | Helper function to remove empty docs from a list
-filterEmptyDocs :: [Doc ann] -> [Doc ann]
-filterEmptyDocs = filter (not . isEmptyDoc)

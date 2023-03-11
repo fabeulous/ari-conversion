@@ -9,12 +9,13 @@ module Data.Conversion.Parser.Unparse.UnparseTrs
   )
 where
 
-import Data.Conversion.Parser.Unparse.Problem.MetaInfo (unparseCopsMetaInfo)
-import Data.Conversion.Parser.Unparse.Problem.Rule (unparseCopsRules)
-import Data.Conversion.Parser.Unparse.Problem.TrsSig (unparseCopsTrsSig)
+import Data.Conversion.Parser.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
+import Data.Conversion.Parser.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
+import Data.Conversion.Parser.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
+import Data.Conversion.Parser.Unparse.Utils (filterEmptyDocs)
 import Data.Conversion.Problem.Trs.Trs (Trs (..))
-import Data.Maybe (catMaybes)
-import Prettyprinter (Doc, Pretty, vsep)
+import Data.Maybe (catMaybes, fromMaybe)
+import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vsep)
 
 -- | Unparse a first-order TRS from the internal 'Trs' representation into
 -- [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).
@@ -23,30 +24,16 @@ import Prettyprinter (Doc, Pretty, vsep)
 -- unparse each part of the 'Trs'.
 unparseCops :: (Eq v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
 unparseCops (Trs rs sig meta) = do
-  stringSig <- unparseCopsTrsSig sig rs
-  let trsElements = stringSig : catMaybes [unparseCopsRules rs, unparseCopsMetaInfo meta]
+  copsSig <- unparseCopsTrsSig sig rs
+  let trsElements = copsSig : catMaybes [unparseCopsRules rs, unparseCopsMetaInfo meta]
   return $ vsep trsElements
 
--- | qqjf
-unparseAri :: (Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
-unparseAri = undefined
-
-{-
-\**** ARI format
-(meta-info (origin "COPS #20"))
-(meta-info (doi "10.1007/11805618_6"))
-(meta-info (comment "[7] Example 2"))
-(meta-info (submitted "Takahito Aoto" "Junichi Yoshida" "Yoshihito Toyama"))
-(format TRS)
-(fun 0 0)
-(fun nats 0)
-(fun hd 1)
-(fun tl 1)
-(fun inc 1)
-(fun : 2)
-(rule nats (: 0 (inc nats)))
-(rule (inc (: x y)) (: (s x) (inc y)))
-(rule (hd (: x y)) x)
-(rule (tl (: x y)) x)
-(rule (inc (tl nats))) (tl (inc nats)))
--}
+-- | Unparse a first-order TRS from the internal 'Trs' representation into
+-- [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).
+--
+-- Uses functions 'unparseAriMetaInfo', 'unparseAriTrsSig', and 'unparseAriRules' to
+-- unparse each part of the 'Trs'.
+unparseAri :: (Pretty f, Pretty v, Eq v, Eq f, Show f) => Trs f v -> Either String (Doc ann)
+unparseAri (Trs rs sig meta) = do
+  ariSig <- unparseAriTrsSig sig rs
+  return $ vsep $ filterEmptyDocs [fromMaybe emptyDoc (unparseAriMetaInfo meta), pretty "(format TRS)", ariSig, fromMaybe emptyDoc (unparseAriRules rs)]
