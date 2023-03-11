@@ -5,14 +5,14 @@
 -- This module defines test cases for signature parsing functions for MSTRSs.
 module Test.Parse.Mstrs.MsSig (msSigTests) where
 
-import Data.Conversion.Parser.Parse.Problem.MsSig (parseCopsMsSig)
+import Data.Conversion.Parser.Parse.Problem.MsSig (parseAriMsSig, parseCopsMsSig)
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Test cases for MSTRS signature parsing and checking
 msSigTests :: Test
-msSigTests = TestList [parseCopsMsSigTests, badCopsMsSigTests]
+msSigTests = TestList [parseCopsMsSigTests, badCopsMsSigTests, parseAriMsSigTests, badAriMsSigTests]
 
 -- | Test cases for which 'parseCopsMsSig' should succeed and match the expected output.
 -- Expects signature strings in the COCO (MSTRS format)[http://project-coco.uibk.ac.at/problems/mstrs.php].
@@ -42,4 +42,36 @@ badCopsMsSigTests = assertFailParseList badSigs parseCopsMsSig
         "f List -> Tree(1)", -- ( ) not allowed
         "f List -> \"Tree\"", -- "s not allowed
         "f List -> Tree,Tree" -- , not allowed
+      ]
+
+-- | Test cases for which 'parseAriMsSig' should succeed and match the expected output.
+-- Expects signature strings in the ARI (MSTRS format)[https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt].
+parseAriMsSigTests :: Test
+parseAriMsSigTests = assertParseList validSigs parseAriMsSig
+  where
+    validSigs :: [(String, MsSig String String)]
+    validSigs =
+      [ ("(fun s :sort (Nat Nat))", MsSig "s" (["Nat"], "Nat")),
+        ("(fun 0 :sort (Nat))", MsSig "0" ([], "Nat")),
+        (" ( fun  node   :sort   (Nat  Tree Tree Tree) ) ", MsSig "node" (["Nat", "Tree", "Tree"], "Tree")),
+        ("(fun leaf :sort (Nat Tree))", MsSig "leaf" (["Nat"], "Tree")),
+        ("(fun sum :sort (Tree Nat))", MsSig "sum" (["Tree"], "Nat"))
+      ]
+
+-- | Example strings for which 'parseAriMsSig' should fail due to invalid signature formats
+badAriMsSigTests :: Test
+badAriMsSigTests = assertFailParseList badSigs parseAriMsSig
+  where
+    badSigs :: [String]
+    badSigs =
+      [ "( s :sort (Nat Nat)))", -- No fun
+        "(fun s (Nat Nat)))", -- No :sort
+        "(fun s :sort ())", -- Empty sorts
+        "(fun 0 :sort Nat)", -- No parentheses around Nat
+        "(fun0 :sort Nat)", -- No space after fun
+        "(fun s :sort (Nat Nat ))", -- Space after final sort
+        "(fun s :sort(Nat Nat))", -- No space after :sort
+        "(fun f() :sort (Nat Nat))", -- ( ) not allowed in function name
+        "f List -> List", -- COPS format
+        ""
       ]
