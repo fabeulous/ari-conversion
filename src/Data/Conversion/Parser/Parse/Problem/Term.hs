@@ -110,7 +110,7 @@ outerParens = between (symbol "(") (symbol ")" *> eof)
 --   qqjf: Currently forbids '-' as this might clash with "->" in rule definitions
 -- qqjf COPS: vars can not contain whitespace,  (   )   "   ,   |   \ and the sequences  ->   ==   COMMENT   VAR   RULES
 allowedFunVarChars :: Parser Char
-allowedFunVarChars = noneOf ['(', ')', ' ', ',', '-', '\n']
+allowedFunVarChars = noneOf ['(', ')', ' ', ',', '-', '\n', '"', '|', '\\']
 
 -- | Parses a term in prefix notation.
 -- Tries to parse the expression as a function application first, then as a constant, and finally as a variable.
