@@ -13,8 +13,6 @@ import Test.HUnit
 --
 -- >>> assertUnparse (Fun "f" [Var "x"]) unparseTerm "f(x)"
 -- should pass
---
--- qqjf TODO improve location information on fail
 assertUnparse :: Show a => a -> (a -> String) -> String -> Assertion
 assertUnparse val unparser expected = assertEqual (show val ++ " not unparsed correctly") expected (unparser val)
 
