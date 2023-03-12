@@ -17,11 +17,11 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Test cases for 'parseCopsMstrs' including cases which should be parseable and cases which should fail
 parseCopsMstrsTests :: Test
-parseCopsMstrsTests = TestList [goodCopsMstrsTests, badCopsMstrsTests]
+parseCopsMstrsTests = TestLabel "parseCopsMstrsTests" $ TestList [goodCopsMstrsTests, badCopsMstrsTests]
 
 -- | Test cases for 'parseCopsMstrs' which should succeed and match the expected output
 goodCopsMstrsTests :: Test
-goodCopsMstrsTests = assertParseList wellFormattedTrss parseCopsMstrs
+goodCopsMstrsTests = assertParseList "parseCopsMstrs should succeed" wellFormattedTrss parseCopsMstrs
   where
     wellFormattedTrss :: [(String, Mstrs String String String)]
     wellFormattedTrss =
@@ -74,7 +74,7 @@ goodCopsMstrsTests = assertParseList wellFormattedTrss parseCopsMstrs
 -- | Malformatted examples for which it is asserted that 'parseCopsMstrs' should not succeed.
 -- This list is non-exhaustive, but checks for some common problems.
 badCopsMstrsTests :: Test
-badCopsMstrsTests = assertFailParseList badTrss parseCopsMstrs
+badCopsMstrsTests = assertFailParseList "parseCopsMstrs should fail" badTrss parseCopsMstrs
   where
     badTrss :: [String]
     badTrss =

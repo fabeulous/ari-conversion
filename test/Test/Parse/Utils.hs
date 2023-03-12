@@ -41,11 +41,14 @@ assertParse xs p expected = case parseFromString xs p of
 
 -- | Assert that parsing succeeds for each element of @xs@ using parser @p@.
 -- Each element of @xs@ should be of the form @(stringToParse, expectedAnswer)@.
--- An error will be shown if the parsing fails or if an unexpected result is obtained.
-assertParseList :: (Eq a, Show a) => [(String, a)] -> Parser a -> Test
-assertParseList xs p = TestList [TestCase (assertParse val p expected) | (val, expected) <- xs]
+--
+-- An error and the label @l@ will be shown if the parsing fails or if an unexpected result is obtained.
+assertParseList :: (Eq a, Show a) => String -> [(String, a)] -> Parser a -> Test
+assertParseList l xs p = TestList [TestLabel l $ TestCase (assertParse val p expected) | (val, expected) <- xs]
 
 -- | Assert that parsing fails using parser @p@ on each string in list @xs@ using 'assertParseFail'.
 -- An error will be shown for each element of @xs@ for which parsing succeeds.
-assertFailParseList :: Show a => [String] -> Parser a -> Test
-assertFailParseList xs p = TestList [TestCase (assertParseFail val p) | val <- xs]
+--
+-- If parsing fails, label @l@ will be shown with the error message. It is recommended to use a descriptive label to aid debugging.
+assertFailParseList :: Show a => String -> [String] -> Parser a -> Test
+assertFailParseList l xs p = TestList [TestLabel l $ TestCase (assertParseFail val p) | val <- xs]

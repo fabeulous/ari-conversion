@@ -17,32 +17,43 @@ import Test.Unparse.UnparseTrs (unparseAriTrsTests, unparseCopsTrsTests)
 -- | The testing entry point. Runs each test in turn and logs output to the console.
 main :: IO ()
 main = do
-  putStrLn "Testing term parsing"
-  _ <- runTestTT termTests
-  _ <- runTestTT prefixTermTests
-  putStrLn "Testing parsing MetaInfo"
-  _ <- runTestTT metaInfoParsingTests
-  putStrLn "Testing parsing rules"
-  _ <- runTestTT copsRuleTests
-  _ <- runTestTT ariRuleTests
-  putStrLn "Testing signature parsing"
-  _ <- runTestTT sigTests
-  _ <- runTestTT msSigTests
-  putStrLn "Testing parsing TRSs"
-  _ <- runTestTT parseCopsTests
-  _ <- runTestTT parseAriTests
-  putStrLn "Testing parsing MSTRSs"
-  _ <- runTestTT parseCopsMstrsTests
-  _ <- runTestTT parseAriMstrsTests
-  putStrLn "Testing unparsing terms"
-  _ <- runTestTT unparseTermTests
-  putStrLn "Testing unparsing rules"
-  _ <- runTestTT unparseSigTests
-  putStrLn "Testing unparsing TRS metadata"
-  _ <- runTestTT unparseMetaInfoTests
-  putStrLn "Testing unparsing TRS signatures"
-  _ <- runTestTT unparseRuleTests
-  putStrLn "Testing unparsing TRSs"
-  _ <- runTestTT unparseCopsTrsTests
-  _ <- runTestTT unparseAriTrsTests
+  _ <- parsingTests
+  _ <- unparsingTests
   putStrLn "Testing complete."
+
+-- | Collect and run tests for parsing
+parsingTests :: IO ()
+parsingTests = do
+  putStrLn "Runnning parsing tests"
+  _ <-
+    runTestTT $
+      TestList
+        [ termTests,
+          prefixTermTests,
+          metaInfoParsingTests,
+          copsRuleTests,
+          ariRuleTests,
+          sigTests,
+          msSigTests,
+          parseCopsTests,
+          parseAriTests,
+          parseCopsMstrsTests,
+          parseAriMstrsTests
+        ]
+  putStrLn "---"
+
+-- | Collect and run tests for unparsing
+unparsingTests :: IO ()
+unparsingTests = do
+  putStrLn "Runnning unparsing tests"
+  _ <-
+    runTestTT $
+      TestList
+        [ unparseTermTests,
+          unparseSigTests,
+          unparseMetaInfoTests,
+          unparseRuleTests,
+          unparseCopsTrsTests,
+          unparseAriTrsTests
+        ]
+  putStrLn "---"

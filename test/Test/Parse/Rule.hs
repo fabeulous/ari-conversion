@@ -18,11 +18,11 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Tests for parsing rules in COPS format, including tests for which parsing should succeed and for which parsing should fail
 copsRuleTests :: Test
-copsRuleTests = TestList [parseCopsRuleTests, parseCopsRulesFTests, badCopsRulesTests, parseMultipleCopsRules]
+copsRuleTests = TestLabel "copsRuleTests" $ TestList [parseCopsRuleTests, parseCopsRulesFTests, badCopsRulesTests, parseMultipleCopsRules]
 
 -- | Tests for parsing rules in ARI format, including tests for which parsing should succeed and for which parsing should fail
 ariRuleTests :: Test
-ariRuleTests = TestList [parseAriRuleTests, badAriRulesTests]
+ariRuleTests = TestLabel "ariRuleTests" $ TestList [parseAriRuleTests, badAriRulesTests]
 
 -- | A rule parser for testing 'parseCopsRule' with a fixed set of variables
 copsRuleParser :: Parser (Rule String String)
@@ -35,7 +35,7 @@ copsRuleFParser = parseCopsMstrsRules [MsSig "f" (["Nat"], "Nat"), MsSig "fun" (
 -- | Test cases for which 'parseCopsRule' should succeed and
 -- match the given expected output. Tests parsing COPS rules when the variables are known.
 parseCopsRuleTests :: Test
-parseCopsRuleTests = assertParseList validRules copsRuleParser
+parseCopsRuleTests = assertParseList "parseCopsRule should succeed" validRules copsRuleParser
   where
     fx = Fun "f" [Var "x"]
     validRules :: [(String, Rule String String)]
@@ -53,7 +53,7 @@ parseCopsRuleTests = assertParseList validRules copsRuleParser
 -- | Test cases for which 'parseCopsMstrsRules' should succeed and
 -- match the given expected output.  Tests parsing COPS rules when the function symbols are known.
 parseCopsRulesFTests :: Test
-parseCopsRulesFTests = assertParseList validRules copsRuleFParser
+parseCopsRulesFTests = assertParseList "parseCopsMstrsRules should succeed" validRules copsRuleFParser
   where
     fx = Fun "f" [Var "x"]
     validRules :: [(String, [Rule String String])]
@@ -70,7 +70,7 @@ parseCopsRulesFTests = assertParseList validRules copsRuleFParser
 -- when parsing the entire input according to COPS format.
 -- Non-exhaustive, but intended to be used to check that certain clearly wrong formats are not accepted.
 badCopsRulesTests :: Test
-badCopsRulesTests = assertFailParseList badRules copsRuleParser
+badCopsRulesTests = assertFailParseList "parseCopsRule should fail" badRules copsRuleParser
   where
     badRules :: [String]
     badRules =
@@ -96,7 +96,7 @@ badCopsRulesTests = assertFailParseList badRules copsRuleParser
 -- to parse blocks containing 0 or more rules).
 -- Asserts that the test cases are parseable and match the expected output.
 parseMultipleCopsRules :: Test
-parseMultipleCopsRules = assertParseList validRules rulesParser
+parseMultipleCopsRules = assertParseList "parseCopsTrsRules should succees" validRules rulesParser
   where
     rulesParser :: Parser [Rule String String]
     rulesParser = parseCopsTrsRules $ Vars ["x", "y", "z", "x'"]
@@ -126,7 +126,7 @@ ariRuleParser =
 -- | Test cases for which 'parseAriRule' should succeed and
 -- match the given expected output
 parseAriRuleTests :: Test
-parseAriRuleTests = assertParseList validRules ariRuleParser
+parseAriRuleTests = assertParseList "parseAriRule should succees" validRules ariRuleParser
   where
     sx = Fun "s" [Var "x"]
     validRules :: [(String, Rule String String)]
@@ -144,10 +144,10 @@ parseAriRuleTests = assertParseList validRules ariRuleParser
       ]
 
 -- | Example test cases of malformatted rules for which parsing should fail
--- when parsing the entire input according to ARI format.
+-- when parsing the entire input according to ARI format with 'parseAriRule.
 -- Non-exhaustive, but intended to be used as a sanity check.
 badAriRulesTests :: Test
-badAriRulesTests = assertFailParseList badRules ariRuleParser
+badAriRulesTests = assertFailParseList "parseAriRule should fail" badRules ariRuleParser
   where
     badRules :: [String]
     badRules =

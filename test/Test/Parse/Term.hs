@@ -14,11 +14,11 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Tests for 'parseTerm' including tests for which parsing should succeed and for which parsing should fail
 termTests :: Test
-termTests = TestList [parseTermTests, badCopsTermTests]
+termTests = TestLabel "termTests" $ TestList [parseTermTests, badCopsTermTests]
 
 -- | Tests for 'parsePrefixTerm' including tests for which parsing should succeed and for which parsing should fail
 prefixTermTests :: Test
-prefixTermTests = TestList [parsePrefixTermTests, malformattedPrefixTermTests]
+prefixTermTests = TestLabel "prefixTermTests" $ TestList [parsePrefixTermTests, malformattedPrefixTermTests]
 
 -- | Parser for testing 'parseTerm' with a fixed set of variables
 termParser :: Parser (Term String String)
@@ -36,7 +36,7 @@ prefixTermParser = parsePrefixTerm [Sig "a" 0, Sig "f" 1, Sig "g" 2, Sig "h" 3]
 parseTermTests :: Test
 parseTermTests =
   TestList
-    [ TestLabel l (assertParseList wellFormattedTerms p)
+    [ assertParseList l wellFormattedTerms p
       | (l, p) <-
           [ ("Parsing a term with known variables", termParser),
             ("Parsing a term with known function symbols", termFParser)
@@ -72,7 +72,7 @@ parseTermTests =
 badCopsTermTests :: Test
 badCopsTermTests =
   TestList
-    [ TestLabel l (assertFailParseList badTerms p)
+    [ assertFailParseList l badTerms p
       | (l, p) <-
           [ ("Should fail to parse term (with known variables)", termParser),
             ("Should fail to parse term (with known function symbols)", termFParser)
@@ -106,7 +106,7 @@ badCopsTermTests =
 
 -- | Tests for which 'prefixTermParser' should succeed and match the expected output
 parsePrefixTermTests :: Test
-parsePrefixTermTests = assertParseList wellFormattedTerms prefixTermParser
+parsePrefixTermTests = assertParseList "prefixTermParser should succeed" wellFormattedTerms prefixTermParser
   where
     -- Terms which should be parseable (non-exhaustive) and their expected Haskell representation
     wellFormattedTerms :: [(String, Term String String)]
@@ -136,7 +136,7 @@ parsePrefixTermTests = assertParseList wellFormattedTerms prefixTermParser
 
 -- | Tests for which 'prefixTermParser' should fail
 malformattedPrefixTermTests :: Test
-malformattedPrefixTermTests = assertFailParseList badTerms prefixTermParser
+malformattedPrefixTermTests = assertFailParseList "prefixTermParser should fail" badTerms prefixTermParser
   where
     badTerms :: [String]
     badTerms =

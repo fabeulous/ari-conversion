@@ -12,12 +12,12 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Test cases for MSTRS signature parsing and checking
 msSigTests :: Test
-msSigTests = TestList [parseCopsMsSigTests, badCopsMsSigTests, parseAriMsSigTests, badAriMsSigTests]
+msSigTests = TestLabel "msSigTests" $ TestList [parseCopsMsSigTests, badCopsMsSigTests, parseAriMsSigTests, badAriMsSigTests]
 
 -- | Test cases for which 'parseCopsMsSig' should succeed and match the expected output.
 -- Expects signature strings in the COCO (MSTRS format)[http://project-coco.uibk.ac.at/problems/mstrs.php].
 parseCopsMsSigTests :: Test
-parseCopsMsSigTests = assertParseList validSigs parseCopsMsSig
+parseCopsMsSigTests = assertParseList "parseCopsMsSig should succeed" validSigs parseCopsMsSig
   where
     validSigs :: [(String, MsSig String String)]
     validSigs =
@@ -29,7 +29,7 @@ parseCopsMsSigTests = assertParseList validSigs parseCopsMsSig
 
 -- | Example strings for which 'parseCopsMsSig' should fail due to invalid signature formats
 badCopsMsSigTests :: Test
-badCopsMsSigTests = assertFailParseList badSigs parseCopsMsSig
+badCopsMsSigTests = assertFailParseList "parseCopsMsSig should fail" badSigs parseCopsMsSig
   where
     badSigs :: [String]
     badSigs =
@@ -47,7 +47,7 @@ badCopsMsSigTests = assertFailParseList badSigs parseCopsMsSig
 -- | Test cases for which 'parseAriMsSig' should succeed and match the expected output.
 -- Expects signature strings in the ARI (MSTRS format)[https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt].
 parseAriMsSigTests :: Test
-parseAriMsSigTests = assertParseList validSigs parseAriMsSig
+parseAriMsSigTests = assertParseList "parseAriMsSig should succeed" validSigs parseAriMsSig
   where
     validSigs :: [(String, MsSig String String)]
     validSigs =
@@ -60,7 +60,7 @@ parseAriMsSigTests = assertParseList validSigs parseAriMsSig
 
 -- | Example strings for which 'parseAriMsSig' should fail due to invalid signature formats
 badAriMsSigTests :: Test
-badAriMsSigTests = assertFailParseList badSigs parseAriMsSig
+badAriMsSigTests = assertFailParseList "parseAriMsSig should fail" badSigs parseAriMsSig
   where
     badSigs :: [String]
     badSigs =

@@ -18,11 +18,11 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Test cases for 'parseAriTrs' including cases which should be parseable and cases which should fail
 parseAriTests :: Test
-parseAriTests = TestList [parseAriTrsTests, badAriTrsTests]
+parseAriTests = TestLabel "parseAriTests" $ TestList [parseAriTrsTests, badAriTrsTests]
 
 -- | Test cases for 'parseAriTrs' which should succeed and match the expected output
 parseAriTrsTests :: Test
-parseAriTrsTests = assertParseList wellFormattedTrss parseAriTrs
+parseAriTrsTests = assertParseList "parseAriTrs should succeed" wellFormattedTrss parseAriTrs
   where
     wellFormattedTrss :: [(String, Trs String String)]
     wellFormattedTrss =
@@ -83,7 +83,7 @@ parseAriTrsTests = assertParseList wellFormattedTrss parseAriTrs
 -- | Malformatted examples for which it is asserted that 'parseAriTrs' should not succeed.
 -- This list is non-exhaustive, but checks for some common problems.
 badAriTrsTests :: Test
-badAriTrsTests = assertFailParseList badTrss parseAriTrs
+badAriTrsTests = assertFailParseList "parseAriTrs should fail" badTrss parseAriTrs
   where
     badTrss :: [String]
     badTrss =

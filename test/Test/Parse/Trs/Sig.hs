@@ -13,11 +13,11 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Test cases for TRS signature parsing and checking
 sigTests :: Test
-sigTests = TestList [parseCopsSigTests, badCopsSigTests, checkConsistentSigs, checkInconsistentSigs, parseFsymArityTests]
+sigTests = TestLabel "sigTests" $ TestList [parseCopsSigTests, badCopsSigTests, checkConsistentSigs, checkInconsistentSigs, parseFsymArityTests]
 
 -- | Simple test cases for whick 'parseFsymArity' should succeed and match the expected output.
 parseFsymArityTests :: Test
-parseFsymArityTests = assertParseList validFsymArities parseFsymArity
+parseFsymArityTests = assertParseList "parseFsymArity should succeed" validFsymArities parseFsymArity
   where
     validFsymArities :: [(String, Sig String)]
     validFsymArities =
@@ -29,7 +29,7 @@ parseFsymArityTests = assertParseList validFsymArities parseFsymArity
 -- | Test cases for which 'parseCopsSig' should succeed and match the expected output.
 -- Expects signature strings in the COCO TRS (extended format)[http://project-coco.uibk.ac.at/problems/trs.php#extended].
 parseCopsSigTests :: Test
-parseCopsSigTests = assertParseList validSigs parseCopsSig
+parseCopsSigTests = assertParseList "parseCopsSig should succeed" validSigs parseCopsSig
   where
     validSigs :: [(String, [Sig String])]
     validSigs =
@@ -44,7 +44,7 @@ parseCopsSigTests = assertParseList validSigs parseCopsSig
 
 -- | Tests for which 'parseCopsSig' should fail due to invalid signature formats
 badCopsSigTests :: Test
-badCopsSigTests = assertFailParseList badSigs parseCopsSig
+badCopsSigTests = assertFailParseList "parseCopsSig should fail" badSigs parseCopsSig
   where
     badSigs :: [String]
     badSigs =

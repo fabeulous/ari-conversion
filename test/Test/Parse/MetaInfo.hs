@@ -12,11 +12,11 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Tests for parsing rules in COPS format, including tests for which parsing should succeed and for which parsing should fail
 metaInfoParsingTests :: Test
-metaInfoParsingTests = TestList [parseAriMetaTests, badAriMetaTests, parseCopsMetaTests]
+metaInfoParsingTests = TestLabel "metaInfoParsingTests" $ TestList [parseAriMetaTests, badAriMetaTests, parseCopsMetaTests]
 
 -- | Test cases for which 'parseAriMetaInfo' should succeed and produce the given output
 parseAriMetaTests :: Test
-parseAriMetaTests = assertParseList validMetaInfo parseAriMetaInfo
+parseAriMetaTests = assertParseList "parseAriMetaInfo should succeed" validMetaInfo parseAriMetaInfo
   where
     validMetaInfo :: [(String, MetaInfo)]
     validMetaInfo =
@@ -40,7 +40,7 @@ parseAriMetaTests = assertParseList validMetaInfo parseAriMetaInfo
 
 -- | Test cases for which 'parseAriMetaInfo' should fail
 badAriMetaTests :: Test
-badAriMetaTests = assertFailParseList badMetaInfo parseAriMetaInfo
+badAriMetaTests = assertFailParseList "parseAriMetaInfo should fail" badMetaInfo parseAriMetaInfo
   where
     badMetaInfo :: [String]
     badMetaInfo =
@@ -57,7 +57,7 @@ badAriMetaTests = assertFailParseList badMetaInfo parseAriMetaInfo
 
 -- | Test cases for which 'parseCopsMetaInfo' should succeed and produce the given output
 parseCopsMetaTests :: Test
-parseCopsMetaTests = assertParseList validMetaInfo parseCopsMetaInfo
+parseCopsMetaTests = assertParseList "parseCopsMetaInfo should succeed" validMetaInfo parseCopsMetaInfo
   where
     validMetaInfo :: [(String, MetaInfo)]
     validMetaInfo =
