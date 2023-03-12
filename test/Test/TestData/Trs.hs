@@ -35,20 +35,21 @@ copsTrss =
     ( "COPS TRS with a comment block",
       groundTrs,
       "(RULES \n  a -> b\n)\n(COMMENT \nsubmitted by: Person 1)",
-      Trs
-        { rules = [ruleAToB],
-          signature = Vars [],
-          metaInfo = emptyMetaInfo {comment = Just "submitted by: Person 1"}
+      groundTrs
+        { signature = Vars [],
+          metaInfo =
+            MetaInfo
+              { comment = Just "submitted by: Person 1",
+                doi = Nothing,
+                origin = Nothing,
+                submitted = Nothing
+              }
         }
     ),
     ( "COPS TRS with only function symbols specified",
       trsFunSig,
       "(VAR x y z)\n(SIG (f 2) (a 0) (b 1))\n(RULES \n  f(x,y) -> y\n  b(z) -> a\n)",
-      Trs
-        { rules = [ruleFxyToY, ruleBzToA],
-          signature = FullSig ["x", "y", "z"] [Sig "f" 2, Sig "a" 0, Sig "b" 1],
-          metaInfo = emptyMetaInfo
-        }
+      trsFunSig {signature = FullSig ["x", "y", "z"] exampleSigList}
     ),
     ( "COPS TRS in extended format",
       trsFullSig,
@@ -70,11 +71,15 @@ copsTrss =
       \[7] Example 2\n\
       \origin: COPS #20\n\
       \submitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama)", -- qqjf does not exactly match COPS comment
-      Trs
-        { rules = fullExampleRules,
-          signature = FullSig ["x", "y"] [Sig "0" 0, Sig "nats" 0, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2],
+      fullExampleTrs
+        { signature = FullSig ["x", "y"] fullExampleSig,
           metaInfo =
-            emptyMetaInfo {comment = Just "doi:10.1007/11805618_6\n[7] Example 2\norigin: COPS #20\nsubmitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama"}
+            MetaInfo
+              { comment = Just "doi:10.1007/11805618_6\n[7] Example 2\norigin: COPS #20\nsubmitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama",
+                doi = Nothing,
+                origin = Nothing,
+                submitted = Nothing
+              }
         }
     )
   ]
@@ -89,30 +94,22 @@ ariTrss =
   [ ( "ARI TRS with only variables specified",
       trsVarSig,
       "(format TRS)\n(fun f 2)\n(fun g 1)\n(fun c 0)\n(rule (f x y) (g c))",
-      Trs
-        { rules = [ruleFxyToGc],
-          signature = FunSig [Sig "f" 2, Sig "g" 1, Sig "c" 0],
-          metaInfo = emptyMetaInfo
-        }
+      trsVarSig {signature = FunSig [Sig "f" 2, Sig "g" 1, Sig "c" 0]}
     ),
     ( "ARI TRS with no rules",
       trsNoRules,
       "(format TRS)",
-      Trs {rules = [], signature = FunSig [], metaInfo = emptyMetaInfo}
+      trsNoRules {signature = FunSig []}
     ),
     ( "ARI TRS with no rules or signature",
       minimalVarSigTrs,
       "(format TRS)",
-      Trs {rules = [], signature = FunSig [], metaInfo = emptyMetaInfo}
+      trsNoRules {signature = FunSig []}
     ),
     ( "ground ARI TRS with one submitter",
       groundTrs,
       "(meta-info (submitted \"Person 1\"))\n(format TRS)\n(fun a 0)\n(fun b 0)\n(rule a b)",
-      Trs
-        { rules = [ruleAToB],
-          signature = FunSig [Sig "a" 0, Sig "b" 0],
-          metaInfo = emptyMetaInfo {submitted = Just ["Person 1"]}
-        }
+      groundTrs {signature = FunSig [Sig "a" 0, Sig "b" 0]}
     ),
     ( "ARI TRS with only function symbols specified",
       trsFunSig,
@@ -122,11 +119,7 @@ ariTrss =
     ( "ARI TRS with full signature specified",
       trsFullSig,
       "(meta-info (comment \"A TRS (with SIG given)\"))\n(format TRS)\n(fun f 2)\n(fun a 0)\n(fun b 1)\n(rule (f x y) y)",
-      Trs
-        { rules = [ruleFxyToY],
-          signature = FunSig [Sig "f" 2, Sig "a" 0, Sig "b" 1],
-          metaInfo = emptyMetaInfo {comment = Just "A TRS (with SIG given)"}
-        }
+      trsFullSig {signature = FunSig exampleSigList}
     ),
     ( "ARI TRS with MetaInfo",
       fullExampleTrs,
@@ -157,7 +150,7 @@ ariTrss =
 trsVarSig :: Trs String String
 trsVarSig =
   Trs
-    { rules = [ruleFxyToGc],
+    { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Fun "c" []]}],
       signature = Vars ["x", "y"],
       metaInfo = emptyMetaInfo
     }
@@ -184,7 +177,7 @@ minimalVarSigTrs =
 groundTrs :: Trs String String
 groundTrs =
   Trs
-    { rules = [ruleAToB],
+    { rules = [Rule {lhs = Fun "a" [], rhs = Fun "b" []}],
       signature = Vars [],
       metaInfo = emptyMetaInfo {submitted = Just ["Person 1"]}
     }
@@ -193,8 +186,8 @@ groundTrs =
 trsFunSig :: Trs String String
 trsFunSig =
   Trs
-    { rules = [ruleFxyToY, ruleBzToA],
-      signature = FunSig [Sig "f" 2, Sig "a" 0, Sig "b" 1],
+    { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}, Rule {lhs = Fun "b" [Var "z"], rhs = Fun "a" []}],
+      signature = FunSig exampleSigList,
       metaInfo = emptyMetaInfo
     }
 
@@ -202,8 +195,8 @@ trsFunSig =
 trsFullSig :: Trs String String
 trsFullSig =
   Trs
-    { rules = [ruleFxyToY],
-      signature = FullSig ["x", "y"] [Sig "f" 2, Sig "a" 0, Sig "b" 1],
+    { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}],
+      signature = FullSig ["x", "y"] exampleSigList,
       metaInfo = emptyMetaInfo {comment = Just "A TRS (with SIG given)"}
     }
 
@@ -221,7 +214,7 @@ fullExampleTrs :: Trs String String
 fullExampleTrs =
   Trs
     { rules = fullExampleRules,
-      signature = FunSig [Sig "0" 0, Sig "nats" 0, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2],
+      signature = FunSig fullExampleSig,
       metaInfo =
         emptyMetaInfo
           { comment = Just "[7] Example 2",
@@ -232,10 +225,8 @@ fullExampleTrs =
     }
 
 ------------------------
---- Rules --------------
+--- Signatures ---------
 ------------------------
-ruleFxyToGc, ruleAToB, ruleFxyToY, ruleBzToA :: Rule String String
-ruleFxyToGc = Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Fun "c" []]}
-ruleAToB = Rule {lhs = Fun "a" [], rhs = Fun "b" []}
-ruleFxyToY = Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}
-ruleBzToA = Rule {lhs = Fun "b" [Var "z"], rhs = Fun "a" []}
+exampleSigList, fullExampleSig :: [Sig String]
+exampleSigList = [Sig "f" 2, Sig "a" 0, Sig "b" 1]
+fullExampleSig = [Sig "0" 0, Sig "nats" 0, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2]
