@@ -9,6 +9,7 @@ import Test.Parse.Trs.Ari (parseAriTests)
 import Test.Parse.Trs.Cops (parseCopsTests)
 import Test.Parse.Trs.Sig (sigTests)
 import Test.Unparse.Problem.MetaInfo (unparseMetaInfoTests)
+import Test.Unparse.Problem.MsSig (unparseMsSigTests)
 import Test.Unparse.Problem.Rule (unparseRuleTests)
 import Test.Unparse.Problem.Term (unparseTermTests)
 import Test.Unparse.Problem.TrsSig (unparseSigTests)
@@ -51,6 +52,7 @@ unparsingTests = do
       TestList
         [ unparseTermTests,
           unparseSigTests,
+          unparseMsSigTests,
           unparseMetaInfoTests,
           unparseRuleTests,
           unparseCopsTrsTests,
