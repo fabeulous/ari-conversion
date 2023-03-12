@@ -9,6 +9,7 @@ module Data.Conversion.Unparse.UnparseMstrs
   )
 where
 
+import Data.Conversion.Problem.Mstrs.MsSig (inferSorts)
 import Data.Conversion.Problem.Mstrs.Mstrs (Mstrs (..))
 import Data.Conversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
 import Data.Conversion.Unparse.Problem.MsSig (unparseAriMsSig, unparseCopsMsSig)
@@ -32,17 +33,18 @@ unparseCopsMstrs (Mstrs rs sig _ meta) = do
 --
 -- Uses functions 'unparseAriMetaInfo', 'unparseAriMsSig', and 'unparseAriRules' to
 -- unparse each part of the 'Trs'.
-unparseAriMstrs :: (Pretty f, Pretty v, Pretty s) => Mstrs f v s -> Doc ann
+--
+-- If no sorts were given then infers sorts from the signature using 'inferSorts'.
+unparseAriMstrs :: (Eq s, Pretty f, Pretty v, Pretty s) => Mstrs f v s -> Doc ann
 unparseAriMstrs (Mstrs rs sig ss meta) = do
   vsep $
     filterEmptyDocs
       [ fromMaybe emptyDoc (unparseAriMetaInfo meta),
         pretty "(format MSTRS)",
-        prettySorts ss,
+        prettySorts $ fromMaybe (inferSorts sig) ss,
         unparseAriMsSig sig,
         fromMaybe emptyDoc (unparseAriRules rs)
       ]
   where
-    prettySorts :: Pretty s => Maybe [s] -> Doc ann
-    prettySorts Nothing = emptyDoc -- qqjf infer
-    prettySorts (Just sortsList) = vcat $ map (prettyBlock "sort" . pretty) sortsList -- qqjf infer
+    prettySorts :: Pretty s => [s] -> Doc ann
+    prettySorts sortsList = vcat $ map (prettyBlock "sort" . pretty) sortsList

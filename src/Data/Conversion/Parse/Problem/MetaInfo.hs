@@ -61,6 +61,9 @@ parseComment =
 -- > (meta-info (submitted "Takahito Aoto" "Junichi Yoshida" "Yoshihito Toyama"))
 --
 -- See the tests for more information on expected inputs.
+--
+-- qqjf I wasn't sure what behaviour is if multiple blocks are specified.
+-- Currently overwrites duplicate doi, origin, and submitted values.
 parseAriMetaInfo :: Parser MetaInfo
 parseAriMetaInfo = go emptyMetaInfo
   where
