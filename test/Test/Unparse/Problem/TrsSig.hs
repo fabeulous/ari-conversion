@@ -70,7 +70,7 @@ exampleRules =
 testSigs :: [(String, TrsSig String String, [Rule String String], String, String)]
 testSigs =
   [ -- Ground system test
-    ("Unparse ground variable signature", Vars [], groundRules, "(VAR )", "(fun a 0)\n(fun b 0)"),
+    ("Unparse ground variable signature", Vars [], groundRules, "", "(fun a 0)\n(fun b 0)"),
     ("Unparse ground function signature", FunSig [Sig "a" 0, Sig "b" 0], groundRules, "(VAR )\n(SIG (a 0) (b 0))", "(fun a 0)\n(fun b 0)"),
     ("Unparse ground full signature", FullSig [] [Sig "a" 0, Sig "b" 0], groundRules, "(VAR )\n(SIG (a 0) (b 0))", "(fun a 0)\n(fun b 0)"),
     -- Test for system with one variable and one function symbol

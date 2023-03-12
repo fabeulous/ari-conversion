@@ -9,19 +9,19 @@ module Data.Conversion.Parser.Unparse.Problem.MetaInfo
   )
 where
 
-import Data.Conversion.Parser.Unparse.Utils (isEmptyDoc, prettyBlock,filterEmptyDocs)
+import Data.Conversion.Parser.Unparse.Utils (filterEmptyDocs, isEmptyDoc, prettyBlock)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..))
 import Prettyprinter (Doc, comma, emptyDoc, hsep, parens, pretty, punctuate, vsep, (<+>))
 
 -- | Unparse TRS 'MetaInfo' to fit into a single COPS @COMMENT@ block.
--- If the 'MetaInfo' is empty then returns @Nothing@, otherwise @Just commentBlock@.
+-- If the 'MetaInfo' is empty then returns emptyDoc.
 --
 -- qqjf I was unsure what format is expected but this is easy to adjust.
-unparseCopsMetaInfo :: MetaInfo -> Maybe (Doc ann)
+unparseCopsMetaInfo :: MetaInfo -> Doc ann
 unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
   if null metaBlocks
-    then Nothing
-    else Just $ prettyBlock "COMMENT" (vsep $ emptyDoc : metaBlocks)
+    then emptyDoc
+    else prettyBlock "COMMENT" (vsep $ emptyDoc : metaBlocks)
   where
     metaBlocks :: [Doc ann]
     metaBlocks =

@@ -29,12 +29,12 @@ ariTrsUnparser trs = case unparseAriTrs trs of
 unparseCopsTrsTests :: Test
 unparseCopsTrsTests =
   assertUnparseList
-    ([(trs, res, "unparseCopsTrs should succeed on " ++ l) | (trs, res, l) <- copsTrss])
+    ([(res, trsStr, "unparseCopsTrs should succeed on " ++ l) | (l, _, trsStr, res) <- copsTrss])
     copsTrsUnparser
 
 -- | Tests for converting some example 'Trs's to ARI format using 'unparseAriTrs'
 unparseAriTrsTests :: Test
 unparseAriTrsTests =
   assertUnparseList
-    ([(trs, res, "unparseAriTrs should succeed on " ++ l) | (trs, res, l) <- ariTrss])
+    ([(trs, resStr, "unparseAriTrs should succeed on " ++ l) | (l, trs, resStr, _) <- ariTrss])
     ariTrsUnparser
