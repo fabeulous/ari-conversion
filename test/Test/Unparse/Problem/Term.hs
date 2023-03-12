@@ -13,7 +13,7 @@ import Test.Unparse.Utils (assertUnparseList)
 
 -- | Tests for unparsing 'Term's into COPS format and ARI format
 unparseTermTests :: Test
-unparseTermTests = TestList [unparseAppTermTests, unparsePrefixTermTests]
+unparseTermTests =  TestLabel "unparseTermTests" $ TestList [unparseAppTermTests, unparsePrefixTermTests]
 
 -- | Tests for converting some example 'Term's to applicative notation using 'unparseTerm'
 unparseAppTermTests :: Test

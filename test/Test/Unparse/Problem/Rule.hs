@@ -13,7 +13,7 @@ import Test.HUnit
 import Test.Unparse.Utils (assertUnparseList)
 
 unparseRuleTests :: Test
-unparseRuleTests = TestList [unparseCopsRuleTests, unparseAriRuleTests]
+unparseRuleTests = TestLabel "unparseRuleTests" $ TestList [unparseCopsRuleTests, unparseAriRuleTests]
 
 -- | Test unparsing example 'Rule's to COPS format using 'unparseCopsRule'
 unparseCopsRuleTests :: Test

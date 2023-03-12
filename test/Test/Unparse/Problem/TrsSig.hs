@@ -15,7 +15,7 @@ import Test.Unparse.Utils (assertUnparse)
 
 -- | Tests for unparsing 'TrsSig's into COPS format and ARI format
 unparseSigTests :: Test
-unparseSigTests = TestList [unparseCopsSigTests, unparseAriSigTests]
+unparseSigTests = TestLabel "unparseSigTests" $ TestList [unparseCopsSigTests, unparseAriSigTests]
 
 -- | Tests for converting some example 'TrsSig's to COPS format 'unparseCopsTrsSig'
 unparseCopsSigTests :: Test
