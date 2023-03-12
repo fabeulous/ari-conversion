@@ -6,14 +6,14 @@
 --
 -- This module defines functions to parse a first-order TRS in COPS and ARI format.
 module Data.Conversion.Parser.Parse.ParseTrs
-  ( parseCops,
-    parseAri,
+  ( parseCopsTrs,
+    parseAriTrs,
   )
 where
 
-import Control.Monad (guard)
+import Data.Text (pack)
 import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
-import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsRules)
+import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsTrsRules)
 import Data.Conversion.Parser.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
 import Data.Conversion.Parser.Parse.Problem.Term (parseVariable)
 import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
@@ -27,20 +27,20 @@ import Text.Megaparsec
     try,
     (<|>),
   )
-import Text.Megaparsec.Char (alphaNumChar)
+import Text.Megaparsec.Char ( string)
 
 -- | Parse a first-order TRS in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php):
 -- see the COCO website for details on the grammar and allowed characters and the tests for more examples.
 --
--- Leading and trailing spaces are removed.
-parseCops :: Parser (Trs String String)
-parseCops = stripSpaces $ do
+-- Leading and trailing spaces are consumed.
+parseCopsTrs :: Parser (Trs String String)
+parseCopsTrs = stripSpaces $ do
   vs <- try (parseBlock "VAR" (many $ lexeme parseVariable)) <|> return []
   funSig <- optional (try $ parseBlock "SIG" parseCopsSig)
   let trsSig = case funSig of
         Nothing -> Vars vs -- If no SIG block is given
         Just inputFunSig -> FullSig vs inputFunSig
-  rs <- parseBlock "RULES" (parseCopsRules trsSig)
+  rs <- parseBlock "RULES" (parseCopsTrsRules trsSig)
   maybeMetaInfo <- optional (parseBlock "COMMENT" parseCopsMetaInfo)
   return $
     Trs
@@ -49,16 +49,14 @@ parseCops = stripSpaces $ do
         metaInfo = fromMaybe emptyMetaInfo maybeMetaInfo
       }
 
--- | Parse a first-order TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt)
--- and the tests for more examples.
--- qqjf I assume that the order of blocks is @meta-info@ then @format@ then @fun@ then @rule@.
+-- | Parse a first-order TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).
+-- Leading and trailing spaces are consumed. See the tests for more examples of the expected format.
 --
--- Leading and trailing spaces are removed.
-parseAri :: Parser (Trs String String)
-parseAri = stripSpaces $ do
+-- qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @fun@ then @rule@.
+parseAriTrs :: Parser (Trs String String)
+parseAriTrs = stripSpaces $ do
   trsMetaInfo <- parseAriMetaInfo
-  format <- parseBlock "format" (many alphaNumChar)
-  guard (format == "TRS") -- Assert correct format
+  _ <- parseBlock "format" (string $ pack "TRS")
   funSig <- many (try $ parseBlock "fun " parseFsymArity)
   rs <- many (try $ parseBlock "rule " (parseAriRule funSig))
   return $

@@ -2,11 +2,11 @@
 -- Module      : Test.Parse.Trs.Cops
 -- Description : Parsing tests for COPS TRSs
 --
--- This module defines test cases for the function 'parseCops'.
+-- This module defines test cases for the function 'parseCopsTrs'.
 -- It is non-exhaustive, but intended to highlight any obvious errors.
 module Test.Parse.Trs.Cops (parseCopsTests) where
 
-import Data.Conversion.Parser.Parse.ParseTrs (parseCops)
+import Data.Conversion.Parser.Parse.ParseTrs (parseCopsTrs)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
@@ -16,13 +16,13 @@ import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
--- | Test cases for 'parseCops' including cases which should be parseable and cases which should fail
+-- | Test cases for 'parseCopsTrs' including cases which should be parseable and cases which should fail
 parseCopsTests :: Test
 parseCopsTests = TestList [parseCopsTrsTests, badCopsTrsTests]
 
--- | Test cases for 'parseCops' which should succeed and match the expected output
+-- | Test cases for 'parseCopsTrs' which should succeed and match the expected output
 parseCopsTrsTests :: Test
-parseCopsTrsTests = assertParseList wellFormattedTrss parseCops
+parseCopsTrsTests = assertParseList wellFormattedTrss parseCopsTrs
   where
     wellFormattedTrss :: [(String, Trs String String)]
     wellFormattedTrss =
@@ -53,10 +53,10 @@ parseCopsTrsTests = assertParseList wellFormattedTrss parseCops
         )
       ]
 
--- | Malformatted examples for which it is asserted that 'parseCops' should not succeed.
+-- | Malformatted examples for which it is asserted that 'parseCopsTrs' should not succeed.
 -- This list is non-exhaustive, but checks for some common problems.
 badCopsTrsTests :: Test
-badCopsTrsTests = assertFailParseList badTrss parseCops
+badCopsTrsTests = assertFailParseList badTrss parseCopsTrs
   where
     badTrss :: [String]
     badTrss =

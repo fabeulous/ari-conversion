@@ -15,7 +15,7 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 sigTests :: Test
 sigTests = TestList [parseCopsSigTests, badCopsSigTests, checkConsistentSigs, checkInconsistentSigs, parseFsymArityTests]
 
--- | Simple test cases for whick 'parseFsymArity' should succeed and match the extended output.
+-- | Simple test cases for whick 'parseFsymArity' should succeed and match the expected output.
 parseFsymArityTests :: Test
 parseFsymArityTests = assertParseList validFsymArities parseFsymArity
   where
@@ -26,7 +26,7 @@ parseFsymArityTests = assertParseList validFsymArities parseFsymArity
         ("fun   3 ", Sig "fun" 3)
       ]
 
--- | Test cases for which 'parseCopsSig' should succeed and match the extended output.
+-- | Test cases for which 'parseCopsSig' should succeed and match the expected output.
 -- Expects signature strings in the COCO TRS (extended format)[http://project-coco.uibk.ac.at/problems/trs.php#extended].
 parseCopsSigTests :: Test
 parseCopsSigTests = assertParseList validSigs parseCopsSig
@@ -42,7 +42,7 @@ parseCopsSigTests = assertParseList validSigs parseCopsSig
         ("(g 25) (g 25)", [Sig "g" 25, Sig "g" 25])
       ]
 
--- | Tests for which 'parseCopsSig' should fail due to invalid signature formatsI
+-- | Tests for which 'parseCopsSig' should fail due to invalid signature formats
 badCopsSigTests :: Test
 badCopsSigTests = assertFailParseList badSigs parseCopsSig
   where

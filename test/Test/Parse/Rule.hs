@@ -6,10 +6,11 @@
 -- Tests are non-exhaustive, but cover common cases and some useful checks.
 module Test.Parse.Rule (copsRuleTests, ariRuleTests) where
 
-import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsRule, parseCopsRules)
+import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsMstrsRules, parseCopsRule, parseCopsTrsRules)
 import Data.Conversion.Parser.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
+import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Test.HUnit
@@ -17,7 +18,7 @@ import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Tests for parsing rules in COPS format, including tests for which parsing should succeed and for which parsing should fail
 copsRuleTests :: Test
-copsRuleTests = TestList [parseCopsRuleTests, badCopsRulesTests, parseMultipleCopsRules]
+copsRuleTests = TestList [parseCopsRuleTests, parseCopsRulesFTests, badCopsRulesTests, parseMultipleCopsRules]
 
 -- | Tests for parsing rules in ARI format, including tests for which parsing should succeed and for which parsing should fail
 ariRuleTests :: Test
@@ -27,8 +28,12 @@ ariRuleTests = TestList [parseAriRuleTests, badAriRulesTests]
 copsRuleParser :: Parser (Rule String String)
 copsRuleParser = parseCopsRule ["x", "y", "z", "x'"]
 
+-- | A rule parser for testing 'parseCopsMstrsRules' with a fixed set of function symbols
+copsRuleFParser :: Parser [Rule String String]
+copsRuleFParser = parseCopsMstrsRules [MsSig "f" (["Nat"], "Nat"), MsSig "fun" (["Nat"], "Nat"), MsSig "a" ([], "Type"), MsSig "b" ([], "Type")]
+
 -- | Test cases for which 'parseCopsRule' should succeed and
--- match the given expected output
+-- match the given expected output. Tests parsing COPS rules when the variables are known.
 parseCopsRuleTests :: Test
 parseCopsRuleTests = assertParseList validRules copsRuleParser
   where
@@ -43,6 +48,22 @@ parseCopsRuleTests = assertParseList validRules copsRuleParser
         ("f(x)->f(x)", Rule {lhs = fx, rhs = fx}),
         ("x->x", Rule {lhs = Var "x", rhs = Var "x"}), -- qqjf Currently allowed
         ("a()->b", Rule {lhs = Fun "a" [], rhs = Fun "b" []})
+      ]
+
+-- | Test cases for which 'parseCopsMstrsRules' should succeed and
+-- match the given expected output.  Tests parsing COPS rules when the function symbols are known.
+parseCopsRulesFTests :: Test
+parseCopsRulesFTests = assertParseList validRules copsRuleFParser
+  where
+    fx = Fun "f" [Var "x"]
+    validRules :: [(String, [Rule String String])]
+    validRules =
+      [ ("f(x)->x", [Rule {lhs = fx, rhs = Var "x"}]),
+        ("  f(x)  ->    x ", [Rule {lhs = fx, rhs = Var "x"}]),
+        ("x->f(x)", [Rule {lhs = Var "x", rhs = fx}]),
+        ("fun(fx)->fun(fx)", [Rule {lhs = Fun "fun" [Var "fx"], rhs = Fun "fun" [Var "fx"]}]),
+        ("x->x", [Rule {lhs = Var "x", rhs = Var "x"}]), -- qqjf Currently allowed
+        ("a()->b", [Rule {lhs = Fun "a" [], rhs = Fun "b" []}])
       ]
 
 -- | Example test cases of malformatted rules for which parsing should fail
@@ -71,14 +92,14 @@ badCopsRulesTests = assertFailParseList badRules copsRuleParser
         "somestring"
       ]
 
--- | Tests for the 'parseCopsRules' function (used in COPS TRS parsing
+-- | Tests for the 'parseCopsTrsRules' function (used in COPS TRS parsing
 -- to parse blocks containing 0 or more rules).
 -- Asserts that the test cases are parseable and match the expected output.
 parseMultipleCopsRules :: Test
 parseMultipleCopsRules = assertParseList validRules rulesParser
   where
     rulesParser :: Parser [Rule String String]
-    rulesParser = parseCopsRules $ Vars ["x", "y", "z", "x'"]
+    rulesParser = parseCopsTrsRules $ Vars ["x", "y", "z", "x'"]
     r1 = Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}
     r2 = Rule {lhs = Fun "g" [Var "x", Var "y"], rhs = Fun "f" [Var "y"]}
     r3 = Rule {lhs = Fun "a" [], rhs = Fun "b" []}
