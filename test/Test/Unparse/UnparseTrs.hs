@@ -6,7 +6,7 @@
 -- TRSs from the internal 'Trs' representation to COPS and ARI format.
 module Test.Unparse.UnparseTrs (unparseCopsTrsTests, unparseAriTrsTests) where
 
-import Data.Conversion.Parser.Unparse.UnparseTrs (unparseAri, unparseCops)
+import Data.Conversion.Parser.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
@@ -18,20 +18,20 @@ import Test.HUnit
 import Test.Unparse.Utils (assertUnparseList)
 
 -- | Unparser for COPS format
-unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> String
-unparseCopsTrs trs = case unparseCops trs of
+copsTrsUnparser :: (Eq v, Pretty f, Pretty v) => Trs f v -> String
+copsTrsUnparser trs = case unparseCopsTrs trs of
   Right unparsed -> show unparsed
   Left err -> show err -- qqjf Add error handling
 
 -- | Unparser for ARI format
-unparseAriTrs :: (Eq f, Eq v, Pretty f, Pretty v, Show f) => Trs f v -> String
-unparseAriTrs trs = case unparseAri trs of
+ariTrsUnparser :: (Eq f, Eq v, Pretty f, Pretty v, Show f) => Trs f v -> String
+ariTrsUnparser trs = case unparseAriTrs trs of
   Right unparsed -> show unparsed
   Left err -> show err -- qqjf Add error handling
 
 -- | Tests for converting some example 'Trs's to COPS format
 unparseCopsTrsTests :: Test
-unparseCopsTrsTests = assertUnparseList trss unparseCopsTrs
+unparseCopsTrsTests = assertUnparseList trss copsTrsUnparser
   where
     trss :: [(Trs String String, String, String)]
     trss =
@@ -60,7 +60,7 @@ unparseCopsTrsTests = assertUnparseList trss unparseCopsTrs
 
 -- | Tests for converting some example 'Trs's to ARI format
 unparseAriTrsTests :: Test
-unparseAriTrsTests = assertUnparseList trss unparseAriTrs
+unparseAriTrsTests = assertUnparseList trss ariTrsUnparser
   where
     trss :: [(Trs String String, String, String)]
     trss =

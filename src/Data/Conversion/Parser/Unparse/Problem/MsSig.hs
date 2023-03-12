@@ -11,14 +11,16 @@ where
 
 import Data.Conversion.Parser.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
-import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
+import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep)
 
 -- | Pretty print an 'MsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php).
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 -- function symbols, consistency with rules, type correctness, etc. This should be done separately.
 unparseCopsMsSig :: (Pretty f, Pretty s) => [MsSig f s] -> Doc ann
-unparseCopsMsSig msSigs = prettyBlock "SIG" (vsep $ map prettyCopsMsSig msSigs)
+unparseCopsMsSig msSigs =
+  prettyBlock "SIG" $
+    vsep (emptyDoc : [indent 2 $ prettyCopsMsSig s | s <- msSigs] ++ [emptyDoc])
   where
     -- Pretty print a single 'MsSig'
     prettyCopsMsSig :: (Pretty f, Pretty s) => MsSig f s -> Doc ann

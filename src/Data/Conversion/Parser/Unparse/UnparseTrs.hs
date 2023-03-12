@@ -4,8 +4,8 @@
 --
 -- This module defines functions to output a 'Trs' in COPS and ARI format.
 module Data.Conversion.Parser.Unparse.UnparseTrs
-  ( unparseCops,
-    unparseAri,
+  ( unparseCopsTrs,
+    unparseAriTrs,
   )
 where
 
@@ -22,8 +22,8 @@ import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vsep)
 --
 -- Uses functions 'unparseCopsTrsSig', 'unparseCopsRules', and 'unparseCopsMetaInfo' to
 -- unparse each part of the 'Trs'.
-unparseCops :: (Eq v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
-unparseCops (Trs rs sig meta) = do
+unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
+unparseCopsTrs (Trs rs sig meta) = do
   copsSig <- unparseCopsTrsSig sig rs
   let trsElements = copsSig : catMaybes [unparseCopsRules rs, unparseCopsMetaInfo meta]
   return $ vsep trsElements
@@ -33,7 +33,14 @@ unparseCops (Trs rs sig meta) = do
 --
 -- Uses functions 'unparseAriMetaInfo', 'unparseAriTrsSig', and 'unparseAriRules' to
 -- unparse each part of the 'Trs'.
-unparseAri :: (Pretty f, Pretty v, Eq v, Eq f, Show f) => Trs f v -> Either String (Doc ann)
-unparseAri (Trs rs sig meta) = do
+unparseAriTrs :: (Pretty f, Pretty v, Eq v, Eq f, Show f) => Trs f v -> Either String (Doc ann)
+unparseAriTrs (Trs rs sig meta) = do
   ariSig <- unparseAriTrsSig sig rs
-  return $ vsep $ filterEmptyDocs [fromMaybe emptyDoc (unparseAriMetaInfo meta), pretty "(format TRS)", ariSig, fromMaybe emptyDoc (unparseAriRules rs)]
+  return $
+    vsep $
+      filterEmptyDocs
+        [ fromMaybe emptyDoc (unparseAriMetaInfo meta),
+          pretty "(format TRS)",
+          ariSig,
+          fromMaybe emptyDoc (unparseAriRules rs)
+        ]
