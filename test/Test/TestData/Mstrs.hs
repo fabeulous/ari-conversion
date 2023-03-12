@@ -30,29 +30,29 @@ copsMstrss :: [(String, Mstrs String String String, String, Mstrs String String 
 copsMstrss =
   [ ( "empty COPS MSTRS",
       emptyMstrs,
-      "(SIG )(RULES )",
+      "(SIG \n)\n(RULES )",
       emptyMstrs
     ),
     ( "COPS MSTRS with a comment",
       mstrsWithComment,
-      "(SIG (0 -> Nat))\n(RULES )\n(COMMENT An MSTRS with a comment)",
+      "(SIG \n  (0 -> Nat)\n)\n(RULES )\n(COMMENT \nAn MSTRS with a comment)",
       mstrsWithComment {sorts = Nothing}
     ),
     ( "example ground COPS MSTRS",
       groundMstrs,
-      "(SIG )(RULES a ->b)(COMMENT)",
+      "(SIG \n)\n(RULES \n  a -> b\n)\n(COMMENT \n)",
       groundMstrs
     ),
     ( "example COPS MSTRS without sorts",
       mstrsWithoutSorts,
       "(SIG \n\
-      \(app   List List -> List)\n\
-      \(cons  Nat List -> List)\n\
-      \(nil   -> List)\n\
-      \(s     Nat -> Nat)\n\
-      \(0     -> Nat)\n\
+      \  (app List List -> List)\n\
+      \  (cons Nat List -> List)\n\
+      \  (nil -> List)\n\
+      \  (s Nat -> Nat)\n\
+      \  (0 -> Nat)\n\
       \)\n\
-      \(RULES\n\
+      \(RULES \n\
       \  app(nil,ys) -> ys\n\
       \  app(cons(x,xs),ys) -> cons(x,app(xs,ys))\n\
       \)",
@@ -61,12 +61,12 @@ copsMstrss =
     ( "example COPS MSTRS with unused sorts",
       additionMstrs,
       "(SIG \n\
-      \(+ Nat Nat -> Nat)\n\
-      \(a -> Nat)\n\
-      \(c -> Nat)\n\
-      \(b -> Nat)\n\
+      \  (+ Nat Nat -> Nat)\n\
+      \  (a -> Nat)\n\
+      \  (c -> Nat)\n\
+      \  (b -> Nat)\n\
       \)\n\
-      \(RULES\n\
+      \(RULES \n\
       \  +(a,b) -> c\n\
       \)",
       additionMstrs {sorts = Nothing}
@@ -121,7 +121,7 @@ ariMstrss =
     ),
     ( "ARI MSTRS with a comment",
       mstrsWithComment,
-      "(meta-info (comment \"An MSTRS with a comment\"))(format MSTRS)\n(sort Nat)\n(fun 0 :sort (Nat))",
+      "(meta-info (comment \"An MSTRS with a comment\"))\n(format MSTRS)\n(sort Nat)\n(fun 0 :sort (Nat))",
       mstrsWithComment
     ),
     ( "example ground ARI MSTRS",
@@ -134,8 +134,8 @@ ariMstrss =
     ( "example ARI MSTRS without sorts",
       mstrsWithoutSorts,
       "(format MSTRS)\n\
-      \(sort Nat)\n\
       \(sort List)\n\
+      \(sort Nat)\n\
       \(fun app :sort (List List List))\n\
       \(fun cons :sort (Nat List List))\n\
       \(fun nil :sort (List))\n\
@@ -143,17 +143,17 @@ ariMstrss =
       \(fun 0 :sort (Nat))\n\
       \(rule (app nil ys) ys)\n\
       \(rule (app (cons x xs) ys) (cons x (app xs ys)))",
-      mstrsWithoutSorts {sorts = Just ["Nat", "List"]}
+      mstrsWithoutSorts {sorts = Just ["List", "Nat"]}
     ),
     ( "example ARI MSTRS with unused sorts",
       additionMstrs,
-      "(format MSTRS)(sort Nat)(sort List)(fun + :sort (Nat Nat Nat))(fun a :sort (Nat))(fun c :sort (Nat))(fun b :sort (Nat))(rule (+ a b) c)",
+      "(format MSTRS)\n(sort List)\n(sort Nat)\n(fun + :sort (Nat Nat Nat))\n(fun a :sort (Nat))\n(fun c :sort (Nat))\n(fun b :sort (Nat))\n(rule (+ a b) c)",
       additionMstrs
     ),
     ( "ARI MSTRS for COPS problem #637",
       cops637,
-      "(meta-info (comment \"experiments for [125]\"))\n\
-      \(meta-info (origin \"COPS #637\"))\n\
+      "(meta-info (origin \"COPS #637\"))\n\
+      \(meta-info (comment \"experiments for [125]\"))\n\
       \(meta-info (submitted \"Takahito Aoto\"))\n\
       \(format MSTRS)\n\
       \(sort Nat)\n\
@@ -224,7 +224,7 @@ additionMstrs =
   Mstrs
     { rules = [additionRule],
       signature = additionSig,
-      sorts = Just ["Nat", "List"],
+      sorts = Just ["List", "Nat"],
       metaInfo = emptyMetaInfo
     }
 

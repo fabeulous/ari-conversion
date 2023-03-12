@@ -25,12 +25,12 @@ unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
   where
     metaBlocks :: [Doc ann]
     metaBlocks =
-      filterEmptyDocs
-        [ maybe emptyDoc (\d -> pretty "doi:" <> pretty d) ds,
-          maybe emptyDoc pretty cs,
-          maybe emptyDoc (\org -> pretty "origin:" <+> pretty org) orig,
-          maybe emptyDoc unparseSubmitters sub
-        ]
+      filterEmptyDocs [maybe emptyDoc (\d -> pretty "doi:" <> pretty d) ds]
+        ++ maybe [] (\c -> [pretty c]) cs
+        ++ filterEmptyDocs
+          [ maybe emptyDoc (\org -> pretty "origin:" <+> pretty org) orig,
+            maybe emptyDoc unparseSubmitters sub
+          ]
     -- Unparse submitters as a comma-separated list
     unparseSubmitters :: [String] -> Doc ann
     unparseSubmitters xs = pretty "submitted by:" <+> hsep (punctuate comma $ map pretty xs)
