@@ -9,7 +9,7 @@ module Test.Parse.Utils
   )
 where
 
-import Data.Conversion.Parser.Parse.Utils (Parser)
+import Data.Conversion.Parse.Utils (Parser)
 import Data.Either (isLeft)
 import Data.Text (Text, pack)
 import Data.Void (Void)

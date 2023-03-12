@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parser.Parse.Problem.Rule
+-- Module      : Data.Conversion.Parse.Problem.Rule
 -- Description : Rule parsers
 --
 -- This module defines parsers to parse a single rule and a block of rules.
-module Data.Conversion.Parser.Parse.Problem.Rule
+module Data.Conversion.Parse.Problem.Rule
   ( parseCopsRule,
     parseCopsTrsRules,
     parseCopsMstrsRules,
@@ -13,8 +13,8 @@ module Data.Conversion.Parser.Parse.Problem.Rule
   )
 where
 
-import Data.Conversion.Parser.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
-import Data.Conversion.Parser.Parse.Utils (Parser, lexeme)
+import Data.Conversion.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
+import Data.Conversion.Parse.Utils (Parser, lexeme)
 import Data.Conversion.Problem.Common.Rule (Rule (..), inferRulesSignature)
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
 import Data.Conversion.Problem.Trs.Sig (Sig)

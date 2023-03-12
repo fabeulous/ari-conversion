@@ -5,8 +5,8 @@
 -- This module defines test cases for unparsing 'MetaInfo's to COPS and ARI format
 module Test.Unparse.Problem.MetaInfo (unparseMetaInfoTests) where
 
-import Data.Conversion.Parser.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
+import Data.Conversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparseList)
 

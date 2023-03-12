@@ -10,9 +10,6 @@ module Data.Conversion.Problem.Mstrs.MsSig
   )
 where
 
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
-
 -- | Datatype for the signature of a single function symbol in a many-sorted TRS ('Mstrs').
 --
 -- For example, a function symbol @cons@ which takes a @Nat@ and @List@ and returns a @List@ may be written as

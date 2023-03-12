@@ -6,12 +6,12 @@
 -- from the internal 'Mstrs' representation to COPS and ARI format.
 module Test.Unparse.UnparseMstrs (unparseCopsMstrsTests, unparseAriMstrsTests) where
 
-import Data.Conversion.Parser.Unparse.UnparseMstrs (unparseAriMstrs, unparseCopsMstrs)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
 import Data.Conversion.Problem.Mstrs.Mstrs (Mstrs (..))
+import Data.Conversion.Unparse.UnparseMstrs (unparseAriMstrs, unparseCopsMstrs)
 import Prettyprinter (Pretty)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparseList)

@@ -5,7 +5,7 @@
 -- This module defines test cases for signature parsing functions and for checking signature consistency.
 module Test.Parse.Trs.Sig (sigTests) where
 
-import Data.Conversion.Parser.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
+import Data.Conversion.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
 import Data.Conversion.Problem.Trs.Sig (Sig (..), checkConsistentSig)
 import Data.Either (isLeft, isRight)
 import Test.HUnit

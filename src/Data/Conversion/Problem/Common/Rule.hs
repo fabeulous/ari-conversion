@@ -67,4 +67,4 @@ ruleVars rs = nub $ concatMap (\(Rule l r) -> termVars l ++ termVars r) rs
   where
     termVars :: Term f v -> [v]
     termVars (Var x) = [x]
-    termVars (Fun f ts) = concatMap termVars ts
+    termVars (Fun _ ts) = concatMap termVars ts

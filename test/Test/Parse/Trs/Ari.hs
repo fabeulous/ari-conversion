@@ -6,7 +6,7 @@
 -- It is non-exhaustive, but intended to highlight any obvious errors.
 module Test.Parse.Trs.Ari (parseAriTests) where
 
-import Data.Conversion.Parser.Parse.ParseTrs (parseAriTrs)
+import Data.Conversion.Parse.ParseTrs (parseAriTrs)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))

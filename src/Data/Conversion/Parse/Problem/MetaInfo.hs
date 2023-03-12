@@ -1,17 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parser.Parse.Problem.MetaInfo
+-- Module      : Data.Conversion.Parse.Problem.MetaInfo
 -- Description : Comment parser
 --
 -- This module defines parsers to parse the additional information (comments, author, etc.) of a given TRS.
-module Data.Conversion.Parser.Parse.Problem.MetaInfo
+module Data.Conversion.Parse.Problem.MetaInfo
   ( parseCopsMetaInfo,
     parseAriMetaInfo,
   )
 where
 
-import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parseBlock)
+import Data.Conversion.Parse.Utils (Parser, lexeme, parseBlock)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Text.Megaparsec
   ( between,

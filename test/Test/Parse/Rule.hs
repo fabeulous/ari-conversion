@@ -6,8 +6,8 @@
 -- Tests are non-exhaustive, but cover common cases and some useful checks.
 module Test.Parse.Rule (copsRuleTests, ariRuleTests) where
 
-import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsMstrsRules, parseCopsRule, parseCopsTrsRules)
-import Data.Conversion.Parser.Parse.Utils (Parser)
+import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMstrsRules, parseCopsRule, parseCopsTrsRules)
+import Data.Conversion.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))

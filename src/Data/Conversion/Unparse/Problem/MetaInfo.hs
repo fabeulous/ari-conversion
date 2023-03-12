@@ -1,16 +1,16 @@
 -- |
--- Module      : Data.Conversion.Parser.Unparse.Problem.MetaInfo
+-- Module      : Data.Conversion.Unparse.Problem.MetaInfo
 -- Description : Unparser for MetaInfo
 --
 -- This module defines functions to unparse 'MetaInfo' into the formats expected for the COPS and ARI formats.
-module Data.Conversion.Parser.Unparse.Problem.MetaInfo
+module Data.Conversion.Unparse.Problem.MetaInfo
   ( unparseCopsMetaInfo,
     unparseAriMetaInfo,
   )
 where
 
-import Data.Conversion.Parser.Unparse.Utils (isEmptyDoc, prettyBlock,filterEmptyDocs)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..))
+import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Prettyprinter (Doc, comma, emptyDoc, hsep, parens, pretty, punctuate, vsep, (<+>))
 
 -- | Unparse TRS 'MetaInfo' to fit into a single COPS @COMMENT@ block.

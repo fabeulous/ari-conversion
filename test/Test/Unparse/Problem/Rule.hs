@@ -6,9 +6,9 @@
 -- COPS and ARI formats.
 module Test.Unparse.Problem.Rule (unparseRuleTests) where
 
-import Data.Conversion.Parser.Unparse.Problem.Rule (unparseAriRule, unparseCopsRule)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
+import Data.Conversion.Unparse.Problem.Rule (unparseAriRule, unparseCopsRule)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparseList)
 

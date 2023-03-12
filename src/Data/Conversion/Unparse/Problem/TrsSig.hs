@@ -1,18 +1,18 @@
 -- |
--- Module      : Data.Conversion.Parser.Unparse.Problem.TrsSig
+-- Module      : Data.Conversion.Unparse.Problem.TrsSig
 -- Description : Unparser for TrsSig
 --
 -- This module defines functions to unparse a 'TrsSig' into COPS and ARI format.
-module Data.Conversion.Parser.Unparse.Problem.TrsSig
+module Data.Conversion.Unparse.Problem.TrsSig
   ( unparseCopsTrsSig,
     unparseAriTrsSig,
   )
 where
 
-import Data.Conversion.Parser.Unparse.Utils (prettyBlock)
 import Data.Conversion.Problem.Common.Rule (Rule, inferRulesSignature, ruleVars)
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, hsep, parens, pretty, vsep)
 
 -- | Pretty print a 'TrsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php).

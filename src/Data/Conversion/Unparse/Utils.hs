@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Parser.Unparse.Utils
+-- Module      : Data.Conversion.Unparse.Utils
 -- Description : Utils for unparsing
 --
 -- This module defines helper functions to help with unparsing using Prettyprinter.
-module Data.Conversion.Parser.Unparse.Utils
+module Data.Conversion.Unparse.Utils
   ( isEmptyDoc,
     prettyBlock,
     filterEmptyDocs,

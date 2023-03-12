@@ -5,7 +5,7 @@
 -- This module defines test cases for functions used to parse TRS meta-information (e.g. comments, authors, etc.).
 module Test.Parse.MetaInfo (metaInfoParsingTests) where
 
-import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
+import Data.Conversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)

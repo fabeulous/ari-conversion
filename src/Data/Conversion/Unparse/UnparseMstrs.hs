@@ -1,19 +1,19 @@
 -- |
--- Module      : Data.Conversion.Parser.Unparse.UnparseMstrs
+-- Module      : Data.Conversion.Unparse.UnparseMstrs
 -- Description : Unparser for MSTRSs
 --
 -- This module defines functions to output a 'Mstrs' in COPS and ARI format.
-module Data.Conversion.Parser.Unparse.UnparseMstrs
+module Data.Conversion.Unparse.UnparseMstrs
   ( unparseCopsMstrs,
     unparseAriMstrs,
   )
 where
 
-import Data.Conversion.Parser.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
-import Data.Conversion.Parser.Unparse.Problem.MsSig (unparseAriMsSig, unparseCopsMsSig)
-import Data.Conversion.Parser.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
-import Data.Conversion.Parser.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Data.Conversion.Problem.Mstrs.Mstrs (Mstrs (..))
+import Data.Conversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
+import Data.Conversion.Unparse.Problem.MsSig (unparseAriMsSig, unparseCopsMsSig)
+import Data.Conversion.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
+import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Data.Maybe (catMaybes, fromMaybe)
 import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vcat, vsep)
 
