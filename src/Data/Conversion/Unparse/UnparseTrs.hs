@@ -14,7 +14,7 @@ import Data.Conversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCops
 import Data.Conversion.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
 import Data.Conversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
 import Data.Conversion.Unparse.Utils (filterEmptyDocs)
-import Data.Maybe (catMaybes, fromMaybe)
+import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vsep)
 
 -- | Unparse a first-order TRS from the internal 'Trs' representation into
@@ -25,7 +25,7 @@ import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vsep)
 unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
 unparseCopsTrs (Trs rs sig meta) = do
   copsSig <- unparseCopsTrsSig sig rs
-  let trsElements = copsSig : catMaybes [unparseCopsRules rs, unparseCopsMetaInfo meta]
+  let trsElements = filterEmptyDocs [copsSig, unparseCopsRules rs, unparseCopsMetaInfo meta]
   return $ vsep trsElements
 
 -- | Unparse a first-order TRS from the internal 'Trs' representation into

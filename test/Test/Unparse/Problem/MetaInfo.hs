@@ -16,7 +16,7 @@ unparseMetaInfoTests = TestLabel "unparseMetaInfoTests" $ TestList [unparseCopsM
 
 -- | Tests for converting some example 'MetaInfo's to COPS format 'unparseCopsMetaInfo'
 unparseCopsMetaTests :: Test
-unparseCopsMetaTests = assertUnparseList testMeta (maybe "" show . unparseCopsMetaInfo)
+unparseCopsMetaTests = assertUnparseList testMeta (show . unparseCopsMetaInfo)
   where
     testMeta :: [(MetaInfo, String, String)]
     testMeta = [(m, expected, label ++ " [COPS]") | (label, m, expected, _) <- testMetas]

@@ -19,13 +19,11 @@ import Prettyprinter (Doc, Pretty, emptyDoc, indent, parens, pretty, vsep, (<+>)
 
 -- | Unparse a list of 'Rule's into the expected [COPS format](http://project-coco.uibk.ac.at/problems/trs.php)
 -- separated by newlines. Uses 'unparseCopsRule' to parse individual rules.
---
--- If no rules are given, returns @Nothing@ and otherwise returns @Just rulesBlock@.
-unparseCopsRules :: (Pretty f, Pretty v) => [Rule f v] -> Maybe (Doc ann)
+unparseCopsRules :: (Pretty f, Pretty v) => [Rule f v] -> Doc ann
 unparseCopsRules rs =
   if null rs
-    then Nothing
-    else Just $ prettyBlock "RULES" $ vsep (emptyDoc : [indent 2 $ unparseCopsRule r | r <- rs] ++ [emptyDoc])
+    then prettyBlock "RULES" emptyDoc
+    else prettyBlock "RULES" $ vsep (emptyDoc : [indent 2 $ unparseCopsRule r | r <- rs] ++ [emptyDoc])
 
 -- | Unparse a single COPS rule into format "lhs -> rhs" using function 'unparseTerm'
 --

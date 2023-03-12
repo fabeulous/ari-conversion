@@ -13,7 +13,7 @@ import Data.Conversion.Problem.Common.Rule (Rule, inferRulesSignature, ruleVars)
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Data.Conversion.Unparse.Utils (prettyBlock)
-import Prettyprinter (Doc, Pretty, hsep, parens, pretty, vsep)
+import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
 
 -- | Pretty print a 'TrsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php).
 -- @Right (Doc ann@) indicates a success, and @Left err@ indicates an error due to a variable being in
@@ -33,12 +33,13 @@ import Prettyprinter (Doc, Pretty, hsep, parens, pretty, vsep)
 unparseCopsTrsSig :: (Eq v, Pretty f, Pretty v) => TrsSig f v -> [Rule f v] -> Either String (Doc ann)
 unparseCopsTrsSig trsSig rs = case trsSig of
   Vars vs -> Right $ prettyVars vs
-  FullSig vs fs -> Right $ vsep [prettyVars vs, prettyCopsSig fs]
+  FullSig vs fs -> Right $ vsep [prettyNonEmptyVars vs, prettyCopsSig fs]
   -- qqjf assert that vars are not in sig.
   FunSig fs -> unparseCopsTrsSig (FullSig (ruleVars rs) fs) rs -- Extract variables from TRS rules.
   where
-    prettyVars :: Pretty v => [v] -> Doc ann
-    prettyVars vs = prettyBlock "VAR" (hsep $ map pretty vs)
+    prettyVars, prettyNonEmptyVars :: Pretty v => [v] -> Doc ann
+    prettyVars vs = if null vs then emptyDoc else prettyNonEmptyVars vs
+    prettyNonEmptyVars vs = prettyBlock "VAR" (hsep $ map pretty vs)
     prettyCopsSig :: Pretty f => [Sig f] -> Doc ann
     prettyCopsSig fs = prettyBlock "SIG" (hsep $ map (parens . pretty) fs)
 

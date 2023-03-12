@@ -15,7 +15,7 @@ import Data.Conversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCops
 import Data.Conversion.Unparse.Problem.MsSig (unparseAriMsSig, unparseCopsMsSig)
 import Data.Conversion.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
 import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import Data.Maybe (catMaybes, fromMaybe)
+import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vcat, vsep)
 
 -- | Unparse a many-sorted TRS from the internal 'Mstrs' representation into
@@ -25,7 +25,7 @@ import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vcat, vsep)
 -- unparse each part of the 'Trs'.
 unparseCopsMstrs :: (Pretty f, Pretty v, Pretty s) => Mstrs f v s -> Either String (Doc ann)
 unparseCopsMstrs (Mstrs rs sig _ meta) = do
-  let trsElements = unparseCopsMsSig sig : catMaybes [unparseCopsRules rs, unparseCopsMetaInfo meta]
+  let trsElements = filterEmptyDocs [unparseCopsMsSig sig, unparseCopsRules rs, unparseCopsMetaInfo meta]
   return $ vsep trsElements
 
 -- | Unparse a many-sorted TRS from the internal 'Mstrs' representation into
