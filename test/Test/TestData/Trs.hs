@@ -24,7 +24,7 @@ import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 
 -- | A list of TRSs in internal 'Trs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/trs.php]
 -- to test both parsing and unparsing functions.
--- Has format @(test label, original Trs, ARI string, Trs after unparsing)@.
+-- Has format @(original trs, str := result of parsing trs, result of unparsing str)@.
 --
 -- The result for unparsing might differ from the original TRS if the original TRS signature only specified function symbols.
 copsTrss :: [(String, Trs String String, String, Trs String String)]
@@ -81,7 +81,7 @@ copsTrss =
 
 -- | A list of TRSs in internal 'Trs' format and in (ARI format)[https://ari-informatik.uibk.ac.at/tasks/A/trs.txt]
 -- to test both parsing and unparsing functions.
--- Has format @(test label, original Trs, ARI string, Trs after unparsing)@.
+-- Has format @(original trs, str := result of parsing trs, result of unparsing str)@.
 --
 -- The result for unparsing might differ from the original TRS as ARI TRSs only specify function symbols.
 ariTrss :: [(String, Trs String String, String, Trs String String)]
