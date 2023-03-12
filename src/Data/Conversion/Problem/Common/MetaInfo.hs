@@ -20,8 +20,8 @@ import Prettyprinter (Pretty, pretty, tupled, vsep, (<+>))
 -- As all fields are optional, if no value is given then this is represented by @Nothing@:
 -- an empty entry is represented by @Just ""@ or @Just []@.
 data MetaInfo = MetaInfo
-  { -- | Arbitrary comment(s) that do not fit into the remaining 'MetaInfo' categories. e.g. @["An example TRS"]@
-    comments :: Maybe [String],
+  { -- | Arbitrary comment that does not fit into the remaining 'MetaInfo' categories. e.g. @Just "An example TRS"@
+    comment :: Maybe String,
     -- | The doi of the problem if available. e.g. @"10.1007/11805618_6"@
     doi :: Maybe String,
     -- | The origin of the problem. e.g. @"COPS #20"@
@@ -33,11 +33,11 @@ data MetaInfo = MetaInfo
 
 -- | Default value for an empty 'MetaInfo' object. Can be modified as shown below.
 --
--- >>> newMetaInfo = emptyMetaInfo { comments = Just ["An updated value"] }
+-- >>> newMetaInfo = emptyMetaInfo { comment = Just "An updated value" }
 emptyMetaInfo :: MetaInfo
 emptyMetaInfo =
   MetaInfo
-    { comments = Nothing,
+    { comment = Nothing,
       doi = Nothing,
       origin = Nothing,
       submitted = Nothing

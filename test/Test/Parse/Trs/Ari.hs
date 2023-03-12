@@ -6,7 +6,7 @@
 -- It is non-exhaustive, but intended to highlight any obvious errors.
 module Test.Parse.Trs.Ari (parseAriTests) where
 
-import Data.Conversion.Parser.Parse.ParseTrs (parseAriTrs)
+import Data.Conversion.Parse.ParseTrs (parseAriTrs)
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 import Test.TestData.Trs (ariTrss)

@@ -38,7 +38,7 @@ copsTrss =
       Trs
         { rules = [ruleAToB],
           signature = Vars [],
-          metaInfo = emptyMetaInfo {comments = Just ["submitted by: Person 1"]}
+          metaInfo = emptyMetaInfo {comment = Just "submitted by: Person 1"}
         }
     ),
     ( "COPS TRS with only function symbols specified",
@@ -74,7 +74,7 @@ copsTrss =
         { rules = fullExampleRules,
           signature = FullSig ["x", "y"] [Sig "0" 0, Sig "nats" 0, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2],
           metaInfo =
-            emptyMetaInfo {comments = Just ["doi:10.1007/11805618_6\n[7] Example 2\norigin: COPS #20\nsubmitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama"]}
+            emptyMetaInfo {comment = Just "doi:10.1007/11805618_6\n[7] Example 2\norigin: COPS #20\nsubmitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama"}
         }
     )
   ]
@@ -125,7 +125,7 @@ ariTrss =
       Trs
         { rules = [ruleFxyToY],
           signature = FunSig [Sig "f" 2, Sig "a" 0, Sig "b" 1],
-          metaInfo = emptyMetaInfo {comments = Just ["A TRS (with SIG given)"]}
+          metaInfo = emptyMetaInfo {comment = Just "A TRS (with SIG given)"}
         }
     ),
     ( "ARI TRS with MetaInfo",
@@ -204,7 +204,7 @@ trsFullSig =
   Trs
     { rules = [ruleFxyToY],
       signature = FullSig ["x", "y"] [Sig "f" 2, Sig "a" 0, Sig "b" 1],
-      metaInfo = emptyMetaInfo {comments = Just ["A TRS (with SIG given)"]}
+      metaInfo = emptyMetaInfo {comment = Just "A TRS (with SIG given)"}
     }
 
 -- | Rules list based on COPS problem 20
@@ -224,7 +224,7 @@ fullExampleTrs =
       signature = FunSig [Sig "0" 0, Sig "nats" 0, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2],
       metaInfo =
         emptyMetaInfo
-          { comments = Just ["[7] Example 2"],
+          { comment = Just "[7] Example 2",
             doi = Just "10.1007/11805618_6",
             origin = Just "COPS #20",
             submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"]

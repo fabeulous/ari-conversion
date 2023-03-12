@@ -6,8 +6,8 @@
 -- TRSs from the internal 'Trs' representation to COPS and ARI format.
 module Test.Unparse.UnparseTrs (unparseCopsTrsTests, unparseAriTrsTests) where
 
-import Data.Conversion.Parser.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 import Data.Conversion.Problem.Trs.Trs (Trs (..))
+import Data.Conversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 import Prettyprinter (Pretty)
 import Test.HUnit
 import Test.TestData.Trs (ariTrss, copsTrss)

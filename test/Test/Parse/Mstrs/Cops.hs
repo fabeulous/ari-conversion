@@ -6,7 +6,7 @@
 -- It is non-exhaustive, but intended to highlight any obvious errors.
 module Test.Parse.Mstrs.Cops (parseCopsMstrsTests) where
 
-import Data.Conversion.Parser.Parse.ParseMstrs (parseCopsMstrs)
+import Data.Conversion.Parse.ParseMstrs (parseCopsMstrs)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
@@ -31,7 +31,7 @@ goodCopsMstrsTests = assertParseList "parseCopsMstrs should succeed" wellFormatt
             { rules = [],
               signature = [MsSig "0" ([], "Nat")],
               sorts = Nothing,
-              metaInfo = emptyMetaInfo {comments = Just ["An MSTRS with a comment"]}
+              metaInfo = emptyMetaInfo {comment = Just "An MSTRS with a comment"}
             }
         ),
         ( "(SIG )(RULES a ->b)(COMMENT)",
@@ -39,7 +39,7 @@ goodCopsMstrsTests = assertParseList "parseCopsMstrs should succeed" wellFormatt
             { rules = [Rule {lhs = Var "a", rhs = Var "b"}],
               signature = [],
               sorts = Nothing,
-              metaInfo = emptyMetaInfo {comments = Just [""]}
+              metaInfo = emptyMetaInfo {comment = Just ""}
             }
         ),
         ( "(SIG \n\

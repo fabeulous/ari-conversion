@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parser.Parse.Problem.Term
+-- Module      : Data.Conversion.Parse.Problem.Term
 -- Description : Term, function symbol, and variable parser
 --
 -- This module defines functions to parse terms from a @String@ input.
-module Data.Conversion.Parser.Parse.Problem.Term
+module Data.Conversion.Parse.Problem.Term
   ( parseTerm,
     parseVariable,
     parseFunSymbol,
@@ -15,7 +15,7 @@ module Data.Conversion.Parser.Parse.Problem.Term
 where
 
 import Control.Monad (guard)
-import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, stripSpaces, symbol)
+import Data.Conversion.Parse.Utils (Parser, lexeme, stripSpaces, symbol)
 import Data.Conversion.Problem.Common.Term (Term (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.List (find)

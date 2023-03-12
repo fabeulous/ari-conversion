@@ -5,8 +5,8 @@
 -- This module defines test cases for the functions 'parseTerm' and 'parsePrefixTerm'. Tests are non-exhaustive, but cover common cases and some useful checks.
 module Test.Parse.Term (termTests, prefixTermTests) where
 
-import Data.Conversion.Parser.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
-import Data.Conversion.Parser.Parse.Utils (Parser)
+import Data.Conversion.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
+import Data.Conversion.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Term (Term (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Test.HUnit

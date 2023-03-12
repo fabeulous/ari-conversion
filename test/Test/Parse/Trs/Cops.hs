@@ -6,7 +6,7 @@
 -- It is non-exhaustive, but intended to highlight any obvious errors.
 module Test.Parse.Trs.Cops (parseCopsTests) where
 
-import Data.Conversion.Parser.Parse.ParseTrs (parseCopsTrs)
+import Data.Conversion.Parse.ParseTrs (parseCopsTrs)
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 import Test.TestData.Trs (copsTrss)

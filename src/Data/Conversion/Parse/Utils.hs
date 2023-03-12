@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parser.Parse.Utils
+-- Module      : Data.Conversion.Parse.Utils
 -- Description : Utils for parsing with Megaparsec
 --
 -- This module defines a type synonym 'Parser', whitespace helpers, and reusable helpers to aid parsing with 'Megaparsec'.
-module Data.Conversion.Parser.Parse.Utils
+module Data.Conversion.Parse.Utils
   ( -- * Types
     Parser,
 
