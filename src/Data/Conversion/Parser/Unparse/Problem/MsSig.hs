@@ -9,19 +9,29 @@ module Data.Conversion.Parser.Unparse.Problem.MsSig
   )
 where
 
-import Data.Conversion.Parser.Unparse.Utils (prettyBlock)
+import Data.Conversion.Parser.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
-import Prettyprinter (Doc, Pretty, hsep, parens, pretty, vsep)
+import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
 
 -- | Pretty print an 'MsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php).
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 -- function symbols, consistency with rules, type correctness, etc. This should be done separately.
 unparseCopsMsSig :: (Pretty f, Pretty s) => [MsSig f s] -> Doc ann
-unparseCopsMsSig msSigs = prettyBlock "SIG" (hsep $ map prettyCopsMsSig msSigs)
+unparseCopsMsSig msSigs = prettyBlock "SIG" (vsep $ map prettyCopsMsSig msSigs)
   where
+    -- Pretty print a single 'MsSig'
     prettyCopsMsSig :: (Pretty f, Pretty s) => MsSig f s -> Doc ann
-    prettyCopsMsSig (MsSig fsym (inSorts, outSort)) = (parens . hsep) [pretty fsym, hsep $ map pretty inSorts, pretty "->", pretty outSort]
+    prettyCopsMsSig (MsSig fsym (inSorts, outSort)) =
+      parens $
+        hsep
+          ( filterEmptyDocs
+              [ pretty fsym,
+                if null inSorts then emptyDoc else hsep $ map pretty inSorts,
+                pretty "->",
+                pretty outSort
+              ]
+          )
 
 -- | Pretty print a an 'MsSig' in [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
 -- @Right (Doc ann@) indicates a success, and @Left err@ indicates an error due to 'sorts' being set but incomplete.

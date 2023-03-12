@@ -40,9 +40,15 @@ unparseAriMsSigTests =
 -- Consists of tuples @(test label, sig, COPS format, ARI format)@
 testSigs :: [(String, [MsSig String String], String, String)]
 testSigs =
-  [ ( "Test unparsing a single MSTRS unary function",
+  [ ("Test unparsing an empty MSTRS signature", [], "(SIG )", ""),
+    ( "Test unparsing a single MSTRS unary function",
       [MsSig "f" (["Nat"], "Nat")],
       "(SIG (f Nat -> Nat))",
       "(fun f :sort (Nat Nat))"
+    ),
+    ( "Test unparsing a more complicated signature",
+      [MsSig "f" (["Nat"], "Nat"), MsSig "a" ([], "Nat"), MsSig "g" (["Nat", "List"], "List")],
+      "(SIG (f Nat -> Nat)\n(a -> Nat)\n(g Nat List -> List))",
+      "(fun f :sort (Nat Nat))\n(fun a :sort (Nat))\n(fun g :sort (Nat List List))"
     )
   ]
