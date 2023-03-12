@@ -1,15 +1,13 @@
 -- |
--- Module      : Test.TestData
--- Description : Example data for tests
+-- Module      : Test.TestData.Trs
+-- Description : Example data for Trs tests
 --
--- This module defines test data which is used for testing both parsing and unparsing functions
--- to have a single source of truth. Exported values can tehn be imported in 'Test.Parse' and 'Test.Unparse'.
-module Test.TestData
+-- This module defines test data which is used for testing both parsing and unparsing functions for 'Trs's.
+-- Exported values can then be imported in 'Test.Parse' and 'Test.Unparse'.
+module Test.TestData.Trs
   ( -- * Test data for tests on 'Trs'
     copsTrss,
     ariTrss,
-
-    -- * Example TRSs
   )
 where
 
@@ -21,7 +19,7 @@ import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 
 ------------------------
---- TRSs ---------------
+--- TRS Lists ----------
 ------------------------
 
 -- | A list of TRSs in internal 'Trs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/trs.php]
@@ -152,13 +150,8 @@ ariTrss =
   ]
 
 ------------------------
---- Rules --------------
+--- TRSs ---------------
 ------------------------
-ruleFxyToGc, ruleAToB, ruleFxyToY, ruleBzToA :: Rule String String
-ruleFxyToGc = Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Fun "c" []]}
-ruleAToB = Rule {lhs = Fun "a" [], rhs = Fun "b" []}
-ruleFxyToY = Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}
-ruleBzToA = Rule {lhs = Fun "b" [Var "z"], rhs = Fun "a" []}
 
 -- | A TRS for testing with only variables specified in the signature with 'Vars'
 trsVarSig :: Trs String String
@@ -237,3 +230,12 @@ fullExampleTrs =
             submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"]
           }
     }
+
+------------------------
+--- Rules --------------
+------------------------
+ruleFxyToGc, ruleAToB, ruleFxyToY, ruleBzToA :: Rule String String
+ruleFxyToGc = Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Fun "c" []]}
+ruleAToB = Rule {lhs = Fun "a" [], rhs = Fun "b" []}
+ruleFxyToY = Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}
+ruleBzToA = Rule {lhs = Fun "b" [Var "z"], rhs = Fun "a" []}

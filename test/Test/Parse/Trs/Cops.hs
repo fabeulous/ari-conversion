@@ -9,7 +9,7 @@ module Test.Parse.Trs.Cops (parseCopsTests) where
 import Data.Conversion.Parser.Parse.ParseTrs (parseCopsTrs)
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
-import Test.TestData (copsTrss)
+import Test.TestData.Trs (copsTrss)
 
 -- | Test cases for 'parseCopsTrs' including cases which should be parseable and cases which should fail
 parseCopsTests :: Test

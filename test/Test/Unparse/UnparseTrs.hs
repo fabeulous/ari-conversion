@@ -10,7 +10,7 @@ import Data.Conversion.Parser.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Prettyprinter (Pretty)
 import Test.HUnit
-import Test.TestData (ariTrss, copsTrss)
+import Test.TestData.Trs (ariTrss, copsTrss)
 import Test.Unparse.Utils (assertUnparseList)
 
 -- | Unparser for COPS format
