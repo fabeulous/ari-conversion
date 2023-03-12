@@ -41,7 +41,7 @@ parseCopsTrsTests = assertParseList "parseCopsTrs should succeed" wellFormattedT
           Trs
             { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}],
               signature = FullSig ["x", "y"] [Sig "f" 2, Sig "a" 0, Sig "b" 1],
-              metaInfo = emptyMetaInfo {comments = Just ["A TRS (with SIG given)"]}
+              metaInfo = emptyMetaInfo {comment = Just "A TRS (with SIG given)"}
             }
         ),
         ( "(RULES f(x)->x)",

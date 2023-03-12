@@ -27,7 +27,7 @@ unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
     metaBlocks =
       filterEmptyDocs
         [ maybe emptyDoc (\d -> pretty "doi:" <> pretty d) ds,
-          maybe emptyDoc (vsep . map pretty) cs,
+          maybe emptyDoc pretty cs,
           maybe emptyDoc (\org -> pretty "origin:" <+> pretty org) orig,
           maybe emptyDoc unparseSubmitters sub
         ]
@@ -37,7 +37,7 @@ unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
 
 -- | Unparse 'MetaInfo' into ARI format. See the tests for more examples.
 --
--- >>> unparseAriMetaInfo $ emptyMetaInfo { comments = Just ["[7] Example 2"], doi = Just "10.1007/11805618_6", origin = Just "COPS #20",submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"] }
+-- >>> unparseAriMetaInfo $ emptyMetaInfo { comment = Just "[7] Example 2", doi = Just "10.1007/11805618_6", origin = Just "COPS #20",submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"] }
 -- (meta-info (origin "COPS #20"))
 -- (meta-info (doi "10.1007/11805618_6"))
 -- (meta-info (comment "[7] Example 2"))
@@ -54,16 +54,12 @@ unparseAriMetaInfo (MetaInfo cs ds orig sub) =
     metaBlocks :: [Doc ann]
     metaBlocks =
       filterEmptyDocs
-        ( [ maybe emptyDoc (metaBlock "origin") orig,
-            maybe emptyDoc (metaBlock "doi") ds
-          ]
-            ++ unparsedComments
-            ++ [maybe emptyDoc unparseSubmitters sub]
-        )
-    unparsedComments :: [Doc ann]
-    unparsedComments = case cs of
-      Nothing -> []
-      Just xs -> map (metaBlock "comment") xs
+        [ maybe emptyDoc (metaBlock "origin") orig,
+          maybe emptyDoc (metaBlock "doi") ds,
+          maybe emptyDoc (metaBlock "comment") cs,
+          maybe emptyDoc unparseSubmitters sub
+        ]
+
     -- Unparse submitters as a space-separated list of strings
     unparseSubmitters :: [String] -> Doc ann
     unparseSubmitters xs = metaBlock "submitted" (hsep $ map (pretty . show) xs)

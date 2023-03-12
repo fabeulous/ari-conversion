@@ -31,7 +31,7 @@ goodAriMstrsTests = assertParseList "parseAriMstrs should succeed" wellFormatted
             { rules = [],
               signature = [],
               sorts = Just ["Nat"],
-              metaInfo = emptyMetaInfo {comments = Just ["An MSTRS (with no rules)"]}
+              metaInfo = emptyMetaInfo {comment = Just "An MSTRS (with no rules)"}
             }
         ),
         ( "(format MSTRS)(sort Nat)(fun + :sort (Nat Nat Nat))(fun a :sort (Nat))(fun c :sort (Nat))(fun b :sort (Nat))(rule (+ a b) c)",
@@ -80,7 +80,7 @@ goodAriMstrsTests = assertParseList "parseAriMstrs should succeed" wellFormatted
               sorts = Just ["Nat", "Tree"],
               metaInfo =
                 emptyMetaInfo
-                  { comments = Just ["experiments for [125]"],
+                  { comment = Just "experiments for [125]",
                     doi = Nothing,
                     origin = Just "COPS #637",
                     submitted = Just ["Takahito Aoto"]

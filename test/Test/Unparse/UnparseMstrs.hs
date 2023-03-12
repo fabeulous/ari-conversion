@@ -121,5 +121,5 @@ mstrsCops637 =
           MsSig "sum" (["Tree"], "Nat")
         ],
       sorts = Nothing,
-      metaInfo = emptyMetaInfo {comments = Just ["experiments for [125]"], origin = Just "COPS #637", submitted = Just ["Takahito Aoto"]}
+      metaInfo = emptyMetaInfo {comment = Just "experiments for [125]", origin = Just "COPS #637", submitted = Just ["Takahito Aoto"]}
     }

@@ -2,7 +2,7 @@
 -- Module      : Test.Parse.MetaInfo
 -- Description : Parsing tests for MetaInfo
 --
--- This module defines test cases for functions used to parse TRS meta-information (e.g. comments, authors, etc.).
+-- This module defines test cases for functions used to parse TRS meta-information (e.g. comment, authors, etc.).
 module Test.Parse.MetaInfo (metaInfoParsingTests) where
 
 import Data.Conversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
@@ -22,16 +22,15 @@ parseAriMetaTests = assertParseList "parseAriMetaInfo should succeed" validMetaI
     validMetaInfo =
       [ ("(meta-info (origin \"COPS #20\"))", emptyMetaInfo {origin = Just "COPS #20"}),
         ("(meta-info ( doi \"10.1007/11805618_6\"  )  )", emptyMetaInfo {doi = Just "10.1007/11805618_6"}),
-        ("(meta-info (comment \"C1\"))\n(meta-info (comment \"C2\"))", emptyMetaInfo {comments = Just ["C1", "C2"]}),
         ("(meta-info (submitted \"Person 1\" \"Person-2\"))", emptyMetaInfo {submitted = Just ["Person 1", "Person-2"]}),
-        ("(meta-info (comment \"Coment with (parentheses))\"))", emptyMetaInfo {comments = Just ["Coment with (parentheses))"]}),
+        ("(meta-info (comment \"Coment with (parentheses))\"))", emptyMetaInfo {comment = Just "Coment with (parentheses))"}),
         ("", emptyMetaInfo),
         ( "(meta-info (origin \"COPS #20\"))\
-          \ (meta-info (comment \"C1\"))\
+          \ (meta-info (comment \"comment\"))\
           \ (meta-info (submitted   \"Person 1\")) \
-          \ (meta-info (comment \"\"))",
+          \ (meta-info (comment \"comment\"))",
           emptyMetaInfo
-            { comments = Just ["C1", ""],
+            { comment = Just "comment",
               origin = Just "COPS #20",
               submitted = Just ["Person 1"]
             }
@@ -61,10 +60,10 @@ parseCopsMetaTests = assertParseList "parseCopsMetaInfo should succeed" validMet
   where
     validMetaInfo :: [(String, MetaInfo)]
     validMetaInfo =
-      [ ("  some example comment  ", emptyMetaInfo {comments = Just ["  some example comment  "]}),
-        ("comment (with parentheses)", emptyMetaInfo {comments = Just ["comment (with parentheses)"]}),
-        ("comment (with (nested parentheses) and \\ escaped \n symbols)", emptyMetaInfo {comments = Just ["comment (with (nested parentheses) and \\ escaped \n symbols)"]}),
-        ("comment \"with quotation marks\"", emptyMetaInfo {comments = Just ["comment \"with quotation marks\""]}),
-        ("", emptyMetaInfo {comments = Just [""]}),
-        (" ", emptyMetaInfo {comments = Just [" "]})
+      [ ("  some example comment  ", emptyMetaInfo {comment = Just "  some example comment  "}),
+        ("comment (with parentheses)", emptyMetaInfo {comment = Just "comment (with parentheses)"}),
+        ("comment (with (nested parentheses) and \\ escaped \n symbols)", emptyMetaInfo {comment = Just "comment (with (nested parentheses) and \\ escaped \n symbols)"}),
+        ("comment \"with quotation marks\"", emptyMetaInfo {comment = Just "comment \"with quotation marks\""}),
+        ("", emptyMetaInfo {comment = Just ""}),
+        (" ", emptyMetaInfo {comment = Just " "})
       ]

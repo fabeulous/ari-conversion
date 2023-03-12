@@ -33,7 +33,7 @@ parseAriTrsTests = assertParseList "parseAriTrs should succeed" wellFormattedTrs
           Trs
             { rules = [Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}],
               signature = FunSig [Sig "f" 1],
-              metaInfo = emptyMetaInfo {comments = Just ["A simple TRS"]}
+              metaInfo = emptyMetaInfo {comment = Just "A simple TRS"}
             }
         ),
         ( "(format TRS)", -- Minimal definition
@@ -71,7 +71,7 @@ parseAriTrsTests = assertParseList "parseAriTrs should succeed" wellFormattedTrs
               signature = FunSig [Sig "0" 0, Sig "nats" 0, Sig "hd" 1, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2],
               metaInfo =
                 emptyMetaInfo
-                  { comments = Just ["[7] Example 2"],
+                  { comment = Just "[7] Example 2",
                     doi = Just "10.1007/11805618_6",
                     origin = Just "COPS #20",
                     submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"]

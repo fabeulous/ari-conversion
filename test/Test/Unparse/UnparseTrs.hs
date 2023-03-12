@@ -135,7 +135,7 @@ trsFullSig =
   Trs
     { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}],
       signature = FullSig ["x", "y"] [Sig "f" 2, Sig "a" 0, Sig "b" 1],
-      metaInfo = emptyMetaInfo {comments = Just ["A TRS (with SIG given)"]}
+      metaInfo = emptyMetaInfo {comment = Just "A TRS (with SIG given)"}
     }
 
 -- | A TRS for testing with just function symbols specified with 'FunSig'
@@ -151,7 +151,7 @@ fullExampleTrs =
       signature = FunSig [Sig "0" 0, Sig "nats" 0, Sig "s" 1, Sig "tl" 1, Sig "inc" 1, Sig ":" 2],
       metaInfo =
         emptyMetaInfo
-          { comments = Just ["[7] Example 2"],
+          { comment = Just "[7] Example 2",
             doi = Just "10.1007/11805618_6",
             origin = Just "COPS #20",
             submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"]

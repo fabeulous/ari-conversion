@@ -4,7 +4,7 @@
 -- Module      : Data.Conversion.Parse.Problem.MetaInfo
 -- Description : Comment parser
 --
--- This module defines parsers to parse the additional information (comments, author, etc.) of a given TRS.
+-- This module defines parsers to parse the additional information (comment, author, etc.) of a given TRS.
 module Data.Conversion.Parse.Problem.MetaInfo
   ( parseCopsMetaInfo,
     parseAriMetaInfo,
@@ -30,8 +30,8 @@ import Text.Megaparsec.Char (char, spaceChar)
 -- qqjf should be updated to infer structure from comments (e.g. author, source, etc.).
 parseCopsMetaInfo :: Parser MetaInfo
 parseCopsMetaInfo = do
-  comment <- parseComment
-  return $ emptyMetaInfo {comments = Just [comment]}
+  cs <- parseComment
+  return $ emptyMetaInfo {comment = Just cs}
 
 -- Parser to parse a string comment between two outermost parentheses.
 -- Calls itself recursively to allow for nested parentheses inside comments.
@@ -82,24 +82,25 @@ parseAriMetaInfo = go emptyMetaInfo
 -- qqjf Currently overwrites duplicate doi, origin, and submitted values.
 -- I was unsure what the desired behaviour is here.
 parseAriMetaInfoBlock :: MetaInfo -> Parser MetaInfo
-parseAriMetaInfoBlock meta@(MetaInfo oldComments _ _ _) = lexeme (try parseAriComment <|> try parseDoi <|> try parseOrigin <|> try parseSubmitters) <?> "meta-info"
+parseAriMetaInfoBlock meta =
+  lexeme
+    ( try parseAriComment
+        <|> try parseDoi
+        <|> try parseOrigin
+        <|> try parseSubmitters
+    )
+    <?> "meta-info"
   where
-    parseAriComment :: Parser MetaInfo
+    parseAriComment, parseDoi, parseOrigin, parseSubmitters :: Parser MetaInfo
     parseAriComment = do
-      comment <- parseCommentBlock "comment"
-      let newComments = case oldComments of
-            Nothing -> Just [comment]
-            Just cs -> Just $ cs ++ [comment] -- Append new comment to comments list qqjf
-      return $ meta {comments = newComments}
-    parseDoi :: Parser MetaInfo
+      newComment <- parseCommentBlock "comment"
+      return $ meta {comment = Just newComment} -- Overwrite old comment qqjf
     parseDoi = do
       newDoi <- parseCommentBlock "doi"
       return $ meta {doi = Just newDoi} -- Overwrite old doi qqjf
-    parseOrigin :: Parser MetaInfo
     parseOrigin = do
       newOrigin <- parseCommentBlock "origin"
-      return $ meta {origin = Just newOrigin} -- Overwrite old origin qqjf
-    parseSubmitters :: Parser MetaInfo
+      return $ meta {origin = Just newOrigin} -- Overwrite old origin qqjf 
     parseSubmitters = do
       submitters <- lexeme $ parseBlock "submitted" (parseSubmitterName `sepBy` some spaceChar)
       return $ meta {submitted = Just submitters}
