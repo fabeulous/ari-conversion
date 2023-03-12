@@ -22,12 +22,3 @@ Run `stack test`
 ### Create Documentation
 
 Run `stack hoogle --server --no-haddock-deps [--rebuild]` and navigate to [localhost:8080](http://localhost:8080/)
-
-### hie generation
-
-Uses package [implicit-hie](https://github.com/Avi-D-coder/implicit-hie) to generate the `hie.yaml` file. Needed to enable module discovery in VS Code on Windows.
-
-```
-stack install implicit-hie # Run in root directory
-gen-hie > hie.yaml
-```

@@ -9,9 +9,11 @@ import Test.Parse.Trs.Ari (parseAriTests)
 import Test.Parse.Trs.Cops (parseCopsTests)
 import Test.Parse.Trs.Sig (sigTests)
 import Test.Unparse.Problem.MetaInfo (unparseMetaInfoTests)
+import Test.Unparse.Problem.MsSig (unparseMsSigTests)
 import Test.Unparse.Problem.Rule (unparseRuleTests)
 import Test.Unparse.Problem.Term (unparseTermTests)
 import Test.Unparse.Problem.TrsSig (unparseSigTests)
+import Test.Unparse.UnparseMstrs (unparseAriMstrsTests, unparseCopsMstrsTests)
 import Test.Unparse.UnparseTrs (unparseAriTrsTests, unparseCopsTrsTests)
 
 -- | The testing entry point. Runs each test in turn and logs output to the console.
@@ -51,9 +53,12 @@ unparsingTests = do
       TestList
         [ unparseTermTests,
           unparseSigTests,
+          unparseMsSigTests,
           unparseMetaInfoTests,
           unparseRuleTests,
           unparseCopsTrsTests,
-          unparseAriTrsTests
+          unparseAriTrsTests,
+          unparseAriMstrsTests,
+          unparseCopsMstrsTests
         ]
   putStrLn "---"

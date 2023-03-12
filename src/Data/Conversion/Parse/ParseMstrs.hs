@@ -1,19 +1,19 @@
 -- |
--- Module      : Data.Conversion.Parser.Parse.ParseMstrs
+-- Module      : Data.Conversion.Parse.ParseMstrs
 -- Description : Functions to parse MSTRSs
 --
 -- This module defines functions to parse a many-sorted TRS in COPS and ARI format.
-module Data.Conversion.Parser.Parse.ParseMstrs
+module Data.Conversion.Parse.ParseMstrs
   ( parseCopsMstrs,
     parseAriMstrs,
   )
 where
 
-import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
-import Data.Conversion.Parser.Parse.Problem.MsSig (parseAriMsSig, parseCopsMsSigs)
-import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsMstrsRules)
-import Data.Conversion.Parser.Parse.Problem.Term (parseFunSymbol)
-import Data.Conversion.Parser.Parse.Utils (Parser, parseBlock, stripSpaces)
+import Data.Conversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
+import Data.Conversion.Parse.Problem.MsSig (parseAriMsSig, parseCopsMsSigs)
+import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMstrsRules)
+import Data.Conversion.Parse.Problem.Term (parseFunSymbol)
+import Data.Conversion.Parse.Utils (Parser, parseBlock, stripSpaces)
 import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
 import Data.Conversion.Problem.Mstrs.Mstrs (Mstrs (..))

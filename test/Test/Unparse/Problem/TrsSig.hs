@@ -5,17 +5,17 @@
 -- This module defines test cases for unparsing 'TrsSig's to COPS and ARI format
 module Test.Unparse.Problem.TrsSig (unparseSigTests) where
 
-import Data.Conversion.Parser.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparse)
 
 -- | Tests for unparsing 'TrsSig's into COPS format and ARI format
 unparseSigTests :: Test
-unparseSigTests = TestList [unparseCopsSigTests, unparseAriSigTests]
+unparseSigTests = TestLabel "unparseSigTests" $ TestList [unparseCopsSigTests, unparseAriSigTests]
 
 -- | Tests for converting some example 'TrsSig's to COPS format 'unparseCopsTrsSig'
 unparseCopsSigTests :: Test

@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Parser.Unparse.Problem.Term
+-- Module      : Data.Conversion.Unparse.Problem.Term
 -- Description : Unparser for terms
 --
 -- This module defines functions to unparse terms into prefix and applicative formats.
-module Data.Conversion.Parser.Unparse.Problem.Term
+module Data.Conversion.Unparse.Problem.Term
   ( unparseTerm,
     unparsePrefixTerm,
   )

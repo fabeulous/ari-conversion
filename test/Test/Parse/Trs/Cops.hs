@@ -6,7 +6,7 @@
 -- It is non-exhaustive, but intended to highlight any obvious errors.
 module Test.Parse.Trs.Cops (parseCopsTests) where
 
-import Data.Conversion.Parser.Parse.ParseTrs (parseCopsTrs)
+import Data.Conversion.Parse.ParseTrs (parseCopsTrs)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
@@ -41,7 +41,7 @@ parseCopsTrsTests = assertParseList "parseCopsTrs should succeed" wellFormattedT
           Trs
             { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "y"}],
               signature = FullSig ["x", "y"] [Sig "f" 2, Sig "a" 0, Sig "b" 1],
-              metaInfo = emptyMetaInfo {comments = Just ["A TRS (with SIG given)"]}
+              metaInfo = emptyMetaInfo {comment = Just "A TRS (with SIG given)"}
             }
         ),
         ( "(RULES f(x)->x)",

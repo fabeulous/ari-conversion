@@ -1,33 +1,33 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parser.Parse.ParseTrs
+-- Module      : Data.Conversion.Parse.ParseTrs
 -- Description : Parser for first-order TRSs
 --
 -- This module defines functions to parse a first-order TRS in COPS and ARI format.
-module Data.Conversion.Parser.Parse.ParseTrs
+module Data.Conversion.Parse.ParseTrs
   ( parseCopsTrs,
     parseAriTrs,
   )
 where
 
-import Data.Text (pack)
-import Data.Conversion.Parser.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
-import Data.Conversion.Parser.Parse.Problem.Rule (parseAriRule, parseCopsTrsRules)
-import Data.Conversion.Parser.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
-import Data.Conversion.Parser.Parse.Problem.Term (parseVariable)
-import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
+import Data.Conversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
+import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsTrsRules)
+import Data.Conversion.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
+import Data.Conversion.Parse.Problem.Term (parseVariable)
+import Data.Conversion.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
 import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Data.Maybe (fromMaybe)
+import Data.Text (pack)
 import Text.Megaparsec
   ( many,
     optional,
     try,
     (<|>),
   )
-import Text.Megaparsec.Char ( string)
+import Text.Megaparsec.Char (string)
 
 -- | Parse a first-order TRS in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php):
 -- see the COCO website for details on the grammar and allowed characters and the tests for more examples.

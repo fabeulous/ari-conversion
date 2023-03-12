@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Parser.Parse.Problem.MsSig
+-- Module      : Data.Conversion.Parse.Problem.MsSig
 -- Description : Parser for 'MsSig'
 --
 -- This module defines functions to parse an MSTRS signature from a @String@ input.
-module Data.Conversion.Parser.Parse.Problem.MsSig
+module Data.Conversion.Parse.Problem.MsSig
   ( parseCopsMsSigs,
     parseCopsMsSig,
     parseAriMsSig,
@@ -11,8 +11,8 @@ module Data.Conversion.Parser.Parse.Problem.MsSig
 where
 
 import Control.Monad (guard)
-import Data.Conversion.Parser.Parse.Problem.Term (parseFunSymbol)
-import Data.Conversion.Parser.Parse.Utils (Parser, lexeme, parens, stripSpaces)
+import Data.Conversion.Parse.Problem.Term (parseFunSymbol)
+import Data.Conversion.Parse.Utils (Parser, lexeme, parens, stripSpaces)
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
 import Data.Text (pack)
 import Text.Megaparsec (many, sepBy, some, (<?>))

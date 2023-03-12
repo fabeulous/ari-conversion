@@ -10,10 +10,13 @@ where
 
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo)
 import Data.Conversion.Problem.Common.Rule (Rule)
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig) 
+import Data.Conversion.Problem.Mstrs.MsSig (MsSig)
 
 -- | Datatype for a many-sorted term rewriting system (MSTRS).
 -- Function symbols have type @f@, variables have type @v@, and term sorts have type @s@ in the system.
+--
+-- Specifying a list of 'sorts' is left optional deliberately to support different formats.
+-- The sorts can then be inferred from the signature when pretty-printing the MSTRS if needed (see 'inferSorts').
 data Mstrs f v s = Mstrs
   { -- | A list of the MSTRS rewrite rules
     rules :: [Rule f v],

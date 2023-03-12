@@ -6,14 +6,14 @@
 -- prefix format.
 module Test.Unparse.Problem.Term (unparseTermTests) where
 
-import Data.Conversion.Parser.Unparse.Problem.Term (unparsePrefixTerm, unparseTerm)
 import Data.Conversion.Problem.Common.Term (Term (..))
+import Data.Conversion.Unparse.Problem.Term (unparsePrefixTerm, unparseTerm)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparseList)
 
 -- | Tests for unparsing 'Term's into COPS format and ARI format
 unparseTermTests :: Test
-unparseTermTests = TestList [unparseAppTermTests, unparsePrefixTermTests]
+unparseTermTests = TestLabel "unparseTermTests" $ TestList [unparseAppTermTests, unparsePrefixTermTests]
 
 -- | Tests for converting some example 'Term's to applicative notation using 'unparseTerm'
 unparseAppTermTests :: Test
@@ -27,7 +27,7 @@ unparsePrefixTermTests :: Test
 unparsePrefixTermTests = assertUnparseList testTerms (show . unparsePrefixTerm)
   where
     testTerms :: [(Term String String, String, String)]
-    testTerms = [(t, expected, label  ++ " [prefix]") | (label, t, _, expected) <- exampleTerms]
+    testTerms = [(t, expected, label ++ " [prefix]") | (label, t, _, expected) <- exampleTerms]
 
 ------------------------
 --- Test data ----------

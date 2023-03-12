@@ -5,7 +5,7 @@
 -- This module defines test cases for signature parsing functions for MSTRSs.
 module Test.Parse.Mstrs.MsSig (msSigTests) where
 
-import Data.Conversion.Parser.Parse.Problem.MsSig (parseAriMsSig, parseCopsMsSig)
+import Data.Conversion.Parse.Problem.MsSig (parseAriMsSig, parseCopsMsSig)
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
