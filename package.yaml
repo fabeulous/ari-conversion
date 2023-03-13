@@ -11,16 +11,16 @@ extra-source-files:
   - CHANGELOG.md
 
 # Metadata used when publishing your package
-synopsis:  TRS format converter
+synopsis: TRS format converter
 # category:            Web
 
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description: 
+description:
   Package to convert between the COPS and ARI rewriting problem formats.
-  
-  Please see the README on GitHub at <https://github.com/j-f-ox/trs-conversion#readme>
+
+  See the README on GitHub at <https://github.com/j-f-ox/trs-conversion#readme> for more information.
 
 dependencies:
   - base >= 4.7 && < 5
