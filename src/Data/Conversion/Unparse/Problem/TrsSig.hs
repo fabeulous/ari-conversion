@@ -10,8 +10,7 @@ module Data.Conversion.Unparse.Problem.TrsSig
 where
 
 import Data.Conversion.Problem.Common.Rule (Rule, inferRulesSignature, ruleVars)
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import Data.Conversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
 

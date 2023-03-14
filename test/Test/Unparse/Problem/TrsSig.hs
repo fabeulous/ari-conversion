@@ -7,8 +7,7 @@ module Test.Unparse.Problem.TrsSig (unparseSigTests) where
 
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import Data.Conversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparse)

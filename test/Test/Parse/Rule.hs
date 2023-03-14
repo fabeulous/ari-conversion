@@ -11,8 +11,7 @@ import Data.Conversion.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
 import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 

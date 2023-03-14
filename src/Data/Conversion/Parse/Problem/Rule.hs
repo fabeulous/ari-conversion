@@ -17,8 +17,7 @@ import Data.Conversion.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTerm
 import Data.Conversion.Parse.Utils (Parser, lexeme)
 import Data.Conversion.Problem.Common.Rule (Rule (..), inferRulesSignature)
 import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
-import Data.Conversion.Problem.Trs.Sig (Sig)
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Problem.Trs.TrsSig (Sig, TrsSig (..))
 import Text.Megaparsec (many, some, (<?>))
 import Text.Megaparsec.Char (spaceChar, string)
 

@@ -2,9 +2,11 @@
 -- Module      : Data.Conversion.Problem.Trs.Sig
 -- Description : Signature type definition
 --
--- This module contains the 'Sig' type definition and helper functions for the signature of first-order term rewriting systems.
+-- This module contains the 'Sig' type definition and helper functions for
+-- the signature of first-order term rewriting systems. @Sig(..)@ is re-exported
+-- from 'TrsSig' so only import this module if 'TrsSig' is not needed.
 module Data.Conversion.Problem.Trs.Sig
-  ( -- * Untyped Signature datatype
+  ( -- * Untyped Signature datatype.
     Sig (..),
 
     -- * Helper functions
@@ -45,4 +47,4 @@ checkConsistentSig sig =
 
 -- | Make 'Sig' an instance of @Pretty@
 instance (Pretty f) => Pretty (Sig f) where
-  pretty (Sig fsym arity) =  pretty fsym <+> pretty arity
+  pretty (Sig fsym arity) = pretty fsym <+> pretty arity

@@ -4,13 +4,22 @@
 --
 -- This module contains the 'Trs' type definition for first-order term rewriting systems.
 module Data.Conversion.Problem.Trs.Trs
-  ( Trs (..),
+  ( -- * TRS Datatype
+    Trs (..),
+
+    -- * Reexports needed to construct a TRS
+    Rule (..),
+    Term (..),
+    TrsSig (..),
+    Sig (..),
+    MetaInfo (..),
   )
 where
 
-import Data.Conversion.Problem.Common.MetaInfo (MetaInfo)
-import Data.Conversion.Problem.Common.Rule (Rule)
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig)
+import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..))
+import Data.Conversion.Problem.Common.Rule (Rule (..))
+import Data.Conversion.Problem.Common.Term (Term (..))
+import Data.Conversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 
 -- | Datatype for first-order term rewriting systems (TRSs).
 -- Function symbols have type @f@ and variables have type @v@ in the system.

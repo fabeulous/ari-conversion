@@ -7,10 +7,13 @@
 module Data.Conversion.Problem.Trs.TrsSig
   ( -- * Untyped Signature datatype
     TrsSig (..),
+
+    -- * Reexports
+    Sig (..),
   )
 where
 
-import Data.Conversion.Problem.Trs.Sig (Sig)
+import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Prettyprinter (Pretty, pretty, (<+>))
 
 -- | Datatype for the signature of a general first-order TRS.
