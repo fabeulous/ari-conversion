@@ -14,7 +14,8 @@ import Text.Megaparsec (eof, errorBundlePretty, parse)
 -- > stack build
 -- > stack exec trs-conversion-exe
 --
--- Currently contains a simple hard-coded example to illustrate parsing and unparsing functionality.
+-- Currently just contains some simple hard-coded examples to illustrate
+-- parsing and unparsing functionality.
 main :: IO ()
 main = do
   -- Parse and unparse inputTrs

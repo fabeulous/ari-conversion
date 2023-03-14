@@ -12,14 +12,17 @@ Repository for term rewriting system (TRS) format conversion as part of the [ARI
 - [Implementation](#implementation)
   - [Dependencies](#dependencies)
   - [Examples](#examples)
+    - [Running a Parser](#running-a-parser)
+    - [Testing a Parser](#testing-a-parser)
+    - [Unparsing a TRS](#unparsing-a-trs)
 - [Architecture](#architecture)
   - [Extensibility](#extensibility)
-    - [Adding a New Conversion](#adding-a-new-format)
     - [Adding a New Problem Type](#adding-a-new-problem-type)
+    - [Adding a New Conversion Format](#adding-a-new-conversion-format)
   - [Limitations](#limitations)
   - [Disclaimer](#disclaimer)
 
-<small style="font-size: 9px"><i>Table of contents generated with <a href='http://ecotrust-canada.github.io/markdown-toc/'>markdown-toc</a>.</i></small>
+<small style="font-size: 7px"><i>Table of contents generated with <a href='http://ecotrust-canada.github.io/markdown-toc/'>markdown-toc</a>.</i></small>
 
 ---
 
@@ -79,7 +82,7 @@ Many examples of expected input and output can be found in the [tests](test/Spec
 
 ##### Running a Parser
 
-The following function `parseCops` can be used to parse a `String` into a `Trs`, for example by calling `parseCops "(VAR x y)(RULES  f(x,y) -> g(c))"`.
+The following function `parsingExample` can be used to parse a `String` into a `Trs`, for example by calling `parsingExample "(VAR x y)(RULES  f(x,y) -> g(c))"`.
 
 ```
 
@@ -88,17 +91,19 @@ import Data.Conversion.Problem.Trs.Trs (Trs)
 import Data.Text (pack)
 import Text.Megaparsec (errorBundlePretty, parse)
 
-parseCops :: String -> Either String (Trs String String)
-parseCops input = case parse parseCopsTrs "COPS Example" (pack input) of
+parsingExample :: String -> Either String (Trs String String)
+parsingExample input = case parse parseCopsTrs "COPS Example" (pack input) of
   Left err -> Left $ errorBundlePretty err
   Right trs -> return trs
 ```
 
-The type `Either` is used as parsing might fail (in which case an error should be shown). `pack` transforms a `String` into `Text` and `errorBundlePretty` is used to pretty print a MegaParsec error if parsing fails.
+- The type `Either` is used as parsing might fail (in which case an error should be shown)
+- `pack` transforms a `String` into `Text`
+- `errorBundlePretty` is used to pretty print a MegaParsec error if parsing fails.
 
 ##### Testing a Parser
 
-The MegaParsec function `parseTest` can be used to quickly test parsers and print output to the terminal during development.
+The MegaParsec function [`parseTest`](https://hackage.haskell.org/package/megaparsec-9.3.0/docs/Text-Megaparsec.html#v:parseTest) can be used to quickly test parsers and print output to the terminal during development.
 
 ```
 {-# LANGUAGE OverloadedStrings #-} -- Allow using Strings as Text
@@ -119,8 +124,8 @@ import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import Data.Conversion.Problem.Trs.Trs (Rule (..), Term (..), Trs (..), TrsSig (..))
 import Data.Conversion.Unparse.UnparseTrs (unparseAriTrs)
 
-trs :: Trs String String
-trs =
+exampleTrs :: Trs String String
+exampleTrs =
   Trs
     { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Fun "c" []]}],
       signature = Vars ["x", "y"],
@@ -128,12 +133,12 @@ trs =
     }
 
 exampleAriTrs :: IO ()
-exampleAriTrs = case unparseAriTrs trs of
-  Left err -> print err
+exampleAriTrs = case unparseAriTrs exampleTrs of
+  Left err -> print err -- Add error handling
   Right out -> print out
 ```
 
-Calling `exampleAriTrs` will print
+Calling `exampleAriTrs` will print the following to the console:
 
 ```
 (format TRS)
@@ -143,13 +148,15 @@ Calling `exampleAriTrs` will print
 (rule (f x y) (g c))
 ```
 
-to the console.
-
 ---
 
 ## Architecture
 
-The datatypes and helper functions for the Haskell representations of term rewriting systems are exported from [Data.Conversion.Problem](src/Data/Conversion/Problem). These are then imported in [Data.Conversion.Parse](src/Data/Conversion/Parse) and [Data.Conversion.Unparse](src/Data/Conversion/Unparse). The project uses a strict layered architecture:
+The project uses a strict layered architecture:
+
+- The datatypes and helper functions for the Haskell representations of term rewriting systems are defined in [Data.Conversion.Problem](src/Data/Conversion/Problem)
+- Parsing functions are defined in [Data.Conversion.Parse](src/Data/Conversion/Parse)
+- Unparsing functions are defined in [Data.Conversion.Unparse](src/Data/Conversion/Unparse)
 
 ```
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -159,8 +166,10 @@ The datatypes and helper functions for the Haskell representations of term rewri
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ```
 
-- Files in `Data.Conversion.Problem` should never import functions from `Data.Conversion.Parse` or `Data.Conversion.Unparse`
-- Files in `Data.Conversion.Parse` should never import functions from `Data.Conversion.Unparse` or vice versa
+In particular,
+
+- Files in `Data.Conversion.Problem` should never import from `Data.Conversion.Parse` or `Data.Conversion.Unparse`
+- Files in `Data.Conversion.Parse` should never import from `Data.Conversion.Unparse` or vice versa
 
 #### Extensibility
 
@@ -185,7 +194,7 @@ Support for a new format for an existing rewriting system `SomeTrs` can be added
 
 #### Limitations
 
-The parsing module currently only check that a given input _can_ be parsed. It does not check that the system itself makes sense. In particular, the following should be checked for a well-defined rewriting system:
+The parsing module currently only check that a given input _can_ be parsed. It does not check that the system itself makes sense. In particular, the following should possibly be checked for a well-defined rewriting system:
 
 - that the set of function symbols and variables are disjoint
 - that function symbols are always applied with a correct and/or consistent arity

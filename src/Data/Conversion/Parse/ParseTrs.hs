@@ -29,6 +29,7 @@ import Text.Megaparsec.Char (string)
 -- see the COCO website for details on the grammar and the tests for more examples.
 --
 -- Leading and trailing spaces are consumed.
+-- Note that the entire input will not necessarily be consumed: : use `<* eof` if this is needed.
 parseCopsTrs :: Parser (Trs String String)
 parseCopsTrs = stripSpaces $ do
   vs <- try (parseBlock "VAR" (many $ lexeme parseVariable)) <|> return []
@@ -48,6 +49,7 @@ parseCopsTrs = stripSpaces $ do
 -- | Parse a first-order TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).
 --
 -- Leading and trailing spaces are consumed: see the tests for more examples of the expected format.
+-- Note that the entire input will not necessarily be consumed: use `<* eof` if this is needed.
 --
 -- qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @fun@ then @rule@.
 parseAriTrs :: Parser (Trs String String)

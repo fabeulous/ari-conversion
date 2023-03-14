@@ -32,6 +32,7 @@ import Text.Megaparsec.Char (string)
 -- Does not carry out type-checking for function applications: this should be handled by the user.
 --
 -- Leading and trailing spaces are consumed.
+-- Note that the entire input will not necessarily be consumed: use `<* eof` if this is needed.
 parseCopsMsTrs :: Parser (MsTrs String String String)
 parseCopsMsTrs = stripSpaces $ do
   msSigs <- parseBlock "SIG" parseCopsMsSigs
@@ -48,6 +49,7 @@ parseCopsMsTrs = stripSpaces $ do
 -- | Parse a many-sorted TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
 --
 -- Leading and trailing spaces are consumed: see the tests for more examples of the expected format.
+-- Note that the entire input will not necessarily be consumed: use `<* eof` if this is needed.
 --
 -- Currently no type checking is performed: this is left to the user.
 -- It is also not checked whether the sorts used in function symbols align with explicity defined sorts.
