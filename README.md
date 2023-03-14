@@ -77,9 +77,76 @@ Dependencies are managed in the [`package.yaml`](package.yaml) and [`stack.yaml`
 
 Many examples of expected input and output can be found in the [tests](test/Spec.hs).
 
+##### Running a Parser
+
+The following function `parseCops` can be used to parse a `String` into a `Trs`, for example by calling `parseCops "(VAR x y)(RULES  f(x,y) -> g(c))"`.
+
 ```
-toadd
+
+import Data.Conversion.Parse.ParseTrs (parseCopsTrs)
+import Data.Conversion.Problem.Trs.Trs (Trs)
+import Data.Text (pack)
+import Text.Megaparsec (errorBundlePretty, parse)
+
+parseCops :: String -> Either String (Trs String String)
+parseCops input = case parse parseCopsTrs "COPS Example" (pack input) of
+  Left err -> Left $ errorBundlePretty err
+  Right trs -> return trs
 ```
+
+The type `Either` is used as parsing might fail (in which case an error should be shown). `pack` transforms a `String` into `Text` and `errorBundlePretty` is used to pretty print a MegaParsec error if parsing fails.
+
+##### Testing a Parser
+
+The MegaParsec function `parseTest` can be used to quickly test parsers and print output to the terminal during development.
+
+```
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.Conversion.Parse.Problem.Rule (parseCopsRule)
+import Text.Megaparsec (parseTest)
+
+testRule :: IO ()
+testRule = parseTest (parseCopsRule ["x", "y"]) "f(x,c)->x"
+```
+
+Calling `testRule` will print `Rule {lhs = Fun "f" [Var "x",Fun "c" []], rhs = Var "x"}` to the console.
+
+##### Unparsing a TRS
+
+```
+import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
+import Data.Conversion.Problem.Common.Rule (Rule (..))
+import Data.Conversion.Problem.Common.Term (Term (..))
+import Data.Conversion.Problem.Trs.Trs (Trs (..))
+import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Unparse.UnparseTrs (unparseAriTrs)
+
+trs :: Trs String String
+trs =
+  Trs
+    { rules = [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "g" [Fun "c" []]}],
+      signature = Vars ["x", "y"],
+      metaInfo = emptyMetaInfo
+    }
+
+exampleAriTrs :: IO ()
+exampleAriTrs = case unparseAriTrs trs of
+  Left err -> print err
+  Right out -> print out
+```
+
+Calling `exampleAriTrs` will print
+
+```
+(format TRS)
+(fun f 2)
+(fun g 1)
+(fun c 0)
+(rule (f x y) (g c))
+```
+
+to the console.
 
 ---
 
@@ -89,9 +156,9 @@ The datatypes and helper functions for the Haskell representations of term rewri
 
 ```
 ┏━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃ Data.Conversion.Parse ┃ Data.Conversion.Unparse ┃ ↖
-┣━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━┫  ↑
-┃             Data.Conversion.Problem             ┃ ↗
+┃ Data.Conversion.Parse ┃ Data.Conversion.Unparse ┃↖
+┣━━━━━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━━┫ ↑
+┃             Data.Conversion.Problem             ┃↗
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 ```
 
@@ -106,9 +173,9 @@ The project is set up to be extensible to new classes of problem and conversion 
 
 Support for a new class of rewriting system can be added as follows:
 
-1. Create a datatype `SomeNewTrs` for the rewriting system in [Data.Conversion.Problem](src/Data/Conversion/Problem). See existing datatypes for examples.
-2. Create parsers of type `Parser SomeNewTrs` in [Data.Conversion.Parse](src/Data/Conversion/Parse) for each supported input format.
-3. Create unparsers of type `SomeNewTrs -> Either String (Doc ann)` in [Data.Conversion.Unparse](src/Data/Conversion/Unparse) for each supported output format.
+1. Create a datatype `NewTrs` for the rewriting system in [Data.Conversion.Problem](src/Data/Conversion/Problem). See existing datatypes for examples.
+2. Create parsers of type `Parser NewTrs` in [Data.Conversion.Parse](src/Data/Conversion/Parse) for each supported input format.
+3. Create unparsers of type `NewTrs  -> Either String (Doc ann)` in [Data.Conversion.Unparse](src/Data/Conversion/Unparse) for each supported output format.
 4. Add unit tests in the [test](test/Spec.hs) directory.
 
 ##### Adding a New Conversion Format
@@ -121,7 +188,7 @@ Support for a new format for an existing rewriting system `SomeTrs` can be added
 
 #### Limitations
 
-The parsing module currently only check that a given input _can_ be parsed. It does not check that the system itself makes sense. In particular, the following should be checked:
+The parsing module currently only check that a given input _can_ be parsed. It does not check that the system itself makes sense. In particular, the following should be checked for a well-defined rewriting system:
 
 - that the set of function symbols and variables are disjoint
 - that function symbols are always applied with a correct and/or consistent arity
