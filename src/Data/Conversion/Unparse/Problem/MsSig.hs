@@ -2,9 +2,12 @@
 -- Module      : Data.Conversion.Unparse.Problem.MsSig
 -- Description : Unparser for MsSig
 --
--- This module defines functions to unparse a 'MsSig' into COPS and ARI format.
+-- This module defines functions to unparse an MSTRS signature 'MsSig' into COPS and ARI format.
 module Data.Conversion.Unparse.Problem.MsSig
-  ( unparseCopsMsSig,
+  ( -- *  COPS
+    unparseCopsMsSig,
+
+    -- *  ARI
     unparseAriMsSig,
   )
 where
@@ -14,6 +17,8 @@ import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep)
 
 -- | Pretty print an 'MsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php).
+--
+-- See the tests for examples.
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 -- function symbols, consistency with rules, type correctness, etc. This should be done separately.
@@ -36,7 +41,8 @@ unparseCopsMsSig msSigs =
           )
 
 -- | Pretty print a an 'MsSig' in [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
--- @Right (Doc ann@) indicates a success, and @Left err@ indicates an error due to 'sorts' being set but incomplete.
+--
+-- See the tests for examples.
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 -- function symbols, consistency with rules, type correctness, etc. This should be done separately.

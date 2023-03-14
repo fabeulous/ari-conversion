@@ -25,10 +25,10 @@ import Data.Conversion.Problem.Trs.Sig (Sig (..))
 --
 -- * Only function symbols with arity (ARI format)
 data TrsSig f v
-  = -- | All variables in the TRS
+  = -- | A list of all variables in the TRS
     Vars [v]
-  | -- | All function symbols in the TRS
+  | -- | A list of all function symbols (with arities) in the TRS
     FunSig [Sig f]
-  | -- | All variables and function symbols in the TRS
+  | -- | A list @[v]@ of all variables and @[Sig f]@ function symbols (with arities) in the TRS
     FullSig [v] [Sig f]
-  deriving (Ord, Eq, Show)
+  deriving (Eq, Show)

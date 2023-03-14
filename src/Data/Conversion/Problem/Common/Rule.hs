@@ -24,7 +24,7 @@ data Rule f v = Rule
     -- | The right-hand side of the rule
     rhs :: Term f v
   }
-  deriving (Ord, Eq, Show)
+  deriving (Eq, Show)
 
 -- | Returns a list of the function symbols appearing on both sides of a 'Rule' and their arities (number of arguments).
 -- Removes duplicates and asserts that each function symbol name has at most one arity.

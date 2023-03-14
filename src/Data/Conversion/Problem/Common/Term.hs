@@ -23,7 +23,7 @@ data Term f v
     Fun f [Term f v]
   | -- | 'Var' is used for a single variable
     Var v
-  deriving (Show, Eq, Ord)
+  deriving (Show, Eq)
 
 -- | Returns a list of a function symbols appearing in a term and their arities (number of arguments).
 -- Removes duplicates and asserts that each function symbol name has at most one arity.

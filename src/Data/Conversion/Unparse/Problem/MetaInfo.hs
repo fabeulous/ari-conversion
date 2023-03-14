@@ -2,9 +2,13 @@
 -- Module      : Data.Conversion.Unparse.Problem.MetaInfo
 -- Description : Unparser for MetaInfo
 --
--- This module defines functions to unparse 'MetaInfo' into the formats expected for the COPS and ARI formats.
+-- This module defines functions to unparse 'MetaInfo' into the formats expected for
+-- COPS and ARI rewrite systems.
 module Data.Conversion.Unparse.Problem.MetaInfo
-  ( unparseCopsMetaInfo,
+  ( -- * COPS
+    unparseCopsMetaInfo,
+
+    -- * ARI
     unparseAriMetaInfo,
   )
 where
@@ -14,9 +18,10 @@ import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Prettyprinter (Doc, comma, emptyDoc, hsep, parens, pretty, punctuate, vsep, (<+>))
 
 -- | Unparse TRS 'MetaInfo' to fit into a single COPS @COMMENT@ block.
--- If the 'MetaInfo' is empty then returns emptyDoc.
+-- If the 'MetaInfo' is empty then returns 'emptyDoc'.
 --
 -- qqjf I was unsure what output format is desired, but this is easy to adjust.
+-- See the tests for examples of the current output format.
 unparseCopsMetaInfo :: MetaInfo -> Doc ann
 unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
   if null metaBlocks
@@ -35,13 +40,14 @@ unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
     unparseSubmitters :: [String] -> Doc ann
     unparseSubmitters xs = pretty "submitted by:" <+> hsep (punctuate comma $ map pretty xs)
 
--- | Unparse 'MetaInfo' into ARI format. See the tests for more examples.
+-- | Unparse 'MetaInfo' into ARI format: see the tests for more examples.
 --
 -- >>> unparseAriMetaInfo $ emptyMetaInfo { comment = Just "[7] Example 2", doi = Just "10.1007/11805618_6", origin = Just "COPS #20",submitted = Just ["Takahito Aoto", "Junichi Yoshida", "Yoshihito Toyama"] }
--- (meta-info (origin "COPS #20"))
--- (meta-info (doi "10.1007/11805618_6"))
--- (meta-info (comment "[7] Example 2"))
--- (meta-info (submitted "Takahito Aoto" "Junichi Yoshida" "Yoshihito Toyama"))
+-- Returns the following contents in a 'Doc' wrapped in @Just@
+--   (meta-info (origin "COPS #20"))
+--   (meta-info (doi "10.1007/11805618_6"))
+--   (meta-info (comment "[7] Example 2"))
+--   (meta-info (submitted "Takahito Aoto" "Junichi Yoshida" "Yoshihito Toyama"))
 --
 -- >>> unparseAriMetaInfo emptyMetaInfo
 -- Nothing
