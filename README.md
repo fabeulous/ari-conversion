@@ -116,10 +116,7 @@ Calling `testRule` will print `Rule {lhs = Fun "f" [Var "x",Fun "c" []], rhs = V
 
 ```
 import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
-import Data.Conversion.Problem.Common.Rule (Rule (..))
-import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.Trs.Trs (Trs (..))
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Problem.Trs.Trs (Rule (..), Term (..), Trs (..), TrsSig (..))
 import Data.Conversion.Unparse.UnparseTrs (unparseAriTrs)
 
 trs :: Trs String String

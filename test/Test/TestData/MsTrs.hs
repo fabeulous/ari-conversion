@@ -11,11 +11,8 @@ module Test.TestData.MsTrs
   )
 where
 
-import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
-import Data.Conversion.Problem.Common.Rule (Rule (..))
-import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
-import Data.Conversion.Problem.MsTrs.MsTrs (MsTrs (..))
+import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
+import Data.Conversion.Problem.MsTrs.MsTrs (MetaInfo (..), MsSig (..), MsTrs (..), Rule (..), Term (..))
 
 ------------------------
 --- MSTRS Lists --------

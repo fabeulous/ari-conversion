@@ -11,11 +11,8 @@ module Test.TestData.Trs
   )
 where
 
-import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
-import Data.Conversion.Problem.Common.Rule (Rule (..))
-import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.Trs.Trs (Trs (..))
-import Data.Conversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
+import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
+import Data.Conversion.Problem.Trs.Trs (MetaInfo (..), Rule (..), Sig (..), Term (..), Trs (..), TrsSig (..))
 
 ------------------------
 --- TRS Lists ----------

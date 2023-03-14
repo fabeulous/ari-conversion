@@ -4,13 +4,21 @@
 --
 -- This module contains the 'MsTrs' type definition for many-sorted term rewriting systems.
 module Data.Conversion.Problem.MsTrs.MsTrs
-  ( MsTrs (..),
+  ( -- * MSTRS Datatype
+    MsTrs (..),
+
+    -- * Reexports needed to construct an MSTRS
+    Rule (..),
+    Term (..),
+    MsSig (..),
+    MetaInfo (..),
   )
 where
 
-import Data.Conversion.Problem.Common.MetaInfo (MetaInfo)
-import Data.Conversion.Problem.Common.Rule (Rule)
-import Data.Conversion.Problem.MsTrs.MsSig (MsSig)
+import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..))
+import Data.Conversion.Problem.Common.Rule (Rule (..))
+import Data.Conversion.Problem.Common.Term (Term (..))
+import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
 
 -- | Datatype for a many-sorted term rewriting system (MSTRS).
 -- Function symbols have type @f@, variables have type @v@, and term sorts have type @s@ in the system.
