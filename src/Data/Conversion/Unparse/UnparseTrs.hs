@@ -20,7 +20,7 @@ import Data.Conversion.Unparse.Utils (filterEmptyDocs)
 import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vsep)
 
--- | Unparse a first-order TRS from the internal 'Trs' representation into
+-- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 -- [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).
 --
 -- Uses functions 'unparseCopsTrsSig', 'unparseCopsRules', and 'unparseCopsMetaInfo' to
@@ -32,7 +32,7 @@ unparseCopsTrs (Trs rs sig meta) = do
   copsSig <- unparseCopsTrsSig rs sig
   return $ vsep (filterEmptyDocs [copsSig, unparseCopsRules rs, unparseCopsMetaInfo meta])
 
--- | Unparse a first-order TRS from the internal 'Trs' representation into
+-- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 -- [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).
 --
 -- Uses functions 'unparseAriMetaInfo', 'unparseAriTrsSig', and 'unparseAriRules' to

@@ -3,7 +3,7 @@
 -- Description : Unparsing tests for MSTRSs
 --
 -- This module defines test cases for converting many-sorted TRSRs
--- from the internal 'MsTrs' representation to COPS and ARI format.
+-- from the Haskell 'MsTrs' representation to COPS and ARI format.
 module Test.Unparse.UnparseMsTrs (unparseMsTrsTests) where
 
 import Data.Conversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)

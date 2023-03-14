@@ -21,7 +21,7 @@ import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vcat, vsep)
 
--- | Unparse a many-sorted TRS from the internal 'MsTrs' representation into
+-- | Unparse a many-sorted TRS from the Haskell 'MsTrs' representation into
 -- [COPS MSTRS format](http://project-coco.uibk.ac.at/problems/mstrs.php).
 --
 -- Uses functions 'unparseCopsMsSig', 'unparseCopsRules', and 'unparseCopsMetaInfo' to
@@ -31,7 +31,7 @@ unparseCopsMsTrs (MsTrs rs sig _ meta) =
   return $
     vsep (filterEmptyDocs [unparseCopsMsSig sig, unparseCopsRules rs, unparseCopsMetaInfo meta])
 
--- | Unparse a many-sorted TRS from the internal 'MsTrs' representation into
+-- | Unparse a many-sorted TRS from the Haskell 'MsTrs' representation into
 -- [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
 --
 -- Uses functions 'unparseAriMetaInfo', 'unparseAriMsSig', and 'unparseAriRules' to

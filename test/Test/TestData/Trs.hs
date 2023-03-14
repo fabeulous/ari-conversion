@@ -5,8 +5,10 @@
 -- This module defines test data which is used for testing both parsing and unparsing functions for 'Trs's.
 -- Exported values can then be imported in 'Test.Parse' and 'Test.Unparse'.
 module Test.TestData.Trs
-  ( -- * Test data for tests on 'Trs'
+  ( -- * COPS
     copsTrss,
+
+    -- * ARI
     ariTrss,
   )
 where
@@ -18,7 +20,7 @@ import Data.Conversion.Problem.Trs.Trs (MetaInfo (..), Rule (..), Sig (..), Term
 --- TRS Lists ----------
 ------------------------
 
--- | A list of TRSs in internal 'Trs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/trs.php]
+-- | A list of TRSs in Haskell 'Trs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/trs.php]
 -- to test both parsing and unparsing functions.
 -- Has format @(original trs, str := result of parsing trs, result of unparsing str)@.
 --
@@ -80,7 +82,7 @@ copsTrss =
     )
   ]
 
--- | A list of TRSs in internal 'Trs' format and in (ARI format)[https://ari-informatik.uibk.ac.at/tasks/A/trs.txt]
+-- | A list of TRSs in Haskell 'Trs' format and in (ARI format)[https://ari-informatik.uibk.ac.at/tasks/A/trs.txt]
 -- to test both parsing and unparsing functions.
 -- Has format @(original trs, str := result of parsing trs, result of unparsing str)@.
 --

@@ -2,7 +2,7 @@
 -- Module      : Test.Unparse.Spec
 -- Description : Unparsing tests
 --
--- This module collects tests cases for unparsing problems from the internal representation into a
+-- This module collects tests cases for unparsing problems from Haskell representations into a
 -- chosen output format.
 module Test.Unparse.Spec (unparsingTests) where
 

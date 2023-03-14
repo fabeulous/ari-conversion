@@ -49,7 +49,7 @@ The project has the following directory structure:
     ├───app                  -- The entry point of the app
     ├───src/Data/Conversion  -- Main source code
     │    ├───Parse           -- Parsing functionality
-    │    ├───Problem         -- Internal implemementation of rewriting systems
+    │    ├───Problem         -- Haskell implemementation of rewriting systems
     │    └───Unparse         -- Unparsing (pretty-printing) functionality
     └───test/Test            -- Unit tests
         ├───Parse            -- Tests for parsing

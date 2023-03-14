@@ -5,8 +5,10 @@
 -- This module defines test data which is used for testing both parsing and unparsing functions for 'MsTrs's.
 -- Exported values can then be imported in 'Test.Parse' and 'Test.Unparse'.
 module Test.TestData.MsTrs
-  ( -- * Test data for tests on 'MsTrs'
+  ( -- * COPS
     copsMsTrss,
+
+    -- * ARI
     ariMsTrss,
   )
 where
@@ -18,11 +20,12 @@ import Data.Conversion.Problem.MsTrs.MsTrs (MetaInfo (..), MsSig (..), MsTrs (..
 --- MSTRS Lists --------
 ------------------------
 
--- | A list of MSTRSs in internal 'MsTrs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/mstrs.php]
+-- | A list of MSTRSs in Haskell 'MsTrs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/mstrs.php]
 -- to test both parsing and unparsing functions.
+--
 -- Has format @(original mstrs, str := result of parsing mstrs, result of unparsing str)@.
 --
--- The result for unparsing might differ from the original MSTRS did not specify sorts.
+-- The result for unparsing might differ from the original MSTRS did not specify 'sorts'.
 copsMsTrss :: [(String, MsTrs String String String, String, MsTrs String String String)]
 copsMsTrss =
   [ ( "empty COPS MSTRS",
@@ -104,8 +107,9 @@ copsMsTrss =
     )
   ]
 
--- | A list of MSTRSs in internal 'MsTrs' format and in (ARI format)[https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt]
+-- | A list of MSTRSs in Haskell 'MsTrs' format and in (ARI format)[https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt]
 -- to test both parsing and unparsing functions.
+--
 -- Has format @(original mstrs, str := result of parsing mstrs, result of unparsing str)@.
 --
 -- The result for unparsing might differ from the original MSTRS did not specify sorts.
@@ -182,7 +186,7 @@ mstrsWithComment :: MsTrs String String String
 mstrsWithComment =
   MsTrs
     { rules = [],
-      signature = [zeroSig],
+      signature = [MsSig "0" ([], "Nat")],
       sorts = Just ["Nat"],
       metaInfo = emptyMetaInfo {comment = Just "An MSTRS with a comment"}
     }
@@ -219,8 +223,13 @@ mstrsWithoutSorts =
 additionMsTrs :: MsTrs String String String
 additionMsTrs =
   MsTrs
-    { rules = [additionRule],
-      signature = additionSig,
+    { rules = [Rule {lhs = Fun "+" [Fun "a" [], Fun "b" []], rhs = Fun "c" []}],
+      signature =
+        [ MsSig "+" (["Nat", "Nat"], "Nat"),
+          MsSig "a" ([], "Nat"),
+          MsSig "c" ([], "Nat"),
+          MsSig "b" ([], "Nat")
+        ],
       sorts = Just ["List", "Nat"],
       metaInfo = emptyMetaInfo
     }
@@ -254,15 +263,3 @@ cops637 =
             submitted = Just ["Takahito Aoto"]
           }
     }
-
-------------------------
---- Rules and sigs -----
-------------------------
-zeroSig :: MsSig String String
-zeroSig = MsSig "0" ([], "Nat")
-
-additionSig :: [MsSig String String]
-additionSig = [MsSig "+" (["Nat", "Nat"], "Nat"), MsSig "a" ([], "Nat"), MsSig "c" ([], "Nat"), MsSig "b" ([], "Nat")]
-
-additionRule :: Rule String String
-additionRule = Rule {lhs = Fun "+" [Fun "a" [], Fun "b" []], rhs = Fun "c" []}

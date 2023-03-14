@@ -2,8 +2,8 @@
 -- Module      : Test.Unparse.UnparseTrs
 -- Description : Unparsing tests for TRSs
 --
--- This module defines test cases for converting first-order
--- TRSs from the internal 'Trs' representation to COPS and ARI format.
+-- This module defines test cases for converting first-order TRSs
+-- from the Haskell 'Trs' representation to COPS and ARI format.
 module Test.Unparse.UnparseTrs (unparseTrsTests) where
 
 import Data.Conversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
