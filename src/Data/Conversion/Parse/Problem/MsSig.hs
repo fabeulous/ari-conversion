@@ -13,7 +13,7 @@ where
 import Control.Monad (guard)
 import Data.Conversion.Parse.Problem.Term (parseFunSymbol)
 import Data.Conversion.Parse.Utils (Parser, lexeme, parens, stripSpaces)
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
+import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
 import Data.Text (pack)
 import Text.Megaparsec (many, sepBy, some, (<?>))
 import Text.Megaparsec.Char (spaceChar, string)

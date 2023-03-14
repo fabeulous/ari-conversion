@@ -8,7 +8,7 @@
 module Data.Conversion.Parse.Problem.Rule
   ( parseCopsRule,
     parseCopsTrsRules,
-    parseCopsMstrsRules,
+    parseCopsMsTrsRules,
     parseAriRule,
   )
 where
@@ -16,7 +16,7 @@ where
 import Data.Conversion.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
 import Data.Conversion.Parse.Utils (Parser, lexeme)
 import Data.Conversion.Problem.Common.Rule (Rule (..), inferRulesSignature)
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
+import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
 import Data.Conversion.Problem.Trs.Sig (Sig)
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Text.Megaparsec (many, some, (<?>))
@@ -92,12 +92,12 @@ parseCopsTrsRules trsSig = case trsSig of
 --
 -- Can not reuse the same logic as for (unsorted) TRSs as in that case variables are specified,
 -- whereas for MSTRSs function symbols are specified.
-parseCopsMstrsRules :: [MsSig String String] -> Parser [Rule String String]
-parseCopsMstrsRules msSigs = do many parseMstrsCopsRule
+parseCopsMsTrsRules :: [MsSig String String] -> Parser [Rule String String]
+parseCopsMsTrsRules msSigs = do many parseMsTrsCopsRule
   where
     fsyms = map (\(MsSig fsym _) -> fsym) msSigs
-    parseMstrsCopsRule :: Parser (Rule String String)
-    parseMstrsCopsRule = do
+    parseMsTrsCopsRule :: Parser (Rule String String)
+    parseMsTrsCopsRule = do
       l <- parseTermF fsyms <?> "left-hand side"
       _ <- lexeme (string "->")
       r <- parseTermF fsyms <?> "right-hand side"

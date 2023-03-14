@@ -1,10 +1,10 @@
 -- |
--- Module      : Data.Conversion.Problem.Mstrs.MsSig
+-- Module      : Data.Conversion.Problem.MsTrs.MsSig
 -- Description : Type definition for MSTRS signature
 --
 -- This module contains the 'MsSig' type definition for specifying the signature of a many-sorted
 -- term rewriting system and helper functions.
-module Data.Conversion.Problem.Mstrs.MsSig
+module Data.Conversion.Problem.MsTrs.MsSig
   ( -- * Many-sorted signature datatype
     MsSig (..),
 
@@ -15,7 +15,7 @@ where
 
 import Data.List (nub)
 
--- | Datatype for the signature of a single function symbol in a many-sorted TRS ('Mstrs').
+-- | Datatype for the signature of a single function symbol in a many-sorted TRS ('MsTrs').
 --
 -- For example, a function symbol @cons@ which takes a @Nat@ and @List@ and returns a @List@ may be written as
 -- @MsSig "cons" (["Nat"], "List")@. A constant @n@ of type @Nat@ may be written as @MsSig "n" ([], "Nat")@.

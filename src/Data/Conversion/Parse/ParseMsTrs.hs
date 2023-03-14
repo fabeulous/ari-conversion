@@ -1,22 +1,22 @@
 -- |
--- Module      : Data.Conversion.Parse.ParseMstrs
+-- Module      : Data.Conversion.Parse.ParseMsTrs
 -- Description : Functions to parse MSTRSs
 --
 -- This module defines functions to parse a many-sorted TRS in COPS and ARI format.
-module Data.Conversion.Parse.ParseMstrs
-  ( parseCopsMstrs,
-    parseAriMstrs,
+module Data.Conversion.Parse.ParseMsTrs
+  ( parseCopsMsTrs,
+    parseAriMsTrs,
   )
 where
 
 import Data.Conversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
 import Data.Conversion.Parse.Problem.MsSig (parseAriMsSig, parseCopsMsSigs)
-import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMstrsRules)
+import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMsTrsRules)
 import Data.Conversion.Parse.Problem.Term (parseFunSymbol)
 import Data.Conversion.Parse.Utils (Parser, parseBlock, stripSpaces)
 import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
-import Data.Conversion.Problem.Mstrs.Mstrs (Mstrs (..))
+import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
+import Data.Conversion.Problem.MsTrs.MsTrs (MsTrs (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Maybe (fromMaybe)
 import Data.Text (pack)
@@ -29,13 +29,13 @@ import Text.Megaparsec.Char (string)
 -- Does not carry out type-checking for function applications: this should be handled by the user.
 --
 -- Leading and trailing spaces are consumed.
-parseCopsMstrs :: Parser (Mstrs String String String)
-parseCopsMstrs = stripSpaces $ do
+parseCopsMsTrs :: Parser (MsTrs String String String)
+parseCopsMsTrs = stripSpaces $ do
   msSigs <- parseBlock "SIG" parseCopsMsSigs
-  rs <- parseBlock "RULES" (parseCopsMstrsRules msSigs)
+  rs <- parseBlock "RULES" (parseCopsMsTrsRules msSigs)
   maybeMetaInfo <- optional (parseBlock "COMMENT" parseCopsMetaInfo)
   return $
-    Mstrs
+    MsTrs
       { rules = rs,
         signature = msSigs,
         sorts = Nothing, -- Not set for COPS format
@@ -50,15 +50,15 @@ parseCopsMstrs = stripSpaces $ do
 -- Rules are parsed using 'parseAriRule' as in the untyped TRS setting.
 --
 -- qqjf I assume that there is a fixed order of blocks: @meta-info@ then @format@ then @sort@ then @fun@ then @rule@.
-parseAriMstrs :: Parser (Mstrs String String String)
-parseAriMstrs = stripSpaces $ do
+parseAriMsTrs :: Parser (MsTrs String String String)
+parseAriMsTrs = stripSpaces $ do
   mstrsMetaInfo <- parseAriMetaInfo
   _ <- parseBlock "format" (string $ pack "MSTRS")
   sortsList <- many (try $ parseBlock "sort " parseFunSymbol) -- qqjf assumed sorts have same constraints as fun symbols
   msSigs <- many (try $ parseBlock "fun " parseAriMsSig)
   rs <- many (try $ parseBlock "rule " (parseAriRule $ msSigToSigList msSigs))
   return $
-    Mstrs
+    MsTrs
       { rules = rs,
         signature = msSigs,
         sorts = Just sortsList,

@@ -5,7 +5,7 @@
 -- This module defines test cases for unparsing 'MsSig's to COPS and ARI format
 module Test.Unparse.Problem.MsSig (unparseMsSigTests) where
 
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
+import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
 import Data.Conversion.Unparse.Problem.MsSig (unparseAriMsSig, unparseCopsMsSig)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparse)

@@ -9,7 +9,7 @@ module Data.Conversion.Unparse.Problem.MsSig
   )
 where
 
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
+import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
 import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep)
 

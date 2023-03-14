@@ -8,9 +8,9 @@ module Test.Parse.Spec (parsingTests) where
 
 import Test.HUnit
 import Test.Parse.MetaInfo (parseMetaInfoTests)
-import Test.Parse.Mstrs.Ari (parseAriMstrsTests)
-import Test.Parse.Mstrs.Cops (parseCopsMstrsTests)
-import Test.Parse.Mstrs.MsSig (parseMsSigTests)
+import Test.Parse.MsTrs.Ari (parseAriMsTrsTests)
+import Test.Parse.MsTrs.Cops (parseCopsMsTrsTests)
+import Test.Parse.MsTrs.MsSig (parseMsSigTests)
 import Test.Parse.Rule (parseRuleTests)
 import Test.Parse.Term (parseTermTests)
 import Test.Parse.Trs.Ari (parseAriTests)
@@ -31,7 +31,7 @@ parsingTests = do
           parseMsSigTests,
           parseCopsTests,
           parseAriTests,
-          parseCopsMstrsTests,
-          parseAriMstrsTests
+          parseCopsMsTrsTests,
+          parseAriMsTrsTests
         ]
   putStrLn "---"

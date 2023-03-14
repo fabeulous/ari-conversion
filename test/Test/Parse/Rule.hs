@@ -6,11 +6,11 @@
 -- Tests are non-exhaustive, but cover common cases and some useful checks.
 module Test.Parse.Rule (parseRuleTests) where
 
-import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMstrsRules, parseCopsRule, parseCopsTrsRules)
+import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMsTrsRules, parseCopsRule, parseCopsTrsRules)
 import Data.Conversion.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
+import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Test.HUnit
@@ -32,9 +32,9 @@ ariRuleTests = TestLabel "ariRuleTests" $ TestList [parseAriRuleTests, badAriRul
 copsRuleParser :: Parser (Rule String String)
 copsRuleParser = parseCopsRule ["x", "y", "z", "x'"]
 
--- | A rule parser for testing 'parseCopsMstrsRules' with a fixed set of function symbols
+-- | A rule parser for testing 'parseCopsMsTrsRules' with a fixed set of function symbols
 copsRuleFParser :: Parser [Rule String String]
-copsRuleFParser = parseCopsMstrsRules [MsSig "f" (["Nat"], "Nat"), MsSig "fun" (["Nat"], "Nat"), MsSig "a" ([], "Type"), MsSig "b" ([], "Type")]
+copsRuleFParser = parseCopsMsTrsRules [MsSig "f" (["Nat"], "Nat"), MsSig "fun" (["Nat"], "Nat"), MsSig "a" ([], "Type"), MsSig "b" ([], "Type")]
 
 -- | Test cases for which 'parseCopsRule' should succeed and
 -- match the given expected output. Tests parsing COPS rules when the variables are known.
@@ -54,10 +54,10 @@ parseCopsRuleTests = assertParseList "parseCopsRule should succeed" validRules c
         ("a()->b", Rule {lhs = Fun "a" [], rhs = Fun "b" []})
       ]
 
--- | Test cases for which 'parseCopsMstrsRules' should succeed and
+-- | Test cases for which 'parseCopsMsTrsRules' should succeed and
 -- match the given expected output.  Tests parsing COPS rules when the function symbols are known.
 parseCopsRulesFTests :: Test
-parseCopsRulesFTests = assertParseList "parseCopsMstrsRules should succeed" validRules copsRuleFParser
+parseCopsRulesFTests = assertParseList "parseCopsMsTrsRules should succeed" validRules copsRuleFParser
   where
     fx = Fun "f" [Var "x"]
     validRules :: [(String, [Rule String String])]

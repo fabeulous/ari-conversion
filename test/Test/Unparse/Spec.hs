@@ -12,7 +12,7 @@ import Test.Unparse.Problem.MsSig (unparseMsSigTests)
 import Test.Unparse.Problem.Rule (unparseRuleTests)
 import Test.Unparse.Problem.Term (unparseTermTests)
 import Test.Unparse.Problem.TrsSig (unparseSigTests)
-import Test.Unparse.UnparseMstrs (unparseMstrsTests)
+import Test.Unparse.UnparseMsTrs (unparseMsTrsTests)
 import Test.Unparse.UnparseTrs (unparseTrsTests)
 
 -- | Collect and run tests for unparsing
@@ -28,6 +28,6 @@ unparsingTests = do
           unparseMetaInfoTests,
           unparseRuleTests,
           unparseTrsTests,
-          unparseMstrsTests
+          unparseMsTrsTests
         ]
   putStrLn "---"
