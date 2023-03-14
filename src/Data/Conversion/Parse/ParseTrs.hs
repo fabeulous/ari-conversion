@@ -21,12 +21,7 @@ import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Data.Maybe (fromMaybe)
 import Data.Text (pack)
-import Text.Megaparsec
-  ( many,
-    optional,
-    try,
-    (<|>),
-  )
+import Text.Megaparsec (many, optional, try, (<|>))
 import Text.Megaparsec.Char (string)
 
 -- | Parse a first-order TRS in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php):

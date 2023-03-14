@@ -1,8 +1,25 @@
 # trs-conversion
 
-Working repository for term rewriting system (TRS) format conversion as part of the [ARI](https://ari-informatik.uibk.ac.at/) project. This repository contains Haskell programs to convert term rewriting formats between the [COPS formats](http://project-coco.uibk.ac.at/problems/#format) and the new [ARI formats](https://ari-informatik.uibk.ac.at/tasks/A/).
+Working repository for term rewriting system (TRS) format conversion as part of the [ARI](https://ari-informatik.uibk.ac.at/) project. This repository contains Haskell programs to convert term rewriting formats between existing [COPS formats](http://project-coco.uibk.ac.at/problems/#format) and the new [ARI formats](https://ari-informatik.uibk.ac.at/tasks/A/).
 
 ## Getting Started
+
+Install Haskell and the Haskell Tool Stack e.g. by installing [GHCup](https://www.haskell.org/ghcup/). Check that they are installed by typing `stack --version` into the command line.
+
+### Build
+
+This project is set up using [Haskell Tool Stack](https://docs.haskellstack.org/en/stable/) and has entry point [`app/Main.hs`](app/Main.hs). To build the project and execute [`Main.hs`](app/Main.hs), run the following:
+
+```
+stack build
+stack exec trs-conversion-exe
+```
+
+### Documentation
+
+The project is documented using [Haddock](https://haskell-haddock.readthedocs.io/en/latest/markup.html). To preview documentation in a browser, run `stack hoogle --server --no-haddock-deps [--rebuild]` and navigate to [localhost:8080](http://localhost:8080/).
+
+### Code Structure
 
 The project has the following file structure:
 
@@ -19,32 +36,25 @@ The project has the following file structure:
         └───Unparse          -- Tests for unparsing
 ```
 
-### Build
-
-This project is set up using [Haskell Tool Stack](https://docs.haskellstack.org/en/stable/). The app has entry point `trs-conversion/app/Main.hs`. To build and execute the program, run the following:
-
-```
-stack build
-stack exec trs-conversion-exe
-```
-
 ### Tests
 
-Unit tests for parsing and unparsing are implemented using [HUnit](https://hackage.haskell.org/package/HUnit). Tests can be run by calling `stack test`.
+Unit tests for parsing and unparsing are implemented using [HUnit](https://hackage.haskell.org/package/HUnit) and have entry point [`test/Spec.hs`](test/Spec.hs). Tests can be run by calling `stack test`.
 
-### Documentation
-
-The project is documented using [Haddock](https://haskell-haddock.readthedocs.io/en/latest/markup.html). To preview documentation in a browser, run `stack hoogle --server --no-haddock-deps [--rebuild]` and navigate to [localhost:8080](http://localhost:8080/).
+---
 
 ## Tasks
 
-This project supports two main functions: parsing and unparsing. _Parsing_ refers to converting input documents (such as a string in COPS TRS format) to a common internal representation. _Unparsing_ refers to converting from this Haskell representation format into a desired output format (for example, the new ARI TRS format).
+This code supports two main functions: parsing and unparsing. _Parsing_ refers to converting input documents (such as a string in COPS TRS format) to a common internal representation. _Unparsing_ refers to converting from this Haskell representation format into a desired output format (for example, the new ARI TRS format).
 
 ### Dependencies
 
-Parsing is implemented using [Megaparsec](https://hackage.haskell.org/package/megaparsec) (a well-documented monadic parser). [This tutorial](https://markkarpov.com/tutorial/megaparsec.html) provides enough information to get started with. Unparsing is implemented with [prettyprinter](https://hackage.haskell.org/package/prettyprinter) (a Wadler/Leijen pretty printer).
+Parsing is implemented using [Megaparsec](https://hackage.haskell.org/package/megaparsec) (a monadic parser). [This tutorial](https://markkarpov.com/tutorial/megaparsec.html) provides enough information to get started with MegaParsec. Unparsing is implemented with [prettyprinter](https://hackage.haskell.org/package/prettyprinter) (a Wadler/Leijen pretty printer).
 
-### Architecture
+### Examples
+
+---
+
+## Architecture
 
 The datatypes for the internal term rewriting formats are defined in [Data.Conversion.Problem](src/Data/Conversion/Problem). These are exported and then imported in [Data.Conversion.Parse](src/Data/Conversion/Parse) and [Data.Conversion.Problem](src/Data/Conversion/Problem). The project uses a strict layered architecture:
 
@@ -59,6 +69,16 @@ The datatypes for the internal term rewriting formats are defined in [Data.Conve
 - Files in `Data.Conversion.Problem` should never import functions from `Data.Conversion.Parse` or `Data.Conversion.Unparse`
 - Files in `Data.Conversion.Parse` should never import functions from `Data.Conversion.Unparse` or vice versa
 
-## Disclaimer
+### Extensibility
+
+#### Adding a New Format
+
+#### Adding a New Problem Type
+
+---
+
+## Limitations
+
+### Disclaimer
 
 This is still an early version and has not been tested extensively on real-world examples. Comments marked with `qqjf` indicate decisions or assumptions that might be liable to change.
