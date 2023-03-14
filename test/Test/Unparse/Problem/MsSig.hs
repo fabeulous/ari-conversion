@@ -12,7 +12,7 @@ import Test.Unparse.Utils (assertUnparse)
 
 -- | Tests for unparsing 'MsSig's into COPS format and ARI format
 unparseMsSigTests :: Test
-unparseMsSigTests = TestLabel "unparseMsSigTests" $ TestList [unparseCopsMsSigTests, unparseAriMsSigTests]
+unparseMsSigTests = TestLabel "Test.Unparse.Problem.MsSig" $ TestList [unparseCopsMsSigTests, unparseAriMsSigTests]
 
 -- | Tests for converting some example 'MsSig's to COPS format using 'unparseCopsMsSig'
 unparseCopsMsSigTests :: Test

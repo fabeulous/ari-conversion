@@ -3,7 +3,7 @@
 -- Description : Parsing tests for terms
 --
 -- This module defines test cases for the functions 'parseTerm' and 'parsePrefixTerm'. Tests are non-exhaustive, but cover common cases and some useful checks.
-module Test.Parse.Term (termTests, prefixTermTests) where
+module Test.Parse.Term (parseTermTests) where
 
 import Data.Conversion.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
 import Data.Conversion.Parse.Utils (Parser)
@@ -12,13 +12,17 @@ import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
--- | Tests for 'parseTerm' including tests for which parsing should succeed and for which parsing should fail
-termTests :: Test
-termTests = TestLabel "termTests" $ TestList [parseTermTests, badCopsTermTests]
-
--- | Tests for 'parsePrefixTerm' including tests for which parsing should succeed and for which parsing should fail
-prefixTermTests :: Test
-prefixTermTests = TestLabel "prefixTermTests" $ TestList [parsePrefixTermTests, malformattedPrefixTermTests]
+-- | Tests for parsing terms in applicative and prefix format using 'parseTerm' and 'parsePrefixTerm'.
+-- Includes tests for which parsing should succeed and for which parsing should fail
+parseTermTests :: Test
+parseTermTests =
+  TestLabel "Test.Parse.Term" $
+    TestList
+      [ parseCopsTermTests,
+        badCopsTermTests,
+        parsePrefixTermTests,
+        malformattedPrefixTermTests
+      ]
 
 -- | Parser for testing 'parseTerm' with a fixed set of variables
 termParser :: Parser (Term String String)
@@ -34,8 +38,8 @@ prefixTermParser = parsePrefixTerm [Sig "a" 0, Sig "f" 1, Sig "g" 2, Sig "h" 3, 
 
 -- | Tests for cases when 'parseTerm' should succeed and produce a term as output.
 -- Uees signatures hardcoded in 'termParser' and 'termFParser'.
-parseTermTests :: Test
-parseTermTests =
+parseCopsTermTests :: Test
+parseCopsTermTests =
   TestList
     [ assertParseList l wellFormattedTerms p
       | (l, p) <-

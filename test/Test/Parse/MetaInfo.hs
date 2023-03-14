@@ -3,7 +3,7 @@
 -- Description : Parsing tests for MetaInfo
 --
 -- This module defines test cases for functions used to parse TRS meta-information (e.g. comment, authors, etc.).
-module Test.Parse.MetaInfo (metaInfoParsingTests) where
+module Test.Parse.MetaInfo (parseMetaInfoTests) where
 
 import Data.Conversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
@@ -11,8 +11,8 @@ import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Tests for parsing rules in COPS format, including tests for which parsing should succeed and for which parsing should fail
-metaInfoParsingTests :: Test
-metaInfoParsingTests = TestLabel "metaInfoParsingTests" $ TestList [parseAriMetaTests, badAriMetaTests, parseCopsMetaTests]
+parseMetaInfoTests :: Test
+parseMetaInfoTests = TestLabel "Test.Parse.MetaInfo" $ TestList [parseAriMetaTests, badAriMetaTests, parseCopsMetaTests]
 
 -- | Test cases for which 'parseAriMetaInfo' should succeed and produce the given output
 parseAriMetaTests :: Test

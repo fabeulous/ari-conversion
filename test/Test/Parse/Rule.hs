@@ -4,7 +4,7 @@
 --
 -- This module defines test cases for functions used to parse TRS rules.
 -- Tests are non-exhaustive, but cover common cases and some useful checks.
-module Test.Parse.Rule (copsRuleTests, ariRuleTests) where
+module Test.Parse.Rule (parseRuleTests) where
 
 import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMstrsRules, parseCopsRule, parseCopsTrsRules)
 import Data.Conversion.Parse.Utils (Parser)
@@ -15,6 +15,10 @@ import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
+
+-- | Tests for parsing rules in COPS and ARI formats
+parseRuleTests :: Test
+parseRuleTests = TestLabel "Test.Parse.Rule" $ TestList [copsRuleTests, ariRuleTests]
 
 -- | Tests for parsing rules in COPS format, including tests for which parsing should succeed and for which parsing should fail
 copsRuleTests :: Test

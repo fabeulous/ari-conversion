@@ -3,7 +3,7 @@
 -- Description : Parsing tests for TRS signatures
 --
 -- This module defines test cases for signature parsing functions and for checking signature consistency.
-module Test.Parse.Trs.Sig (sigTests) where
+module Test.Parse.Trs.Sig (parseSigTests) where
 
 import Data.Conversion.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
 import Data.Conversion.Problem.Trs.Sig (Sig (..), checkConsistentSig)
@@ -12,8 +12,8 @@ import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Test cases for TRS signature parsing and checking
-sigTests :: Test
-sigTests = TestLabel "sigTests" $ TestList [parseCopsSigTests, badCopsSigTests, checkConsistentSigs, checkInconsistentSigs, parseFsymArityTests]
+parseSigTests :: Test
+parseSigTests = TestLabel "Test.Parse.Trs.Sig" $ TestList [parseCopsSigTests, badCopsSigTests, checkConsistentSigs, checkInconsistentSigs, parseFsymArityTests]
 
 -- | Simple test cases for whick 'parseFsymArity' should succeed and match the expected output.
 parseFsymArityTests :: Test

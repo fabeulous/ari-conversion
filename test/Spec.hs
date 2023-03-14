@@ -1,20 +1,20 @@
 import Test.HUnit
-import Test.Parse.MetaInfo (metaInfoParsingTests)
+import Test.Parse.MetaInfo (parseMetaInfoTests)
 import Test.Parse.Mstrs.Ari (parseAriMstrsTests)
 import Test.Parse.Mstrs.Cops (parseCopsMstrsTests)
-import Test.Parse.Mstrs.MsSig (msSigTests)
-import Test.Parse.Rule (ariRuleTests, copsRuleTests)
-import Test.Parse.Term (prefixTermTests, termTests)
+import Test.Parse.Mstrs.MsSig (parseMsSigTests)
+import Test.Parse.Rule (parseRuleTests)
+import Test.Parse.Term (parseTermTests)
 import Test.Parse.Trs.Ari (parseAriTests)
 import Test.Parse.Trs.Cops (parseCopsTests)
-import Test.Parse.Trs.Sig (sigTests)
+import Test.Parse.Trs.Sig (parseSigTests)
 import Test.Unparse.Problem.MetaInfo (unparseMetaInfoTests)
 import Test.Unparse.Problem.MsSig (unparseMsSigTests)
 import Test.Unparse.Problem.Rule (unparseRuleTests)
 import Test.Unparse.Problem.Term (unparseTermTests)
 import Test.Unparse.Problem.TrsSig (unparseSigTests)
-import Test.Unparse.UnparseMstrs (unparseAriMstrsTests, unparseCopsMstrsTests)
-import Test.Unparse.UnparseTrs (unparseAriTrsTests, unparseCopsTrsTests)
+import Test.Unparse.UnparseMstrs (unparseMstrsTests)
+import Test.Unparse.UnparseTrs (unparseTrsTests)
 
 -- | The testing entry point. Runs each test in turn and logs output to the console.
 main :: IO ()
@@ -30,13 +30,11 @@ parsingTests = do
   _ <-
     runTestTT $
       TestList
-        [ termTests,
-          prefixTermTests,
-          metaInfoParsingTests,
-          copsRuleTests,
-          ariRuleTests,
-          sigTests,
-          msSigTests,
+        [ parseTermTests,
+          parseMetaInfoTests,
+          parseRuleTests,
+          parseSigTests,
+          parseMsSigTests,
           parseCopsTests,
           parseAriTests,
           parseCopsMstrsTests,
@@ -56,9 +54,7 @@ unparsingTests = do
           unparseMsSigTests,
           unparseMetaInfoTests,
           unparseRuleTests,
-          unparseCopsTrsTests,
-          unparseAriTrsTests,
-          unparseAriMstrsTests,
-          unparseCopsMstrsTests
+          unparseTrsTests,
+          unparseMstrsTests
         ]
   putStrLn "---"

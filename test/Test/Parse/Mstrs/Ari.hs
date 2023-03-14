@@ -13,7 +13,7 @@ import Test.TestData.Mstrs (ariMstrss)
 
 -- | Test cases for 'parseAriMstrs' including cases which should be parseable and cases which should fail
 parseAriMstrsTests :: Test
-parseAriMstrsTests = TestLabel "parseAriMstrsTests" $ TestList [goodAriMstrsTests, badAriMstrsTests]
+parseAriMstrsTests = TestLabel "Test.Parse.Mstrs.Ari" $ TestList [goodAriMstrsTests, badAriMstrsTests]
 
 -- | Test cases for 'parseAriMstrs' which should succeed and match the expected output
 goodAriMstrsTests :: Test

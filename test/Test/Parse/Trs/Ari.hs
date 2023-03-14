@@ -13,7 +13,7 @@ import Test.TestData.Trs (ariTrss)
 
 -- | Test cases for 'parseAriTrs' including cases which should be parseable and cases which should fail
 parseAriTests :: Test
-parseAriTests = TestLabel "parseAriTests" $ TestList [parseAriTrsTests, badAriTrsTests]
+parseAriTests = TestLabel "Test.Parse.Trs.Ari" $ TestList [parseAriTrsTests, badAriTrsTests]
 
 -- | Test cases for 'parseAriTrs' which should succeed and match the expected output
 parseAriTrsTests :: Test

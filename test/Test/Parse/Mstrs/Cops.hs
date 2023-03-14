@@ -13,7 +13,7 @@ import Test.TestData.Mstrs (copsMstrss)
 
 -- | Test cases for 'parseCopsMstrs' including cases which should be parseable and cases which should fail
 parseCopsMstrsTests :: Test
-parseCopsMstrsTests = TestLabel "parseCopsMstrsTests" $ TestList [goodCopsMstrsTests, badCopsMstrsTests]
+parseCopsMstrsTests = TestLabel "Test.Parse.Mstrs.Cops" $ TestList [goodCopsMstrsTests, badCopsMstrsTests]
 
 -- | Test cases for 'parseCopsMstrs' which should succeed and match the expected output
 goodCopsMstrsTests :: Test

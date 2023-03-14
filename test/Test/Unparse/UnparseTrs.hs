@@ -4,12 +4,16 @@
 --
 -- This module defines test cases for converting first-order
 -- TRSs from the internal 'Trs' representation to COPS and ARI format.
-module Test.Unparse.UnparseTrs (unparseCopsTrsTests, unparseAriTrsTests) where
+module Test.Unparse.UnparseTrs (unparseTrsTests) where
 
 import Data.Conversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 import Test.HUnit
 import Test.TestData.Trs (ariTrss, copsTrss)
 import Test.Unparse.Utils (assertUnparseList)
+
+-- | Tests for unparsing 'Trs's into COPS format and ARI format
+unparseTrsTests :: Test
+unparseTrsTests = TestLabel "Test.Unparse.UnparseTrs" $ TestList [unparseCopsTrsTests, unparseAriTrsTests]
 
 -- | Tests for converting some example 'Trs's to COPS format using 'unparseCopsTrs'
 unparseCopsTrsTests :: Test

@@ -3,7 +3,7 @@
 -- Description : Parsing tests for MSTRS signatures
 --
 -- This module defines test cases for signature parsing functions for MSTRSs.
-module Test.Parse.Mstrs.MsSig (msSigTests) where
+module Test.Parse.Mstrs.MsSig (parseMsSigTests) where
 
 import Data.Conversion.Parse.Problem.MsSig (parseAriMsSig, parseCopsMsSig)
 import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
@@ -11,8 +11,8 @@ import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Test cases for MSTRS signature parsing and checking
-msSigTests :: Test
-msSigTests = TestLabel "msSigTests" $ TestList [parseCopsMsSigTests, badCopsMsSigTests, parseAriMsSigTests, badAriMsSigTests]
+parseMsSigTests :: Test
+parseMsSigTests = TestLabel "Test.Parse.Mstrs.MsSig" $ TestList [parseCopsMsSigTests, badCopsMsSigTests, parseAriMsSigTests, badAriMsSigTests]
 
 -- | Test cases for which 'parseCopsMsSig' should succeed and match the expected output.
 -- Expects signature strings in the COCO (MSTRS format)[http://project-coco.uibk.ac.at/problems/mstrs.php].

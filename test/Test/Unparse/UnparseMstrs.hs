@@ -4,12 +4,16 @@
 --
 -- This module defines test cases for converting many-sorted TRSRs
 -- from the internal 'Mstrs' representation to COPS and ARI format.
-module Test.Unparse.UnparseMstrs (unparseCopsMstrsTests, unparseAriMstrsTests) where
+module Test.Unparse.UnparseMstrs (unparseMstrsTests) where
 
 import Data.Conversion.Unparse.UnparseMstrs (unparseAriMstrs, unparseCopsMstrs)
 import Test.HUnit
 import Test.TestData.Mstrs (ariMstrss, copsMstrss)
 import Test.Unparse.Utils (assertUnparseList)
+
+-- | Tests for unparsing 'Mstrs's into COPS format and ARI format
+unparseMstrsTests :: Test
+unparseMstrsTests = TestLabel "Test.Unparse.UnparseMstrs" $ TestList [unparseCopsMstrsTests, unparseAriMstrsTests]
 
 -- | Tests for converting some example 'Mstrs's to COPS format using 'unparseCopsMstrs'
 unparseCopsMstrsTests :: Test

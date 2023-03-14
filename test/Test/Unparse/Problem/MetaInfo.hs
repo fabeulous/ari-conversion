@@ -13,7 +13,7 @@ import Test.Unparse.Utils (assertUnparseList)
 
 -- | Tests for unparsing 'MetaInfo' into COPS format and ARI format
 unparseMetaInfoTests :: Test
-unparseMetaInfoTests = TestLabel "unparseMetaInfoTests" $ TestList [unparseCopsMetaTests, unparseAriMetaTests]
+unparseMetaInfoTests = TestLabel "Test.Unparse.Problem.MetaInfo" $ TestList [unparseCopsMetaTests, unparseAriMetaTests]
 
 -- | Tests for converting some example 'MetaInfo's to COPS format 'unparseCopsMetaInfo'
 unparseCopsMetaTests :: Test
