@@ -2,9 +2,36 @@
 
 Working repository for term rewriting system (TRS) format conversion as part of the [ARI](https://ari-informatik.uibk.ac.at/) project. This repository contains Haskell programs to convert term rewriting formats between existing [COPS formats](http://project-coco.uibk.ac.at/problems/#format) and the new [ARI formats](https://ari-informatik.uibk.ac.at/tasks/A/).
 
+- [Getting Started](#getting-started)
+  - [Build](#build)
+  - [Documentation](#documentation)
+  - [Code Structure](#code-structure)
+  - [Tests](#tests)
+- [Tasks](#tasks)
+  - [Dependencies](#dependencies)
+  - [Examples](#examples)
+- [Architecture](#architecture)
+  - [Extensibility](#extensibility)
+    - [Adding a New Format](#adding-a-new-format)
+    - [Adding a New Problem Type](#adding-a-new-problem-type)
+- [Limitations](#limitations)
+  - [Disclaimer](#disclaimer)
+
 ## Getting Started
 
-Install Haskell and the Haskell Tool Stack e.g. by installing [GHCup](https://www.haskell.org/ghcup/). Check that they are installed by typing `stack --version` into the command line.
+Install Haskell and the Haskell Tool Stack e.g. by installing [GHCup](https://www.haskell.org/ghcup/). Check that they are installed by
+
+# Paste Your Document In Here
+
+## And a table of contents
+
+will be generated
+
+## On the right
+
+side of this page.
+
+typing `stack --version` into the command line.
 
 ### Build
 
@@ -17,7 +44,7 @@ stack exec trs-conversion-exe
 
 ### Documentation
 
-The project is documented using [Haddock](https://haskell-haddock.readthedocs.io/en/latest/markup.html). To preview documentation in a browser, run `stack hoogle --server --no-haddock-deps [--rebuild]` and navigate to [localhost:8080](http://localhost:8080/).
+The project is documented using [Haddock](https://haskell-haddock.readthedocs.io/en/latest/markup.html). To preview documentation in a browser, run `stack hoogle --server --no-haddock-deps [--rebuild]` and navigate to [localhost:8080](http://localhost:8080/). Run `stack hoogle --help` for more information about arguments.
 
 ### Code Structure
 
