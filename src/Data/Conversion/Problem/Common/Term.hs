@@ -1,6 +1,6 @@
 -- |
 -- Module      : Data.Conversion.Problem.Common.Term
--- Description : Term type definition
+-- Description : Term type and helpers
 --
 -- This module contains the 'Term' type definition and helper functions for Terms.
 module Data.Conversion.Problem.Common.Term
@@ -12,7 +12,7 @@ module Data.Conversion.Problem.Common.Term
   )
 where
 
-import Data.Conversion.Problem.Trs.Sig (Sig (..), checkConsistentSig)
+import Data.Conversion.Problem.Trs.Sig (Sig (..), checkDistinctSig)
 import Data.List (nub)
 
 -- | The type for a term with function symbol type @f@ and variable type @v@.
@@ -37,7 +37,7 @@ data Term f v
 -- >>> termFunArities $ Fun "f" [Var "x", Fun "f" [Var "y", Var "y"]]
 -- Right [Sig "f" 2] -- Duplicates are removed
 termFunArities :: (Eq f, Show f) => Term f v -> Either String [Sig f]
-termFunArities t = checkConsistentSig $ nub arities
+termFunArities t = checkDistinctSig $ nub arities
   where
     -- \| Recursively get arities of each function symbol in term. Logic copied from Haskell package 'Data.Rewriting.Term.Type'
     foldTerm :: (v -> a) -> (f -> [a] -> a) -> Term f v -> a

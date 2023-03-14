@@ -1,8 +1,8 @@
 -- |
 -- Module      : Data.Conversion.Parse.Problem.Sig
--- Description : Signature parser
+-- Description : TRS signature parsers
 --
--- This module defines functions to parse a TRS signature from a @String@ input.
+-- This module defines functions to parse a 'Sig' from a @String@ input.
 module Data.Conversion.Parse.Problem.Sig
   ( parseCopsSig,
     parseFsymArity,
@@ -16,7 +16,7 @@ import Text.Megaparsec (many, some)
 import Text.Megaparsec.Char (digitChar)
 
 -- | Parser to extract the signature from a @SIG@ block of the COPS [extended TRS format](http://project-coco.uibk.ac.at/problems/trs.php#extended).
--- Expects a sequence of blocks @(fsym Int)@ where the @Int@ is the arity of the given symbol (see example below).
+-- Expects a sequence of blocks @(fsym int)@ where the @int@ is the arity of the given symbol (see example below).
 -- Leading and trailing spaces are ignored.
 --
 -- >>> parseTest parseCopsSig "(f 2) (a 0) (h 1)"

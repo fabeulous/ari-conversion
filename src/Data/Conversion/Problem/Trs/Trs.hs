@@ -2,12 +2,13 @@
 -- Module      : Data.Conversion.Problem.Trs.Trs
 -- Description : TRS type definition
 --
--- This module contains the 'Trs' type definition for first-order term rewriting systems.
+-- This module contains the 'Trs' type definition for representing
+-- first-order term rewriting systems.
 module Data.Conversion.Problem.Trs.Trs
   ( -- * TRS Datatype
     Trs (..),
 
-    -- * Reexports needed to construct a TRS
+    -- * Re-exports needed to construct a TRS
     Rule (..),
     Term (..),
     TrsSig (..),
@@ -27,7 +28,7 @@ data Trs f v = Trs
   { -- | A list of the TRS rewrite rules
     rules :: [Rule f v],
     -- | The signature (function symbols and arities) of the TRS.
-    -- Can specify just variable, just function symbols, or both (see 'TrsSig') in order to support more TRS formats.
+    -- It is possible to specify only variables, only function symbols, or both (see 'TrsSig') in order to support more TRS formats.
     signature :: TrsSig f v,
     -- | Additional information about the TRS (e.g. the origin and general comments). See 'MetaInfo' definition for more details.
     metaInfo :: MetaInfo

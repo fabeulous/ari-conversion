@@ -9,7 +9,7 @@ module Data.Conversion.Unparse.Problem.TrsSig
   )
 where
 
-import Data.Conversion.Problem.Common.Rule (Rule, inferRulesSignature, ruleVars)
+import Data.Conversion.Problem.Common.Rule (Rule, inferSigFromRules, ruleVars)
 import Data.Conversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import Data.Conversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
@@ -56,10 +56,10 @@ unparseCopsTrsSig rs trsSig = case trsSig of
 --      TRS as anything not in the function signature will be treated as a variable.
 --
 -- * If the 'TrsSig' only has variables specified (via 'Vars'), then the function symbols and their arities are extracted from
---      the TRS rules using 'inferRulesSignature' and output as in the 'FunSig' case.
+--      the TRS rules using 'inferSigFromRules' and output as in the 'FunSig' case.
 unparseAriTrsSig :: (Eq v, Eq f, Show f, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
 unparseAriTrsSig _ (FunSig fs) = Right (vsep $ map (prettyBlock "fun" . pretty) fs)
 unparseAriTrsSig rs (FullSig _ fs) = unparseAriTrsSig rs (FunSig fs)
-unparseAriTrsSig rs (Vars _) = case inferRulesSignature rs of -- Extract signature from TRS rules
+unparseAriTrsSig rs (Vars _) = case inferSigFromRules rs of -- Extract signature from TRS rules
   Right fs -> unparseAriTrsSig rs (FunSig fs)
   Left err -> Left err

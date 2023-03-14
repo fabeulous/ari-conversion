@@ -17,15 +17,17 @@ import Data.List (nub)
 
 -- | Datatype for the signature of a single function symbol in a many-sorted TRS ('MsTrs').
 --
--- For example, a function symbol @cons@ which takes a @Nat@ and @List@ and returns a @List@ may be written as
--- @MsSig "cons" (["Nat"], "List")@. A constant @n@ of type @Nat@ may be written as @MsSig "n" ([], "Nat")@.
+-- For example, a function symbol @cons@ which takes a @Nat@ and @List@ and returns a @List@ can be written as
+--  > MsSig "cons" (["Nat"], "List").
+-- A constant @n@ of type @Nat@ can be written as
+--  > MsSig "n" ([], "Nat").
 data MsSig f s
   = MsSig
       f
       -- ^ The function symbol
       ([s], s)
-      -- ^ A list of the input types and the single output type of the function symbol
-  deriving (Ord, Eq, Show)
+      -- ^ A list of the input sorts and the single output sorts of the function symbol
+  deriving (Eq, Show)
 
 -- | Function to infer a list of all unique sorts in an 'MsSig'.
 --

@@ -6,7 +6,10 @@
 --
 -- This module defines functions to parse a many-sorted TRS in COPS and ARI format.
 module Data.Conversion.Parse.ParseMsTrs
-  ( parseCopsMsTrs,
+  ( -- ** COPS
+    parseCopsMsTrs,
+
+    -- ** ARI
     parseAriMsTrs,
   )
 where
@@ -24,7 +27,7 @@ import Text.Megaparsec (many, optional, try)
 import Text.Megaparsec.Char (string)
 
 -- | Parse a many-sorted TRS in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php):
--- see the COCO website for details on the grammar and allowed characters and the tests for more examples.
+-- see the COCO website for details on the grammar and the tests for more examples.
 --
 -- Does not carry out type-checking for function applications: this should be handled by the user.
 --
@@ -42,14 +45,15 @@ parseCopsMsTrs = stripSpaces $ do
         metaInfo = fromMaybe emptyMetaInfo maybeMetaInfo
       }
 
--- | Parse a many-sorted TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt)
--- Leading and trailing spaces are consumed. See the tests for more examples of the expected format.
+-- | Parse a many-sorted TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
+--
+-- Leading and trailing spaces are consumed: see the tests for more examples of the expected format.
 --
 -- Currently no type checking is performed: this is left to the user.
--- It is also not checked if the sorts used in function symbols align with explicity defined sorts.
+-- It is also not checked whether the sorts used in function symbols align with explicity defined sorts.
 -- Rules are parsed using 'parseAriRule' as in the untyped TRS setting.
 --
--- qqjf I assume that there is a fixed order of blocks: @meta-info@ then @format@ then @sort@ then @fun@ then @rule@.
+-- qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @sort@ then @fun@ then @rule@.
 parseAriMsTrs :: Parser (MsTrs String String String)
 parseAriMsTrs = stripSpaces $ do
   mstrsMetaInfo <- parseAriMetaInfo
