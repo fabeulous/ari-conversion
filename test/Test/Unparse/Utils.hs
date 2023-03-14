@@ -5,16 +5,19 @@
 --  with HUnit.
 module Test.Unparse.Utils (assertUnparseList, assertUnparse) where
 
+import Prettyprinter (Doc)
 import Test.HUnit
 
 -- | Assert that a value @val :: a@ is unparsed to a string @expected@ using
 -- unparser function @unparser :: a -> String@.
--- Prints an error message if a different result is obtained.
+-- Prints an error message if unparsing fails or if a different result is obtained.
 --
 -- >>> assertUnparse (Fun "f" [Var "x"]) unparseTerm "f(x)"
 -- should pass
-assertUnparse :: Show a => a -> (a -> String) -> String -> Assertion
-assertUnparse val unparser expected = assertEqual (show val ++ " not unparsed correctly") expected (unparser val)
+assertUnparse :: Show a => a -> (a -> Either String (Doc ann)) -> String -> Assertion
+assertUnparse val unparser expected = case unparser val of
+  Left err -> assertFailure err
+  Right res -> assertEqual (show val ++ " not parsed correctly") expected (show res)
 
 -- | Assert that each value in a list is correctly unparsed and wraps in a
 -- 'TestList'.
@@ -25,7 +28,7 @@ assertUnparse val unparser expected = assertEqual (show val ++ " not unparsed co
 --
 -- >>> assertUnparseList [(Fun "f" [Var "x"], "f(x)", "Unparse unary function"), (Var "x", "x", "Unparse single variable")] unparseTerm
 -- should pass
-assertUnparseList :: Show a => [(a, String, String)] -> (a -> String) -> Test
+assertUnparseList :: Show a => [(a, String, String)] -> (a -> Either String (Doc ann)) -> Test
 assertUnparseList xs p =
   TestList
     [ TestLabel label (TestCase tc)

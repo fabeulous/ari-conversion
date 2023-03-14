@@ -7,6 +7,7 @@ module Test.Unparse.Problem.MetaInfo (unparseMetaInfoTests) where
 
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import Data.Conversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
+import Prettyprinter (Doc, emptyDoc)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparseList)
 
@@ -16,17 +17,21 @@ unparseMetaInfoTests = TestLabel "unparseMetaInfoTests" $ TestList [unparseCopsM
 
 -- | Tests for converting some example 'MetaInfo's to COPS format 'unparseCopsMetaInfo'
 unparseCopsMetaTests :: Test
-unparseCopsMetaTests = assertUnparseList testMeta (show . unparseCopsMetaInfo)
+unparseCopsMetaTests = assertUnparseList testMeta (Right . unparseCopsMetaInfo)
   where
     testMeta :: [(MetaInfo, String, String)]
     testMeta = [(m, expected, label ++ " [COPS]") | (label, m, expected, _) <- testMetas]
 
 -- | Tests for converting some example 'MetaInfo's to ARI format using 'unparseAriMetaInfo'
 unparseAriMetaTests :: Test
-unparseAriMetaTests = assertUnparseList testMeta (maybe "" show . unparseAriMetaInfo)
+unparseAriMetaTests = assertUnparseList testMeta ariMetaUnparser
   where
     testMeta :: [(MetaInfo, String, String)]
     testMeta = [(m, expected, label ++ " [ARI]") | (label, m, _, expected) <- testMetas]
+    ariMetaUnparser :: MetaInfo -> Either String (Doc ann)
+    ariMetaUnparser m = case unparseAriMetaInfo m of
+      Nothing -> Right emptyDoc
+      (Just meta) -> Right meta
 
 ------------------------
 --- Test data ----------

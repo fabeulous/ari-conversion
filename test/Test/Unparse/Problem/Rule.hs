@@ -17,14 +17,14 @@ unparseRuleTests = TestLabel "unparseRuleTests" $ TestList [unparseCopsRuleTests
 
 -- | Test unparsing example 'Rule's to COPS format using 'unparseCopsRule'
 unparseCopsRuleTests :: Test
-unparseCopsRuleTests = assertUnparseList testRules (show . unparseCopsRule)
+unparseCopsRuleTests = assertUnparseList testRules (Right . unparseCopsRule)
   where
     testRules :: [(Rule String String, String, String)]
     testRules = [(r, expectedCops, label ++ " [COPS]") | (label, r, expectedCops, _) <- exampleRules]
 
 -- | Test unparsing example 'Rule's to ARI format using 'unparseAriRule'
 unparseAriRuleTests :: Test
-unparseAriRuleTests = assertUnparseList testRules (show . unparseAriRule)
+unparseAriRuleTests = assertUnparseList testRules (Right . unparseAriRule)
   where
     testRules :: [(Rule String String, String, String)]
     testRules = [(r, expectedAri, label ++ " [ARI]") | (label, r, _, expectedAri) <- exampleRules]

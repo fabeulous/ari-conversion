@@ -24,7 +24,7 @@ import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vsep)
 -- unparse each part of the 'Trs'.
 unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
 unparseCopsTrs (Trs rs sig meta) = do
-  copsSig <- unparseCopsTrsSig sig rs
+  copsSig <- unparseCopsTrsSig rs sig
   let trsElements = filterEmptyDocs [copsSig, unparseCopsRules rs, unparseCopsMetaInfo meta]
   return $ vsep trsElements
 
@@ -35,7 +35,7 @@ unparseCopsTrs (Trs rs sig meta) = do
 -- unparse each part of the 'Trs'.
 unparseAriTrs :: (Pretty f, Pretty v, Eq v, Eq f, Show f) => Trs f v -> Either String (Doc ann)
 unparseAriTrs (Trs rs sig meta) = do
-  ariSig <- unparseAriTrsSig sig rs
+  ariSig <- unparseAriTrsSig rs sig
   return $
     vsep $
       filterEmptyDocs

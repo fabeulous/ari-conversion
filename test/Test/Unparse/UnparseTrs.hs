@@ -6,35 +6,21 @@
 -- TRSs from the internal 'Trs' representation to COPS and ARI format.
 module Test.Unparse.UnparseTrs (unparseCopsTrsTests, unparseAriTrsTests) where
 
-import Data.Conversion.Problem.Trs.Trs (Trs (..))
 import Data.Conversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
-import Prettyprinter (Pretty)
 import Test.HUnit
 import Test.TestData.Trs (ariTrss, copsTrss)
 import Test.Unparse.Utils (assertUnparseList)
-
--- | Unparser for COPS format
-copsTrsUnparser :: (Eq v, Pretty f, Pretty v) => Trs f v -> String
-copsTrsUnparser trs = case unparseCopsTrs trs of
-  Right unparsed -> show unparsed
-  Left err -> show err -- qqjf Add error handling
-
--- | Unparser for ARI format
-ariTrsUnparser :: (Eq f, Eq v, Pretty f, Pretty v, Show f) => Trs f v -> String
-ariTrsUnparser trs = case unparseAriTrs trs of
-  Right unparsed -> show unparsed
-  Left err -> show err -- qqjf Add error handling
 
 -- | Tests for converting some example 'Trs's to COPS format using 'unparseCopsTrs'
 unparseCopsTrsTests :: Test
 unparseCopsTrsTests =
   assertUnparseList
     ([(res, trsStr, "unparseCopsTrs should succeed on " ++ l) | (l, _, trsStr, res) <- copsTrss])
-    copsTrsUnparser
+    unparseCopsTrs
 
 -- | Tests for converting some example 'Trs's to ARI format using 'unparseAriTrs'
 unparseAriTrsTests :: Test
 unparseAriTrsTests =
   assertUnparseList
     ([(trs, resStr, "unparseAriTrs should succeed on " ++ l) | (l, trs, resStr, _) <- ariTrss])
-    ariTrsUnparser
+    unparseAriTrs

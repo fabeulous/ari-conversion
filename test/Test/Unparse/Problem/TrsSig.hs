@@ -23,13 +23,8 @@ unparseCopsSigTests =
   TestList
     [ TestLabel (label ++ " [COPS]") (TestCase tc)
       | (label, sig, rules, expected, _) <- testSigs,
-        let tc = assertUnparse sig (copsSigUnparser rules) expected
+        let tc = assertUnparse sig (unparseCopsTrsSig rules) expected
     ]
-  where
-    copsSigUnparser :: [Rule String String] -> TrsSig String String -> String
-    copsSigUnparser rs sig = case unparseCopsTrsSig sig rs of
-      Right unparsedSig -> show unparsedSig
-      Left err -> err -- qqjf Add error handling
 
 -- | Tests for converting some example 'TrsSig's to ARI format using 'unparseAriTrsSig'
 unparseAriSigTests :: Test
@@ -37,13 +32,8 @@ unparseAriSigTests =
   TestList
     [ TestLabel (label ++ " [ARI]") (TestCase tc)
       | (label, sig, rules, _, expected) <- testSigs,
-        let tc = assertUnparse sig (ariSigUnparser rules) expected
+        let tc = assertUnparse sig (unparseAriTrsSig rules) expected
     ]
-  where
-    ariSigUnparser :: [Rule String String] -> TrsSig String String -> String
-    ariSigUnparser rs sig = case unparseAriTrsSig sig rs of
-      Right unparsedSig -> show unparsedSig
-      Left err -> err -- qqjf Add error handling
 
 ------------------------
 --- Test data ----------

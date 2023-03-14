@@ -20,7 +20,7 @@ unparseCopsMsSigTests =
   TestList
     [ TestLabel (label ++ " [COPS]") (TestCase tc)
       | (label, sig, expected, _) <- testSigs,
-        let tc = assertUnparse sig (show . unparseCopsMsSig) expected
+        let tc = assertUnparse sig (Right . unparseCopsMsSig) expected
     ]
 
 -- | Tests for converting some example 'MsSig's to ARI format using 'unparseAriMsSig'
@@ -29,7 +29,7 @@ unparseAriMsSigTests =
   TestList
     [ TestLabel (label ++ " [ARI]") (TestCase tc)
       | (label, sig, _, expected) <- testSigs,
-        let tc = assertUnparse sig (show . unparseAriMsSig) expected
+        let tc = assertUnparse sig (Right . unparseAriMsSig) expected
     ]
 
 ------------------------

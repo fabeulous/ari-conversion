@@ -30,11 +30,11 @@ import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
 --
 -- * If the 'TrsSig' has only function symbols specified (via 'FunSig'), then all variables in the TRS rules are extracted
 --      using 'ruleVars' and this case is treated like the 'FullSig' case. This is the reason for rules being given as an argument @rs@.
-unparseCopsTrsSig :: (Eq v, Pretty f, Pretty v) => TrsSig f v -> [Rule f v] -> Either String (Doc ann)
-unparseCopsTrsSig trsSig rs = case trsSig of
+unparseCopsTrsSig :: (Eq v, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
+unparseCopsTrsSig rs trsSig = case trsSig of
   Vars vs -> Right $ prettyVars vs
   FullSig vs fs -> Right $ vsep [prettyNonEmptyVars vs, prettyCopsSig fs]
-  FunSig fs -> unparseCopsTrsSig (FullSig (ruleVars rs) fs) rs
+  FunSig fs -> unparseCopsTrsSig rs $ FullSig (ruleVars rs) fs
   where
     prettyVars, prettyNonEmptyVars :: Pretty v => [v] -> Doc ann
     prettyVars vs = if null vs then emptyDoc else prettyNonEmptyVars vs
@@ -58,9 +58,9 @@ unparseCopsTrsSig trsSig rs = case trsSig of
 --
 -- * If the 'TrsSig' only has variables specified (via 'Vars'), then the function symbols and their arities are extracted from
 --      the TRS rules using 'inferRulesSignature' and output as in the 'FunSig' case.
-unparseAriTrsSig :: (Eq v, Eq f, Show f, Pretty f, Pretty v) => TrsSig f v -> [Rule f v] -> Either String (Doc ann)
-unparseAriTrsSig (FunSig fs) _ = Right (vsep $ map (prettyBlock "fun" . pretty) fs)
-unparseAriTrsSig (FullSig _ fs) rs = unparseAriTrsSig (FunSig fs) rs
-unparseAriTrsSig (Vars _) rs = case inferRulesSignature rs of -- Extract signature from TRS rules
-  Right fs -> unparseAriTrsSig (FunSig fs) rs
+unparseAriTrsSig :: (Eq v, Eq f, Show f, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
+unparseAriTrsSig _ (FunSig fs) = Right (vsep $ map (prettyBlock "fun" . pretty) fs)
+unparseAriTrsSig rs (FullSig _ fs) = unparseAriTrsSig rs (FunSig fs)
+unparseAriTrsSig rs (Vars _) = case inferRulesSignature rs of -- Extract signature from TRS rules
+  Right fs -> unparseAriTrsSig rs (FunSig fs)
   Left err -> Left err
