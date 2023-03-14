@@ -19,7 +19,6 @@ import Data.Conversion.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
 import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import Data.Conversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
 import Data.Maybe (fromMaybe)
-import Data.Text (pack)
 import Text.Megaparsec (many, optional, try, (<|>))
 import Text.Megaparsec.Char (string)
 
@@ -50,7 +49,7 @@ parseCopsTrs = stripSpaces $ do
 parseAriTrs :: Parser (Trs String String)
 parseAriTrs = stripSpaces $ do
   trsMetaInfo <- parseAriMetaInfo
-  _ <- parseBlock "format" (string $ pack "TRS")
+  _ <- parseBlock "format" (string "TRS")
   funSig <- many (try $ parseBlock "fun " parseFsymArity)
   rs <- many (try $ parseBlock "rule " (parseAriRule funSig))
   return $

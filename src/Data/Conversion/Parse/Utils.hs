@@ -1,3 +1,4 @@
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
@@ -25,7 +26,7 @@ import Data.Text (Text, pack)
 import Data.Void (Void)
 import Text.Megaparsec (Parsec, between, many, (<?>))
 import Text.Megaparsec.Char (space1, spaceChar, string)
-import qualified Text.Megaparsec.Char.Lexer as L
+import Text.Megaparsec.Char.Lexer qualified as L
 
 -- | Type alias for a 'Megaparsec' parser which uses error handler of type 'Void' and
 -- takes an input of type 'Text'.

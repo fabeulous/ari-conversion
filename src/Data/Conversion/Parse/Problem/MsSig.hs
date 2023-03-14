@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : Data.Conversion.Parse.Problem.MsSig
 -- Description : Parser for 'MsSig'
@@ -14,7 +16,6 @@ import Control.Monad (guard)
 import Data.Conversion.Parse.Problem.Term (parseFunSymbol)
 import Data.Conversion.Parse.Utils (Parser, lexeme, parens, stripSpaces)
 import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
-import Data.Text (pack)
 import Text.Megaparsec (many, sepBy, some, (<?>))
 import Text.Megaparsec.Char (spaceChar, string)
 
@@ -24,11 +25,11 @@ import Text.Megaparsec.Char (spaceChar, string)
 --
 -- Leading and trailing spaces are consumed.
 --
--- >>> parse parseCopsMsSig "" (pack "(cons  Nat List -> List)")
--- Right [MsSig "cons" (["Nat","List"] "List")]
+-- >>> parseTest parseCopsMsSig "(cons  Nat List -> List)"
+-- [MsSig "cons" (["Nat","List"] "List")]
 --
--- -- >>> parse parseCopsMsSigs "" (pack "(n  -> Nat)")
--- Right [MsSig "n" ([] "Nat")]
+-- -- parseTest parseCopsMsSig "(n  -> Nat)"
+-- [MsSig "n" ([] "Nat")]
 parseCopsMsSigs :: Parser [MsSig String String]
 parseCopsMsSigs = stripSpaces $ many (parens parseCopsMsSig)
 
@@ -38,13 +39,13 @@ parseCopsMsSigs = stripSpaces $ many (parens parseCopsMsSig)
 --
 -- Used for parsing the @SIG@ block of the COPS [MSTRS format](http://project-coco.uibk.ac.at/problems/mstrs.php).
 --
--- >>> parse parseCopsSig "" (pack "cons  Nat List -> List")
--- Right (MsSig "cons" (["Nat","List"] "List"))
+-- >>> parseTest parseCopsSig "cons  Nat List -> List"
+-- MsSig "cons" (["Nat","List"] "List")
 parseCopsMsSig :: Parser (MsSig String String)
 parseCopsMsSig = stripSpaces $ do
   fsym <- lexeme parseFunSymbol <?> "MsSig function symbol"
   inputSorts <- many (parseFunSymbol <* some spaceChar)
-  _ <- lexeme (string $ pack "-> ") -- qqjf assume that sorts have the same constaints as function symbols
+  _ <- lexeme (string "-> ") -- qqjf assume that sorts have the same constaints as function symbols
   outputSort <- lexeme parseFunSymbol
   return $ MsSig fsym (inputSorts, outputSort)
 
@@ -54,16 +55,16 @@ parseCopsMsSig = stripSpaces $ do
 --
 -- Leading and trailing spaces are consumed.
 --
--- >>> parse parseAriMsSig "" (pack "+ :sort (Nat Nat Nat))")
--- Right [MsSig "+" (["Nat","Nat"] "Nat")]
+-- >>> parseTest parseAriMsSig "+ :sort (Nat Nat Nat))"
+-- [MsSig "+" (["Nat","Nat"] "Nat")]
 --
--- -- >>> parse parseAriMsSig "" (pack "0 :sort (Nat)")
--- Right [MsSig "0" ([] "Nat")]
+-- -- >>> parseTest parseAriMsSig "0 :sort (Nat)"
+-- [MsSig "0" ([] "Nat")]
 parseAriMsSig :: Parser (MsSig String String)
 parseAriMsSig =
   stripSpaces $ do
     fsym <- lexeme parseFunSymbol <?> "MsSig function symbol"
-    _ <- lexeme $ string (pack ":sort ")
+    _ <- lexeme $ string ":sort "
     args <- lexeme $ parens (parseFunSymbol `sepBy` some spaceChar)
     guard (not $ null args)
     return $ MsSig fsym (take (length args - 1) args, last args)

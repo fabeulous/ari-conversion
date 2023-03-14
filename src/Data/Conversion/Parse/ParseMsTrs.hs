@@ -1,3 +1,5 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- Module      : Data.Conversion.Parse.ParseMsTrs
 -- Description : Functions to parse MSTRSs
@@ -18,7 +20,6 @@ import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import Data.Conversion.Problem.MsTrs.MsTrs (MsSig (..), MsTrs (..))
 import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Data.Maybe (fromMaybe)
-import Data.Text (pack)
 import Text.Megaparsec (many, optional, try)
 import Text.Megaparsec.Char (string)
 
@@ -52,7 +53,7 @@ parseCopsMsTrs = stripSpaces $ do
 parseAriMsTrs :: Parser (MsTrs String String String)
 parseAriMsTrs = stripSpaces $ do
   mstrsMetaInfo <- parseAriMetaInfo
-  _ <- parseBlock "format" (string $ pack "MSTRS")
+  _ <- parseBlock "format" (string "MSTRS")
   sortsList <- many (try $ parseBlock "sort " parseFunSymbol) -- qqjf assumed sorts have same constraints as fun symbols
   msSigs <- many (try $ parseBlock "fun " parseAriMsSig)
   rs <- many (try $ parseBlock "rule " (parseAriRule $ msSigToSigList msSigs))

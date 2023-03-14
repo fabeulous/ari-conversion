@@ -101,7 +101,7 @@ The type `Either` is used as parsing might fail (in which case an error should b
 The MegaParsec function `parseTest` can be used to quickly test parsers and print output to the terminal during development.
 
 ```
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-} -- Allow using Strings as Text
 
 import Data.Conversion.Parse.Problem.Rule (parseCopsRule)
 import Text.Megaparsec (parseTest)

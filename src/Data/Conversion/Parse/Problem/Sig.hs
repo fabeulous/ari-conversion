@@ -19,8 +19,8 @@ import Text.Megaparsec.Char (digitChar)
 -- Expects a sequence of blocks @(fsym Int)@ where the @Int@ is the arity of the given symbol (see example below).
 -- Leading and trailing spaces are ignored.
 --
--- >>> parse parseCopsSig "" (pack "(f 2) (a 0) (h 1)")
--- Right [Sig "f" 2,Sig "a" 0,Sig "h" 1]
+-- >>> parseTest parseCopsSig "(f 2) (a 0) (h 1)"
+-- [Sig "f" 2,Sig "a" 0,Sig "h" 1]
 parseCopsSig :: Parser [Sig String]
 parseCopsSig = stripSpaces $ many (parens parseFsymArity)
 
@@ -29,7 +29,7 @@ parseCopsSig = stripSpaces $ many (parens parseFsymArity)
 --
 -- Used for parsing TRSs in ARI format and the @SIG@ block of the COPS [extended TRS format](http://project-coco.uibk.ac.at/problems/trs.php#extended).
 --
--- >>> parse parseCopsSig "" (pack "fun 2")
+-- >>> parseTest parseCopsSig "fun 2"
 -- Right (Sig "fun" 2)
 parseFsymArity :: Parser (Sig String)
 parseFsymArity = stripSpaces $ do

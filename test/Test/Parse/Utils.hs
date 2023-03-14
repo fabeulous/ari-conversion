@@ -23,11 +23,7 @@ import Text.Megaparsec.Error (ParseErrorBundle)
 -- __'parseFromString' requires the parser to consume the entire input__ (until @eof@).
 -- This can result in different behaviour to if the parser were allowed to consume only part of the input.
 parseFromString :: String -> Parser a -> Either (ParseErrorBundle Text Void) a
-parseFromString xs p =
-  parse
-    (p <* (eof <|> displayUnconsumed))
-    ""
-    (pack xs)
+parseFromString xs p = parse (p <* (eof <|> displayUnconsumed)) "" (pack xs)
   where
     displayUnconsumed :: Parser b
     displayUnconsumed = do
