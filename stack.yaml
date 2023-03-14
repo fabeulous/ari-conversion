@@ -37,7 +37,6 @@ packages:
 extra-deps:
   - prettyprinter-1.7.1
   - megaparsec-9.3.0
-  - containers-0.6.6
   - text-2.0.1 # For Data.Text
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
