@@ -4,17 +4,20 @@
 --
 -- This module defines test cases for functions used to parse TRS rules.
 -- Tests are non-exhaustive, but cover common cases and some useful checks.
-module Test.Parse.Rule (copsRuleTests, ariRuleTests) where
+module Test.Parse.Rule (parseRuleTests) where
 
-import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMstrsRules, parseCopsRule, parseCopsTrsRules)
+import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMsTrsRules, parseCopsRule, parseCopsTrsRules)
 import Data.Conversion.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
+import Data.Conversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
+
+-- | Tests for parsing rules in COPS and ARI formats
+parseRuleTests :: Test
+parseRuleTests = TestLabel "Test.Parse.Rule" $ TestList [copsRuleTests, ariRuleTests]
 
 -- | Tests for parsing rules in COPS format, including tests for which parsing should succeed and for which parsing should fail
 copsRuleTests :: Test
@@ -28,9 +31,9 @@ ariRuleTests = TestLabel "ariRuleTests" $ TestList [parseAriRuleTests, badAriRul
 copsRuleParser :: Parser (Rule String String)
 copsRuleParser = parseCopsRule ["x", "y", "z", "x'"]
 
--- | A rule parser for testing 'parseCopsMstrsRules' with a fixed set of function symbols
+-- | A rule parser for testing 'parseCopsMsTrsRules' with a fixed set of function symbols
 copsRuleFParser :: Parser [Rule String String]
-copsRuleFParser = parseCopsMstrsRules [MsSig "f" (["Nat"], "Nat"), MsSig "fun" (["Nat"], "Nat"), MsSig "a" ([], "Type"), MsSig "b" ([], "Type")]
+copsRuleFParser = parseCopsMsTrsRules [MsSig "f" (["Nat"], "Nat"), MsSig "fun" (["Nat"], "Nat"), MsSig "a" ([], "Type"), MsSig "b" ([], "Type")]
 
 -- | Test cases for which 'parseCopsRule' should succeed and
 -- match the given expected output. Tests parsing COPS rules when the variables are known.
@@ -46,14 +49,14 @@ parseCopsRuleTests = assertParseList "parseCopsRule should succeed" validRules c
         ("  f(x)  ->    x ", Rule {lhs = fx, rhs = Var "x"}),
         ("x->f(x)", Rule {lhs = Var "x", rhs = fx}),
         ("f(x)->f(x)", Rule {lhs = fx, rhs = fx}),
-        ("x->x", Rule {lhs = Var "x", rhs = Var "x"}), -- qqjf Currently allowed
+        ("x->x", Rule {lhs = Var "x", rhs = Var "x"}),
         ("a()->b", Rule {lhs = Fun "a" [], rhs = Fun "b" []})
       ]
 
--- | Test cases for which 'parseCopsMstrsRules' should succeed and
+-- | Test cases for which 'parseCopsMsTrsRules' should succeed and
 -- match the given expected output.  Tests parsing COPS rules when the function symbols are known.
 parseCopsRulesFTests :: Test
-parseCopsRulesFTests = assertParseList "parseCopsMstrsRules should succeed" validRules copsRuleFParser
+parseCopsRulesFTests = assertParseList "parseCopsMsTrsRules should succeed" validRules copsRuleFParser
   where
     fx = Fun "f" [Var "x"]
     validRules :: [(String, [Rule String String])]
@@ -62,7 +65,7 @@ parseCopsRulesFTests = assertParseList "parseCopsMstrsRules should succeed" vali
         ("  f(x)  ->    x ", [Rule {lhs = fx, rhs = Var "x"}]),
         ("x->f(x)", [Rule {lhs = Var "x", rhs = fx}]),
         ("fun(fx)->fun(fx)", [Rule {lhs = Fun "fun" [Var "fx"], rhs = Fun "fun" [Var "fx"]}]),
-        ("x->x", [Rule {lhs = Var "x", rhs = Var "x"}]), -- qqjf Currently allowed
+        ("x->x", [Rule {lhs = Var "x", rhs = Var "x"}]),
         ("a()->b", [Rule {lhs = Fun "a" [], rhs = Fun "b" []}])
       ]
 
@@ -96,7 +99,7 @@ badCopsRulesTests = assertFailParseList "parseCopsRule should fail" badRules cop
 -- to parse blocks containing 0 or more rules).
 -- Asserts that the test cases are parseable and match the expected output.
 parseMultipleCopsRules :: Test
-parseMultipleCopsRules = assertParseList "parseCopsTrsRules should succees" validRules rulesParser
+parseMultipleCopsRules = assertParseList "parseCopsTrsRules should succeed" validRules rulesParser
   where
     rulesParser :: Parser [Rule String String]
     rulesParser = parseCopsTrsRules $ Vars ["x", "y", "z", "x'"]
@@ -126,7 +129,7 @@ ariRuleParser =
 -- | Test cases for which 'parseAriRule' should succeed and
 -- match the given expected output
 parseAriRuleTests :: Test
-parseAriRuleTests = assertParseList "parseAriRule should succees" validRules ariRuleParser
+parseAriRuleTests = assertParseList "parseAriRule should succeed" validRules ariRuleParser
   where
     sx = Fun "s" [Var "x"]
     validRules :: [(String, Rule String String)]
@@ -136,7 +139,7 @@ parseAriRuleTests = assertParseList "parseAriRule should succees" validRules ari
         ("  (s sx) (x)", Rule {lhs = Fun "s" [Var "sx"], rhs = Var "x"}),
         ("x (s   x)", Rule {lhs = Var "x", rhs = sx}),
         ("(s x)  ( s x )", Rule {lhs = sx, rhs = sx}),
-        ("(x) (x)", Rule {lhs = Var "x", rhs = Var "x"}), -- qqjf Currently allowed
+        ("(x) (x)", Rule {lhs = Var "x", rhs = Var "x"}),
         ("(0) (nil)", Rule {lhs = Fun "0" [], rhs = Fun "nil" []}),
         ("(f x y) s x", Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = sx}),
         ("0 (s x)", Rule {lhs = Fun "0" [], rhs = sx}),
@@ -163,7 +166,7 @@ badAriRulesTests = assertFailParseList "parseAriRule should fail" badRules ariRu
         "() (s x)",
         "(s x) ()",
         "() ()",
-        "(s x)(x)", -- No space qqjf
+        "(s x)(x)",
         "((f x y) (s x))",
         "",
         " ",

@@ -5,24 +5,22 @@
 -- This module defines test data which is used for testing both parsing and unparsing functions for 'Trs's.
 -- Exported values can then be imported in 'Test.Parse' and 'Test.Unparse'.
 module Test.TestData.Trs
-  ( -- * Test data for tests on 'Trs'
+  ( -- * COPS
     copsTrss,
+
+    -- * ARI
     ariTrss,
   )
 where
 
-import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
-import Data.Conversion.Problem.Common.Rule (Rule (..))
-import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
-import Data.Conversion.Problem.Trs.Trs (Trs (..))
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
+import Data.Conversion.Problem.Trs.Trs (MetaInfo (..), Rule (..), Sig (..), Term (..), Trs (..), TrsSig (..))
 
 ------------------------
 --- TRS Lists ----------
 ------------------------
 
--- | A list of TRSs in internal 'Trs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/trs.php]
+-- | A list of TRSs in Haskell 'Trs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/trs.php]
 -- to test both parsing and unparsing functions.
 -- Has format @(original trs, str := result of parsing trs, result of unparsing str)@.
 --
@@ -70,7 +68,7 @@ copsTrss =
       \doi:10.1007/11805618_6\n\
       \[7] Example 2\n\
       \origin: COPS #20\n\
-      \submitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama)", -- qqjf does not exactly match COPS comment
+      \submitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama)",
       fullExampleTrs
         { signature = FullSig ["x", "y"] fullExampleSig,
           metaInfo =
@@ -84,7 +82,7 @@ copsTrss =
     )
   ]
 
--- | A list of TRSs in internal 'Trs' format and in (ARI format)[https://ari-informatik.uibk.ac.at/tasks/A/trs.txt]
+-- | A list of TRSs in Haskell 'Trs' format and in (ARI format)[https://ari-informatik.uibk.ac.at/tasks/A/trs.txt]
 -- to test both parsing and unparsing functions.
 -- Has format @(original trs, str := result of parsing trs, result of unparsing str)@.
 --

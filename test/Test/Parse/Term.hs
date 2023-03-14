@@ -3,7 +3,7 @@
 -- Description : Parsing tests for terms
 --
 -- This module defines test cases for the functions 'parseTerm' and 'parsePrefixTerm'. Tests are non-exhaustive, but cover common cases and some useful checks.
-module Test.Parse.Term (termTests, prefixTermTests) where
+module Test.Parse.Term (parseTermTests) where
 
 import Data.Conversion.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
 import Data.Conversion.Parse.Utils (Parser)
@@ -12,13 +12,17 @@ import Data.Conversion.Problem.Trs.Sig (Sig (..))
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
--- | Tests for 'parseTerm' including tests for which parsing should succeed and for which parsing should fail
-termTests :: Test
-termTests = TestLabel "termTests" $ TestList [parseTermTests, badCopsTermTests]
-
--- | Tests for 'parsePrefixTerm' including tests for which parsing should succeed and for which parsing should fail
-prefixTermTests :: Test
-prefixTermTests = TestLabel "prefixTermTests" $ TestList [parsePrefixTermTests, malformattedPrefixTermTests]
+-- | Tests for parsing terms in applicative and prefix format using 'parseTerm' and 'parsePrefixTerm'.
+-- Includes tests for which parsing should succeed and for which parsing should fail
+parseTermTests :: Test
+parseTermTests =
+  TestLabel "Test.Parse.Term" $
+    TestList
+      [ parseCopsTermTests,
+        badCopsTermTests,
+        parsePrefixTermTests,
+        malformattedPrefixTermTests
+      ]
 
 -- | Parser for testing 'parseTerm' with a fixed set of variables
 termParser :: Parser (Term String String)
@@ -26,15 +30,16 @@ termParser = parseTerm ["x", "y", "z", "x'"]
 
 -- | Parser for testing 'parseTermF' with a fixed set of function symbols
 termFParser :: Parser (Term String String)
-termFParser = parseTermF ["a", "b", "c", "d", "e", "f", "g", "h", "+", "xy"]
+termFParser = parseTermF ["a", "b", "c", "d", "e", "f", "g", "h", "+", "xy", "-"]
 
 -- | Parser for testing 'prefixTermParser' with a fixed set of function symbols
 prefixTermParser :: Parser (Term String String)
-prefixTermParser = parsePrefixTerm [Sig "a" 0, Sig "f" 1, Sig "g" 2, Sig "h" 3]
+prefixTermParser = parsePrefixTerm [Sig "a" 0, Sig "f" 1, Sig "g" 2, Sig "h" 3, Sig "-" 2]
 
--- | Tests for cases when 'parseTerm' should succeed and produce a term as output
-parseTermTests :: Test
-parseTermTests =
+-- | Tests for cases when 'parseTerm' should succeed and produce a term as output.
+-- Uees signatures hardcoded in 'termParser' and 'termFParser'.
+parseCopsTermTests :: Test
+parseCopsTermTests =
   TestList
     [ assertParseList l wellFormattedTerms p
       | (l, p) <-
@@ -61,7 +66,8 @@ parseTermTests =
         ("+(x,y)", Fun "+" [Var "x", Var "y"]),
         ("(x)", Var "x"),
         ("(c)", Fun "c" []),
-        ("f(xy)", Fun "f" [Fun "xy" []])
+        ("f(xy)", Fun "f" [Fun "xy" []]),
+        ("-(x,c)", Fun "-" [Var "x", Fun "c" []])
         -- ("-(x,y)", Fun "-" [Var "x", Var "y"]),
         -- ("((c))", Fun "c" [])
         -- ("(((x)))", Var "x"),
@@ -101,7 +107,11 @@ badCopsTermTests =
         "",
         " ",
         "\n",
-        "x(x)" -- x is in vars and function symbols
+        "x(x)", -- x is in vars and function symbols
+        "a->",
+        "xVAR", -- VAR is forbidden
+        "x|y", -- vertical bar is forbidden
+        "x\\y" -- \ is forbidden
       ]
 
 -- | Tests for which 'prefixTermParser' should succeed and match the expected output
@@ -131,7 +141,8 @@ parsePrefixTermTests = assertParseList "prefixTermParser should succeed" wellFor
         ("((a))", Fun "a" []),
         ("(((x)))", Var "x"),
         ("f (g x y)", Fun "f" [Fun "g" [Var "x", Var "y"]]),
-        ("g (f x) (f y)", Fun "g" [Fun "f" [Var "x"], Fun "f" [Var "y"]])
+        ("g (f x) (f y)", Fun "g" [Fun "f" [Var "x"], Fun "f" [Var "y"]]),
+        ("- x a", Fun "-" [Var "x", Fun "a" []])
       ]
 
 -- | Tests for which 'prefixTermParser' should fail
@@ -149,5 +160,9 @@ malformattedPrefixTermTests = assertFailParseList "prefixTermParser should fail"
         " ",
         "\n",
         "x x",
-        "a " -- Trailing space is not consumed
+        "a ", -- Trailing space is not consumed
+        "a->",
+        "xVAR", -- VAR is forbidden
+        "x|y", -- vertical bar is forbidden
+        "x\\y" -- \ is forbidden
       ]

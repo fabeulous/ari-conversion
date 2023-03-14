@@ -5,14 +5,14 @@
 -- This module defines test cases for unparsing 'MsSig's to COPS and ARI format
 module Test.Unparse.Problem.MsSig (unparseMsSigTests) where
 
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
+import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
 import Data.Conversion.Unparse.Problem.MsSig (unparseAriMsSig, unparseCopsMsSig)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparse)
 
 -- | Tests for unparsing 'MsSig's into COPS format and ARI format
 unparseMsSigTests :: Test
-unparseMsSigTests = TestLabel "unparseMsSigTests" $ TestList [unparseCopsMsSigTests, unparseAriMsSigTests]
+unparseMsSigTests = TestLabel "Test.Unparse.Problem.MsSig" $ TestList [unparseCopsMsSigTests, unparseAriMsSigTests]
 
 -- | Tests for converting some example 'MsSig's to COPS format using 'unparseCopsMsSig'
 unparseCopsMsSigTests :: Test
@@ -20,7 +20,7 @@ unparseCopsMsSigTests =
   TestList
     [ TestLabel (label ++ " [COPS]") (TestCase tc)
       | (label, sig, expected, _) <- testSigs,
-        let tc = assertUnparse sig (show . unparseCopsMsSig) expected
+        let tc = assertUnparse sig (Right . unparseCopsMsSig) expected
     ]
 
 -- | Tests for converting some example 'MsSig's to ARI format using 'unparseAriMsSig'
@@ -29,7 +29,7 @@ unparseAriMsSigTests =
   TestList
     [ TestLabel (label ++ " [ARI]") (TestCase tc)
       | (label, sig, _, expected) <- testSigs,
-        let tc = assertUnparse sig (show . unparseAriMsSig) expected
+        let tc = assertUnparse sig (Right . unparseAriMsSig) expected
     ]
 
 ------------------------

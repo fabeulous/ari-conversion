@@ -13,7 +13,7 @@ import Test.TestData.Trs (copsTrss)
 
 -- | Test cases for 'parseCopsTrs' including cases which should be parseable and cases which should fail
 parseCopsTests :: Test
-parseCopsTests = TestLabel "parseCopsTests" $ TestList [parseCopsTrsTests, badCopsTrsTests]
+parseCopsTests = TestLabel "Test.Parse.Trs.Cops" $ TestList [parseCopsTrsTests, badCopsTrsTests]
 
 -- | Test cases for 'parseCopsTrs' which should succeed and match the expected output
 parseCopsTrsTests :: Test

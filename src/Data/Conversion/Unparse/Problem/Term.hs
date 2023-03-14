@@ -4,7 +4,10 @@
 --
 -- This module defines functions to unparse terms into prefix and applicative formats.
 module Data.Conversion.Unparse.Problem.Term
-  ( unparseTerm,
+  ( -- * COPS
+    unparseTerm,
+
+    -- * ARI
     unparsePrefixTerm,
   )
 where
@@ -14,7 +17,8 @@ import Prettyprinter (Doc, Pretty, comma, emptyDoc, encloseSep, hsep, lparen, pa
 
 -- | Unparse 'Term's using applicative notation:
 -- see examples below and tests for more examples.
--- Use 'unparsePrefixTerm' to pretty print term in prefix notation.
+--
+-- To pretty print term in prefix notation use 'unparsePrefixTerm'.
 --
 -- >>> unparseTerm [Var "x"]
 -- x
@@ -32,9 +36,10 @@ unparseTerm (Fun f ts) = pretty f <> args
       | null ts = emptyDoc -- Parse constants without parentheses
       | otherwise = encloseSep lparen rparen comma [unparseTerm t | t <- ts]
 
--- | Unparse 'Term's into prefix applicative notation:
+-- | Unparse 'Term's into prefix notation:
 -- see examples below and tests for more examples.
--- Use 'unparseTerm' to pretty print term in applicative notation.
+--
+-- To pretty print term in applicative notation use 'unparseTerm'.
 --
 -- >>> unparsePrefixTerm [Var "x"]
 -- x

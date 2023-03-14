@@ -13,18 +13,18 @@ import Test.Unparse.Utils (assertUnparseList)
 
 -- | Tests for unparsing 'Term's into COPS format and ARI format
 unparseTermTests :: Test
-unparseTermTests = TestLabel "unparseTermTests" $ TestList [unparseAppTermTests, unparsePrefixTermTests]
+unparseTermTests = TestLabel "Test.Unparse.Problem.Term" $ TestList [unparseAppTermTests, unparsePrefixTermTests]
 
 -- | Tests for converting some example 'Term's to applicative notation using 'unparseTerm'
 unparseAppTermTests :: Test
-unparseAppTermTests = assertUnparseList testTerms (show . unparseTerm)
+unparseAppTermTests = assertUnparseList testTerms (Right . unparseTerm)
   where
     testTerms :: [(Term String String, String, String)]
     testTerms = [(t, expected, label ++ " [applicative]") | (label, t, expected, _) <- exampleTerms]
 
 -- | Tests for converting some example 'Term's to prefix notation using 'unparsePrefixTerm'
 unparsePrefixTermTests :: Test
-unparsePrefixTermTests = assertUnparseList testTerms (show . unparsePrefixTerm)
+unparsePrefixTermTests = assertUnparseList testTerms (Right . unparsePrefixTerm)
   where
     testTerms :: [(Term String String, String, String)]
     testTerms = [(t, expected, label ++ " [prefix]") | (label, t, _, expected) <- exampleTerms]

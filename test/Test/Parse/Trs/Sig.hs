@@ -3,17 +3,17 @@
 -- Description : Parsing tests for TRS signatures
 --
 -- This module defines test cases for signature parsing functions and for checking signature consistency.
-module Test.Parse.Trs.Sig (sigTests) where
+module Test.Parse.Trs.Sig (parseSigTests) where
 
 import Data.Conversion.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
-import Data.Conversion.Problem.Trs.Sig (Sig (..), checkConsistentSig)
+import Data.Conversion.Problem.Trs.Sig (Sig (..), checkDistinctSig)
 import Data.Either (isLeft, isRight)
 import Test.HUnit
 import Test.Parse.Utils (assertFailParseList, assertParseList)
 
 -- | Test cases for TRS signature parsing and checking
-sigTests :: Test
-sigTests = TestLabel "sigTests" $ TestList [parseCopsSigTests, badCopsSigTests, checkConsistentSigs, checkInconsistentSigs, parseFsymArityTests]
+parseSigTests :: Test
+parseSigTests = TestLabel "Test.Parse.Trs.Sig" $ TestList [parseCopsSigTests, badCopsSigTests, checkDistinctSigs, checkInconsistentSigs, parseFsymArityTests]
 
 -- | Simple test cases for whick 'parseFsymArity' should succeed and match the expected output.
 parseFsymArityTests :: Test
@@ -59,14 +59,14 @@ badCopsSigTests = assertFailParseList "parseCopsSig should fail" badSigs parseCo
         "(f 1 (h 1)"
       ]
 
--- | Tests for the function 'checkConsistentSig' (used in TRS parsing to find duplicate function symbols in signatures).
--- 'checkConsistentSig' should succeed for the tested examples.
-checkConsistentSigs :: Test
-checkConsistentSigs =
+-- | Tests for the function 'checkDistinctSig' (used in TRS parsing to find duplicate function symbols in signatures).
+-- 'checkDistinctSig' should succeed for the tested examples.
+checkDistinctSigs :: Test
+checkDistinctSigs =
   TestList
     [ TestCase (assertBool (show sig ++ " is a valid signature. Got " ++ show res) (isRight res))
       | sig <- validSigs,
-        let res = checkConsistentSig sig
+        let res = checkDistinctSig sig
     ]
   where
     validSigs :: [[Sig String]]
@@ -76,11 +76,11 @@ checkConsistentSigs =
         []
       ]
 
--- | Tests for the function 'checkConsistentSig' (used in TRS parsing to find duplicate function symbols in signatures).
--- 'checkConsistentSig' should fail (indicating that the given signature contains the same function symbol multiple times)
+-- | Tests for the function 'checkDistinctSig' (used in TRS parsing to find duplicate function symbols in signatures).
+-- 'checkDistinctSig' should fail (indicating that the given signature contains the same function symbol multiple times)
 -- for the given examples.
 checkInconsistentSigs :: Test
-checkInconsistentSigs = TestList [TestCase $ assertBadSig sig (checkConsistentSig sig) | sig <- badSigs]
+checkInconsistentSigs = TestList [TestCase $ assertBadSig sig (checkDistinctSig sig) | sig <- badSigs]
   where
     assertBadSig :: [Sig String] -> Either String [Sig String] -> Assertion
     assertBadSig expected res = assertBool (show expected ++ " is not a valid signature. Got: " ++ show res) (isLeft res)

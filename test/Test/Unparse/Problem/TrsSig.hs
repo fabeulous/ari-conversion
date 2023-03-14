@@ -7,15 +7,14 @@ module Test.Unparse.Problem.TrsSig (unparseSigTests) where
 
 import Data.Conversion.Problem.Common.Rule (Rule (..))
 import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
-import Data.Conversion.Problem.Trs.TrsSig (TrsSig (..))
+import Data.Conversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import Data.Conversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
 import Test.HUnit
 import Test.Unparse.Utils (assertUnparse)
 
 -- | Tests for unparsing 'TrsSig's into COPS format and ARI format
 unparseSigTests :: Test
-unparseSigTests = TestLabel "unparseSigTests" $ TestList [unparseCopsSigTests, unparseAriSigTests]
+unparseSigTests = TestLabel "Test.Unparse.Problem.TrsSig" $ TestList [unparseCopsSigTests, unparseAriSigTests]
 
 -- | Tests for converting some example 'TrsSig's to COPS format 'unparseCopsTrsSig'
 unparseCopsSigTests :: Test
@@ -23,13 +22,8 @@ unparseCopsSigTests =
   TestList
     [ TestLabel (label ++ " [COPS]") (TestCase tc)
       | (label, sig, rules, expected, _) <- testSigs,
-        let tc = assertUnparse sig (copsSigUnparser rules) expected
+        let tc = assertUnparse sig (unparseCopsTrsSig rules) expected
     ]
-  where
-    copsSigUnparser :: [Rule String String] -> TrsSig String String -> String
-    copsSigUnparser rs sig = case unparseCopsTrsSig sig rs of
-      Right unparsedSig -> show unparsedSig
-      Left err -> err -- qqjf Add error handling
 
 -- | Tests for converting some example 'TrsSig's to ARI format using 'unparseAriTrsSig'
 unparseAriSigTests :: Test
@@ -37,13 +31,8 @@ unparseAriSigTests =
   TestList
     [ TestLabel (label ++ " [ARI]") (TestCase tc)
       | (label, sig, rules, _, expected) <- testSigs,
-        let tc = assertUnparse sig (ariSigUnparser rules) expected
+        let tc = assertUnparse sig (unparseAriTrsSig rules) expected
     ]
-  where
-    ariSigUnparser :: [Rule String String] -> TrsSig String String -> String
-    ariSigUnparser rs sig = case unparseAriTrsSig sig rs of
-      Right unparsedSig -> show unparsedSig
-      Left err -> err -- qqjf Add error handling
 
 ------------------------
 --- Test data ----------

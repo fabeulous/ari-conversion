@@ -1,13 +1,17 @@
 -- |
 -- Module      : Data.Conversion.Unparse.Problem.Rule
--- Description : Unparser for TRS rules
+-- Description : Unparser for rewrite rules
 --
--- This module defines functions to unparse TRS 'rules' in COPS and ARI format.
+-- This module defines functions to unparse single TRS 'Rule's and blocks of rules
+-- in COPS and ARI format.
 module Data.Conversion.Unparse.Problem.Rule
-  ( unparseCopsRules,
+  ( -- * COPS
+    unparseCopsRules,
+    unparseCopsRule,
+
+    -- * ARI
     unparseAriRules,
     unparseAriRule,
-    unparseCopsRule,
   )
 where
 
@@ -26,6 +30,7 @@ unparseCopsRules rs =
     else prettyBlock "RULES" $ vsep (emptyDoc : [indent 2 $ unparseCopsRule r | r <- rs] ++ [emptyDoc])
 
 -- | Unparse a single COPS rule into format "lhs -> rhs" using function 'unparseTerm'
+-- on each side of the rule.
 --
 -- >>> unparseCopsRule $ Rule {lhs=Fun "f" [Var "x", Fun "a" []], rhs=Var "x"}
 -- f(x,a) -> x
@@ -42,7 +47,8 @@ unparseAriRules rs =
     then Nothing
     else Just $ vsep (map (\r -> parens $ pretty "rule" <+> unparseAriRule r) rs)
 
--- | Unparse a 'Rule' into the format expected by ARI. Uses 'parensTerm' to parse each side of the rule into prefix format.
+-- | Unparse a 'Rule' into the format expected by ARI. Uses 'unparsePrefixTerm' to
+-- unparse each side of the rule into prefix format.
 --
 -- >>> unparseCopsRule $ Rule {lhs=Fun "f" [Var "x", Fun "a" []], rhs=Var "x"}
 -- (rule (f x a) x)

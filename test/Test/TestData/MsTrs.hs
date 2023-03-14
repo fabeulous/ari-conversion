@@ -1,37 +1,37 @@
 -- |
--- Module      : Test.TestData.Mstrs
--- Description : Example data for Mstrs tests
+-- Module      : Test.TestData.MsTrs
+-- Description : Example data for MsTrs tests
 --
--- This module defines test data which is used for testing both parsing and unparsing functions for 'Mstrs's.
+-- This module defines test data which is used for testing both parsing and unparsing functions for 'MsTrs's.
 -- Exported values can then be imported in 'Test.Parse' and 'Test.Unparse'.
-module Test.TestData.Mstrs
-  ( -- * Test data for tests on 'Mstrs'
-    copsMstrss,
-    ariMstrss,
+module Test.TestData.MsTrs
+  ( -- * COPS
+    copsMsTrss,
+
+    -- * ARI
+    ariMsTrss,
   )
 where
 
-import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
-import Data.Conversion.Problem.Common.Rule (Rule (..))
-import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.Mstrs.MsSig (MsSig (..))
-import Data.Conversion.Problem.Mstrs.Mstrs (Mstrs (..))
+import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
+import Data.Conversion.Problem.MsTrs.MsTrs (MetaInfo (..), MsSig (..), MsTrs (..), Rule (..), Term (..))
 
 ------------------------
 --- MSTRS Lists --------
 ------------------------
 
--- | A list of MSTRSs in internal 'Mstrs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/mstrs.php]
+-- | A list of MSTRSs in Haskell 'MsTrs' format and in (COPS format)[http://project-coco.uibk.ac.at/problems/mstrs.php]
 -- to test both parsing and unparsing functions.
+--
 -- Has format @(original mstrs, str := result of parsing mstrs, result of unparsing str)@.
 --
--- The result for unparsing might differ from the original MSTRS did not specify sorts.
-copsMstrss :: [(String, Mstrs String String String, String, Mstrs String String String)]
-copsMstrss =
+-- The result for unparsing might differ from the original MSTRS did not specify 'sorts'.
+copsMsTrss :: [(String, MsTrs String String String, String, MsTrs String String String)]
+copsMsTrss =
   [ ( "empty COPS MSTRS",
-      emptyMstrs,
+      emptyMsTrs,
       "(SIG \n)\n(RULES )",
-      emptyMstrs
+      emptyMsTrs
     ),
     ( "COPS MSTRS with a comment",
       mstrsWithComment,
@@ -39,9 +39,9 @@ copsMstrss =
       mstrsWithComment {sorts = Nothing}
     ),
     ( "example ground COPS MSTRS",
-      groundMstrs,
+      groundMsTrs,
       "(SIG \n)\n(RULES \n  a -> b\n)\n(COMMENT \n)",
-      groundMstrs
+      groundMsTrs
     ),
     ( "example COPS MSTRS without sorts",
       mstrsWithoutSorts,
@@ -59,7 +59,7 @@ copsMstrss =
       mstrsWithoutSorts
     ),
     ( "example COPS MSTRS with unused sorts",
-      additionMstrs,
+      additionMsTrs,
       "(SIG \n\
       \  (+ Nat Nat -> Nat)\n\
       \  (a -> Nat)\n\
@@ -69,7 +69,7 @@ copsMstrss =
       \(RULES \n\
       \  +(a,b) -> c\n\
       \)",
-      additionMstrs {sorts = Nothing}
+      additionMsTrs {sorts = Nothing}
     ),
     ( "COPS MSTRS for COPS #637",
       cops637,
@@ -107,17 +107,18 @@ copsMstrss =
     )
   ]
 
--- | A list of MSTRSs in internal 'Mstrs' format and in (ARI format)[https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt]
+-- | A list of MSTRSs in Haskell 'MsTrs' format and in (ARI format)[https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt]
 -- to test both parsing and unparsing functions.
+--
 -- Has format @(original mstrs, str := result of parsing mstrs, result of unparsing str)@.
 --
 -- The result for unparsing might differ from the original MSTRS did not specify sorts.
-ariMstrss :: [(String, Mstrs String String String, String, Mstrs String String String)]
-ariMstrss =
+ariMsTrss :: [(String, MsTrs String String String, String, MsTrs String String String)]
+ariMsTrss =
   [ ( "empty ARI MSTRS",
-      emptyMstrs,
+      emptyMsTrs,
       "(format MSTRS)",
-      emptyMstrs {sorts = Just []}
+      emptyMsTrs {sorts = Just []}
     ),
     ( "ARI MSTRS with a comment",
       mstrsWithComment,
@@ -125,11 +126,11 @@ ariMstrss =
       mstrsWithComment
     ),
     ( "example ground ARI MSTRS",
-      groundMstrs,
+      groundMsTrs,
       "(meta-info (comment \"\"))\n\
       \(format MSTRS)\n\
       \(rule a b)", -- Interpreted as variables in ARI format
-      groundMstrs {sorts = Just []}
+      groundMsTrs {sorts = Just []}
     ),
     ( "example ARI MSTRS without sorts",
       mstrsWithoutSorts,
@@ -146,9 +147,9 @@ ariMstrss =
       mstrsWithoutSorts {sorts = Just ["List", "Nat"]}
     ),
     ( "example ARI MSTRS with unused sorts",
-      additionMstrs,
+      additionMsTrs,
       "(format MSTRS)\n(sort List)\n(sort Nat)\n(fun + :sort (Nat Nat Nat))\n(fun a :sort (Nat))\n(fun c :sort (Nat))\n(fun b :sort (Nat))\n(rule (+ a b) c)",
-      additionMstrs
+      additionMsTrs
     ),
     ( "ARI MSTRS for COPS problem #637",
       cops637,
@@ -177,22 +178,22 @@ ariMstrss =
 ------------------------
 --- MSTRSs -------------
 ------------------------
-emptyMstrs :: Mstrs String String String
-emptyMstrs = Mstrs {rules = [], signature = [], sorts = Nothing, metaInfo = emptyMetaInfo}
+emptyMsTrs :: MsTrs String String String
+emptyMsTrs = MsTrs {rules = [], signature = [], sorts = Nothing, metaInfo = emptyMetaInfo}
 
 -- Example MSTRS with sorts set but no rules
-mstrsWithComment :: Mstrs String String String
+mstrsWithComment :: MsTrs String String String
 mstrsWithComment =
-  Mstrs
+  MsTrs
     { rules = [],
-      signature = [zeroSig],
+      signature = [MsSig "0" ([], "Nat")],
       sorts = Just ["Nat"],
       metaInfo = emptyMetaInfo {comment = Just "An MSTRS with a comment"}
     }
 
-groundMstrs :: Mstrs String String String
-groundMstrs =
-  Mstrs
+groundMsTrs :: MsTrs String String String
+groundMsTrs =
+  MsTrs
     { rules = [Rule {lhs = Var "a", rhs = Var "b"}],
       signature = [],
       sorts = Nothing,
@@ -200,9 +201,9 @@ groundMstrs =
     }
 
 -- | Example MSTRS without sorts specified to test 'inferSorts'
-mstrsWithoutSorts :: Mstrs String String String
+mstrsWithoutSorts :: MsTrs String String String
 mstrsWithoutSorts =
-  Mstrs
+  MsTrs
     { rules =
         [ Rule {lhs = Fun "app" [Fun "nil" [], Var "ys"], rhs = Var "ys"},
           Rule {lhs = Fun "app" [Fun "cons" [Var "x", Var "xs"], Var "ys"], rhs = Fun "cons" [Var "x", Fun "app" [Var "xs", Var "ys"]]}
@@ -219,19 +220,24 @@ mstrsWithoutSorts =
     }
 
 -- | An example MSTRS with an unused sort @"List"@
-additionMstrs :: Mstrs String String String
-additionMstrs =
-  Mstrs
-    { rules = [additionRule],
-      signature = additionSig,
+additionMsTrs :: MsTrs String String String
+additionMsTrs =
+  MsTrs
+    { rules = [Rule {lhs = Fun "+" [Fun "a" [], Fun "b" []], rhs = Fun "c" []}],
+      signature =
+        [ MsSig "+" (["Nat", "Nat"], "Nat"),
+          MsSig "a" ([], "Nat"),
+          MsSig "c" ([], "Nat"),
+          MsSig "b" ([], "Nat")
+        ],
       sorts = Just ["List", "Nat"],
       metaInfo = emptyMetaInfo
     }
 
 -- | An example MSTRS based on COPS problem #637
-cops637 :: Mstrs String String String
+cops637 :: MsTrs String String String
 cops637 =
-  Mstrs
+  MsTrs
     { rules =
         [ Rule {lhs = Fun "sum" [Fun "leaf" [Var "x"]], rhs = Var "x"},
           Rule {lhs = Fun "sum" [Fun "node" [Var "x", Var "yt", Var "zt"]], rhs = Fun "+" [Fun "+" [Var "x", Fun "sum" [Var "yt"]], Fun "sum" [Var "zt"]]},
@@ -257,15 +263,3 @@ cops637 =
             submitted = Just ["Takahito Aoto"]
           }
     }
-
-------------------------
---- Rules and sigs -----
-------------------------
-zeroSig :: MsSig String String
-zeroSig = MsSig "0" ([], "Nat")
-
-additionSig :: [MsSig String String]
-additionSig = [MsSig "+" (["Nat", "Nat"], "Nat"), MsSig "a" ([], "Nat"), MsSig "c" ([], "Nat"), MsSig "b" ([], "Nat")]
-
-additionRule :: Rule String String
-additionRule = Rule {lhs = Fun "+" [Fun "a" [], Fun "b" []], rhs = Fun "c" []}

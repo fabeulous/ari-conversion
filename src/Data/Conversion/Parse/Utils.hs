@@ -1,16 +1,17 @@
+{-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
 -- Module      : Data.Conversion.Parse.Utils
 -- Description : Utils for parsing with Megaparsec
 --
--- This module defines a type synonym 'Parser', whitespace helpers, and reusable helpers to aid parsing with 'Megaparsec'.
+-- This module defines a type synonym 'Parser', whitespace helpers, and other helpers functions to aid
+-- parsing with 'Megaparsec'.
 module Data.Conversion.Parse.Utils
   ( -- * Types
     Parser,
 
     -- * Whitespace Helpers
-    sc,
     lexeme,
     stripSpaces,
     parseBlock,
@@ -25,7 +26,7 @@ import Data.Text (Text, pack)
 import Data.Void (Void)
 import Text.Megaparsec (Parsec, between, many, (<?>))
 import Text.Megaparsec.Char (space1, spaceChar, string)
-import qualified Text.Megaparsec.Char.Lexer as L
+import Text.Megaparsec.Char.Lexer qualified as L
 
 -- | Type alias for a 'Megaparsec' parser which uses error handler of type 'Void' and
 -- takes an input of type 'Text'.
@@ -45,12 +46,12 @@ sc =
 lexeme :: Parser a -> Parser a
 lexeme = L.lexeme sc
 
--- | Strips spaces at the start and end of a string.
+-- | 'stripSpaces' takes an existing parser and consumes spaces at the start and end of the input stream.
 stripSpaces :: Parser a -> Parser a
 stripSpaces p = lexeme (many spaceChar *> p)
 
 -- | 'symbol' is a [Megaparsec symbol](https://hackage.haskell.org/package/megaparsec-9.3.0/docs/Text-Megaparsec-Char-Lexer.html#v:symbol)
--- that parses 'Text', wrapping it in a 'Parser' and consuming trailing whitespace.
+-- that wraps 'Text' in a 'Parser' and consumes trailing whitespace.
 symbol :: Text -> Parser Text
 symbol = L.symbol sc
 

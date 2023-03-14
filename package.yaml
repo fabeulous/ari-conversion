@@ -26,7 +26,6 @@ dependencies:
   - base >= 4.7 && < 5
   - prettyprinter >= 1.7.1 && < 1.8
   - megaparsec >=9.3.0 && < 9.4
-  - containers >= 0.6.6 && < 0.7 # For Data.Set
   - text >= 2.0.1 && < 2.1 # For Data.Text
 ghc-options:
   - -Wall
