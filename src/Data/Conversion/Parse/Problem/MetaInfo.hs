@@ -27,7 +27,7 @@ import Text.Megaparsec
 import Text.Megaparsec.Char (char, spaceChar)
 
 -- | Parser to extract comments as a @String@ from a @COMMENT@ block of the COPS TRS format.
--- qqjf should be updated to infer structure from comments (e.g. author, source, etc.).
+-- qqjf should this be updated to try to infer structure from comments (e.g. author, source, etc.)?
 parseCopsMetaInfo :: Parser MetaInfo
 parseCopsMetaInfo = do
   cs <- parseComment
@@ -62,8 +62,8 @@ parseComment =
 --
 -- See the tests for more information on expected inputs.
 --
--- qqjf I wasn't sure what behaviour is if multiple blocks are specified.
--- Currently overwrites duplicate doi, origin, and submitted values.
+-- qqjf I wasn't sure what behaviour is if multiple blocks are specified, so this 
+-- implementation currently overwrites duplicate doi, origin, and submitted values.
 parseAriMetaInfo :: Parser MetaInfo
 parseAriMetaInfo = go emptyMetaInfo
   where
@@ -80,7 +80,6 @@ parseAriMetaInfo = go emptyMetaInfo
 -- to allow adding additional validation checks or constraints later.
 --
 -- qqjf Currently overwrites duplicate doi, origin, and submitted values.
--- I was unsure what the desired behaviour is here.
 parseAriMetaInfoBlock :: MetaInfo -> Parser MetaInfo
 parseAriMetaInfoBlock meta =
   lexeme
@@ -94,17 +93,17 @@ parseAriMetaInfoBlock meta =
     parseAriComment, parseDoi, parseOrigin, parseSubmitters :: Parser MetaInfo
     parseAriComment = do
       newComment <- parseCommentBlock "comment"
-      return $ meta {comment = Just newComment} -- Overwrite old comment qqjf
+      return $ meta {comment = Just newComment} -- Overwrite old comment
     parseDoi = do
       newDoi <- parseCommentBlock "doi"
-      return $ meta {doi = Just newDoi} -- Overwrite old doi qqjf
+      return $ meta {doi = Just newDoi} -- Overwrite old doi
     parseOrigin = do
       newOrigin <- parseCommentBlock "origin"
-      return $ meta {origin = Just newOrigin} -- Overwrite old origin qqjf 
+      return $ meta {origin = Just newOrigin} -- Overwrite old origin 
     parseSubmitters = do
       submitters <- lexeme $ parseBlock "submitted" (parseSubmitterName `sepBy` some spaceChar)
       return $ meta {submitted = Just submitters}
     -- Parse a non-empty name wrapped in @"@s
     parseSubmitterName = between (char '"') (char '"') (some $ noneOf ['(', ')', '"'])
     -- Parse a (possible empty) comment between @"@s
-    parseCommentBlock name = parseBlock name (between (char '"') (char '"') (many $ noneOf ['"'])) -- qqjf allow nested parentheses
+    parseCommentBlock name = parseBlock name (between (char '"') (char '"') (many $ noneOf ['"']))  

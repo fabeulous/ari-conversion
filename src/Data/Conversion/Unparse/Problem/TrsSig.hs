@@ -20,7 +20,7 @@ import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
 -- both the variables and the 'FunSig' function signature.
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
--- function symbols, consistency with rules, etc. This should be done separately.
+--   function symbols, consistency with rules, etc. This should be done separately.
 --
 -- * If the 'TrsSig' only has variables specified (via 'Vars'), then this is translated into
 --      @(VAR x1 x2 ... xm)@ for each variable @xi@
@@ -28,14 +28,13 @@ import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
 -- * If the 'TrsSig' has variables and function symbols specified (via 'FullSig'), then this is translated into
 --      @(VAR x1 ... xm)\n(SIG (f1 a1) ... (fn ai))@ for each variable @xi@ and function symbol @fi@ with arity @ai@
 --
--- * If the 'TrsSig' has only function symbols specified (via 'FunSig'), then all variables in the TRS rules are extracted and this case
---      is treated like the 'FullSig' case. This is the reason for rules being given as an argument @rs@.
+-- * If the 'TrsSig' has only function symbols specified (via 'FunSig'), then all variables in the TRS rules are extracted
+--      using 'ruleVars' and this case is treated like the 'FullSig' case. This is the reason for rules being given as an argument @rs@.
 unparseCopsTrsSig :: (Eq v, Pretty f, Pretty v) => TrsSig f v -> [Rule f v] -> Either String (Doc ann)
 unparseCopsTrsSig trsSig rs = case trsSig of
   Vars vs -> Right $ prettyVars vs
   FullSig vs fs -> Right $ vsep [prettyNonEmptyVars vs, prettyCopsSig fs]
-  -- qqjf assert that vars are not in sig.
-  FunSig fs -> unparseCopsTrsSig (FullSig (ruleVars rs) fs) rs -- Extract variables from TRS rules.
+  FunSig fs -> unparseCopsTrsSig (FullSig (ruleVars rs) fs) rs
   where
     prettyVars, prettyNonEmptyVars :: Pretty v => [v] -> Doc ann
     prettyVars vs = if null vs then emptyDoc else prettyNonEmptyVars vs

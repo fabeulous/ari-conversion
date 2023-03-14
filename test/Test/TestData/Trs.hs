@@ -70,7 +70,7 @@ copsTrss =
       \doi:10.1007/11805618_6\n\
       \[7] Example 2\n\
       \origin: COPS #20\n\
-      \submitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama)", -- qqjf does not exactly match COPS comment
+      \submitted by: Takahito Aoto, Junichi Yoshida, Yoshihito Toyama)",
       fullExampleTrs
         { signature = FullSig ["x", "y"] fullExampleSig,
           metaInfo =

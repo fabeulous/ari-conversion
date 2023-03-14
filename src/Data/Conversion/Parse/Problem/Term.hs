@@ -147,8 +147,6 @@ outerParens = between (symbol "(") (symbol ")" *> eof)
 
 -- | Parser for characters allowed for variables and function symbols in COPS format.
 -- Consumes input as long as allowed characters or strings are present (see examples below).
---   qqjf: block all whitespace and special characters, not just a single space
---   qqjf: Currently forbids "-" as this might clash with "->" in rule definitions
 --
 -- The list of allowed values comes from @id@ in the [COPS TRS grammar](http://project-coco.uibk.ac.at/problems/trs.php#basic),
 -- which states that id can not contain

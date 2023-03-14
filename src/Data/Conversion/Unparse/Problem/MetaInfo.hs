@@ -16,7 +16,7 @@ import Prettyprinter (Doc, comma, emptyDoc, hsep, parens, pretty, punctuate, vse
 -- | Unparse TRS 'MetaInfo' to fit into a single COPS @COMMENT@ block.
 -- If the 'MetaInfo' is empty then returns emptyDoc.
 --
--- qqjf I was unsure what format is expected but this is easy to adjust.
+-- qqjf I was unsure what output format is desired, but this is easy to adjust.
 unparseCopsMetaInfo :: MetaInfo -> Doc ann
 unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
   if null metaBlocks

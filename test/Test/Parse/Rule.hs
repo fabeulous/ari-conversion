@@ -46,7 +46,7 @@ parseCopsRuleTests = assertParseList "parseCopsRule should succeed" validRules c
         ("  f(x)  ->    x ", Rule {lhs = fx, rhs = Var "x"}),
         ("x->f(x)", Rule {lhs = Var "x", rhs = fx}),
         ("f(x)->f(x)", Rule {lhs = fx, rhs = fx}),
-        ("x->x", Rule {lhs = Var "x", rhs = Var "x"}), -- qqjf Currently allowed
+        ("x->x", Rule {lhs = Var "x", rhs = Var "x"}),
         ("a()->b", Rule {lhs = Fun "a" [], rhs = Fun "b" []})
       ]
 
@@ -62,7 +62,7 @@ parseCopsRulesFTests = assertParseList "parseCopsMstrsRules should succeed" vali
         ("  f(x)  ->    x ", [Rule {lhs = fx, rhs = Var "x"}]),
         ("x->f(x)", [Rule {lhs = Var "x", rhs = fx}]),
         ("fun(fx)->fun(fx)", [Rule {lhs = Fun "fun" [Var "fx"], rhs = Fun "fun" [Var "fx"]}]),
-        ("x->x", [Rule {lhs = Var "x", rhs = Var "x"}]), -- qqjf Currently allowed
+        ("x->x", [Rule {lhs = Var "x", rhs = Var "x"}]),
         ("a()->b", [Rule {lhs = Fun "a" [], rhs = Fun "b" []}])
       ]
 
@@ -96,7 +96,7 @@ badCopsRulesTests = assertFailParseList "parseCopsRule should fail" badRules cop
 -- to parse blocks containing 0 or more rules).
 -- Asserts that the test cases are parseable and match the expected output.
 parseMultipleCopsRules :: Test
-parseMultipleCopsRules = assertParseList "parseCopsTrsRules should succees" validRules rulesParser
+parseMultipleCopsRules = assertParseList "parseCopsTrsRules should succeed" validRules rulesParser
   where
     rulesParser :: Parser [Rule String String]
     rulesParser = parseCopsTrsRules $ Vars ["x", "y", "z", "x'"]
@@ -126,7 +126,7 @@ ariRuleParser =
 -- | Test cases for which 'parseAriRule' should succeed and
 -- match the given expected output
 parseAriRuleTests :: Test
-parseAriRuleTests = assertParseList "parseAriRule should succees" validRules ariRuleParser
+parseAriRuleTests = assertParseList "parseAriRule should succeed" validRules ariRuleParser
   where
     sx = Fun "s" [Var "x"]
     validRules :: [(String, Rule String String)]
@@ -136,7 +136,7 @@ parseAriRuleTests = assertParseList "parseAriRule should succees" validRules ari
         ("  (s sx) (x)", Rule {lhs = Fun "s" [Var "sx"], rhs = Var "x"}),
         ("x (s   x)", Rule {lhs = Var "x", rhs = sx}),
         ("(s x)  ( s x )", Rule {lhs = sx, rhs = sx}),
-        ("(x) (x)", Rule {lhs = Var "x", rhs = Var "x"}), -- qqjf Currently allowed
+        ("(x) (x)", Rule {lhs = Var "x", rhs = Var "x"}),
         ("(0) (nil)", Rule {lhs = Fun "0" [], rhs = Fun "nil" []}),
         ("(f x y) s x", Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = sx}),
         ("0 (s x)", Rule {lhs = Fun "0" [], rhs = sx}),
@@ -163,7 +163,7 @@ badAriRulesTests = assertFailParseList "parseAriRule should fail" badRules ariRu
         "() (s x)",
         "(s x) ()",
         "() ()",
-        "(s x)(x)", -- No space qqjf
+        "(s x)(x)",
         "((f x y) (s x))",
         "",
         " ",

@@ -57,8 +57,7 @@ inferRulesSignature rs = do
     Left err -> Left err
 
 -- | Extract a list of variables appearing in both sides of a list of rules.
--- Duplicates are removed with 'nub'. 
--- qqjf not efficient, but it works.
+-- Duplicates are removed with 'nub'. Not very efficient, but it works.
 --
 -- >>> ruleVars [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "x"}
 -- ["x", "y"]

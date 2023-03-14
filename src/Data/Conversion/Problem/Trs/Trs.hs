@@ -17,7 +17,8 @@ import Data.Conversion.Problem.Trs.TrsSig (TrsSig)
 data Trs f v = Trs
   { -- | A list of the TRS rewrite rules
     rules :: [Rule f v],
-    -- | The signature (function symbols and arities) of the TRS. qqjf: complete or not?
+    -- | The signature (function symbols and arities) of the TRS.
+    -- Can specify just variable, just function symbols, or both (see 'TrsSig') in order to support more TRS formats.
     signature :: TrsSig f v,
     -- | Additional information about the TRS (e.g. the origin and general comments). See 'MetaInfo' definition for more details.
     metaInfo :: MetaInfo
