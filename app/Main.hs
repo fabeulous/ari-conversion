@@ -28,19 +28,21 @@ import Data.Conversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 data Format
   = COPS
   | ARI
+  deriving (Eq, Ord, Enum, Bounded, Show)
 
+-- | @Config@ holds the information parsed the options given on the comand line.
 data Config = Config
-  { target :: Format
-  , source :: Format
-  , outputHandle :: Handle
+  { confTarget :: Maybe String
+  , confSource :: Maybe String
+  , confOutputHandle :: Handle
   }
 
 defaultConfig :: Config
 defaultConfig =
   Config
-    { source = COPS
-    , target = ARI
-    , outputHandle = stdout
+    { confSource = Nothing
+    , confTarget = Nothing
+    , confOutputHandle = stdout
     }
 
 options :: [OptDescr (Config -> IO Config)]
@@ -48,26 +50,12 @@ options =
   [ Option
       ['f']
       ["from"]
-      ( ReqArg
-          ( \s c -> case toUpper <$> s of
-              "ARI" -> pure $ c{source = ARI}
-              "COPS" -> pure $ c{source = COPS}
-              _ -> error $ "Error: '" ++ s ++ "' is not a known source"
-          )
-          "FORMAT"
-      )
+      (ReqArg (\s c -> pure c{confSource = Just s}) "FORMAT")
       "source format"
   , Option
       ['t']
       ["to"]
-      ( ReqArg
-          ( \s c -> case toUpper <$> s of
-              "ARI" -> pure $ c{target = ARI}
-              "COPS" -> pure $ c{target = COPS}
-              _ -> error $ "Error: '" ++ s ++ "' is not a known target"
-          )
-          "FORMAT"
-      )
+      (ReqArg (\s c -> pure c{confTarget = Just s}) "FORMAT")
       "target format"
   , Option
       ['o']
@@ -75,18 +63,16 @@ options =
       ( ReqArg
           ( \s c -> do
               fileHandle <- openFile s WriteMode
-              pure $ c{outputHandle = fileHandle}
+              pure $ c{confOutputHandle = fileHandle}
           )
           "FILE"
       )
-      "write output to FILE"
+      "write output to FILE (defaults to stdout)"
   , Option
       ['h']
       ["help"]
       ( NoArg
-          ( \_ -> do
-              usage stdout
-              exitSuccess
+          ( \_ -> usage stdout >> exitSuccess
           )
       )
       "print this message"
@@ -104,10 +90,8 @@ usage handle = do
       , ""
       , "It is mandatory to give a source format (-f) and target format (-t)."
       , "Moreover the input FILE must contain a problem in the source format."
-      , "The following FORMATs are supported: COPS, ARI."
-      , "The problem type is inferred from the input and may be: TRS, MSTRS."
-      , ""
-      , "OPTIONS:"
+      , "The following FORMATs are supported: COPS, ARI. The problem type is"
+      , "inferred from the input and may be: TRS, MSTRS."
       ]
 
 {- | @trs-conversion-exe@ entry point. Can be run by calling
@@ -127,13 +111,45 @@ main = do
     exitFailure
   conf <- foldl (>>=) (pure defaultConfig) opts
   case nonOpts of
-    [inputFile] -> runApp conf inputFile
+    [inputFile] ->
+      case contextFromConfig conf of
+        Left err -> do
+          hPutStrLn stderr err
+          usage stderr
+          exitFailure
+        Right ctxt -> runApp ctxt inputFile
     _ -> do
       hPutStrLn stderr "Error: expected exactly one input file"
       usage stderr
       exitFailure
 
-runApp :: Config -> FilePath -> IO ()
+-- | The @Context@ holds the the configuration after validation.
+data Context = Context
+  { target :: Format
+  , source :: Format
+  , outputHandle :: Handle
+  }
+
+contextFromConfig :: Config -> Either String Context
+contextFromConfig conf = do
+  srcName <- maybe (Left "Error: missing source format (-f)") Right $ confSource conf
+  trgName <- maybe (Left "Error: missing target format (-t)") Right $ confTarget conf
+  src <- parseFormat srcName
+  trg <- parseFormat trgName
+  let outH = confOutputHandle conf
+  pure Context{target = trg, source = src, outputHandle = outH}
+ where
+  parseFormat s = case toUpper <$> s of
+    "COPS" -> Right COPS
+    "ARI" -> Right ARI
+    _ ->
+      Left $
+        unlines
+          [ "ERROR: '" ++ s ++ "' is not a valid FORMAT"
+          , "(Must be one of: " ++ show [minBound .. maxBound :: Format] ++ ")"
+          ]
+
+runApp :: Context -> FilePath -> IO ()
 runApp config inputFile = do
   fileContents <- Text.readFile inputFile
 
