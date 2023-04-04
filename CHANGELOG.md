@@ -8,6 +8,11 @@ and this project adheres to the
 
 ## Unreleased
 
+- Change ARI `(meta-info ..)` syntax.
+  All lines containing `(meta-info ..)` content must be prefixed by a ';'
+- Meta data parsing from COPS `(COMMENT .. )` block.
+  The tool now parses DOIs and "submitted by:" lines.
+
 ## 0.2.0.0 - 2023-03-14
 
 ### Added
