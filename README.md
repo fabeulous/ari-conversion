@@ -20,6 +20,7 @@ Repository for term rewriting system (TRS) format conversion as part of the [ARI
     - [Adding a New Problem Type](#adding-a-new-problem-type)
     - [Adding a New Conversion Format](#adding-a-new-conversion-format)
   - [Limitations](#limitations)
+  - [COPS meta data](#cops-meta-data)
   - [Disclaimer](#disclaimer)
 
 <small style="font-size: 7px"><i>Table of contents generated with <a href='http://ecotrust-canada.github.io/markdown-toc/'>markdown-toc</a>.</i></small>
@@ -195,7 +196,7 @@ The parsing module currently only check that a given input _can_ be parsed. It d
 - type correctness (for many-sorted TRSs)
 - that variables on the right-hand side of a `Rule` also appear in the left-hand side of a rule
 
-### Parsing meta data in COPS problems
+### COPS meta data
 
 The tool attempts to parse some meta data from the `(COMMENT ... )` block of a COPS problem.
 It currently supports:

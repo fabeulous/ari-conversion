@@ -15,14 +15,14 @@ module Data.Conversion.Parse.Problem.MetaInfo
   )
 where
 
+import Data.Char (isSpace, readLitChar)
+import Data.Text (pack, unpack)
+import Text.Megaparsec (MonadParsec (notFollowedBy), anySingle, between, empty, lookAhead, many, noneOf, option, optional, sepBy, sepEndBy, skipSome, some, takeP, takeWhile1P, takeWhileP, try, (<?>), (<|>))
+import Text.Megaparsec.Char (char, eol, hspace, newline, space, string)
+import qualified Text.Megaparsec.Char.Lexer as L
+
 import Data.Conversion.Parse.Utils (Parser, lexeme, parens)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
-import Text.Megaparsec (between, many, noneOf, optional, sepBy, some, try, (<?>), (<|>), empty, skipSome, option, takeP, lookAhead, takeWhileP, MonadParsec (notFollowedBy), anySingle, sepEndBy)
-import Text.Megaparsec.Char (char, string, newline, hspace, eol, space)
-import qualified Text.Megaparsec.Char.Lexer as L
-import Data.Text (pack, unpack)
-import Data.Char (readLitChar, isSpace)
-import Control.Monad (void)
 
 -- | Parser to extract comments as a @String@ from the (optional) @COMMENT@ block of the COPS TRS format.
 --
@@ -46,7 +46,14 @@ copsAuthorsLine = "submitted by:" *> hspace *> (pAuthors <?> "authors")
     pAuthors = some (notFollowedBy eol *> anySingle)
 
 copsCommentLine :: Parser String
-copsCommentLine = some (notFollowedBy (void eol <|> void (char ')')) *> anySingle)
+copsCommentLine = do
+  pref <- unpack <$> takeWhile1P (Just "comment") (\c -> c `notElem` ['\n','\r','(',')'])
+  rest <- option "" $ do
+    par <- between (char '(') (char ')') parseComment
+    suf <- option "" copsCommentLine
+    pure $ '(' : par ++ ')': suf
+  pure $ pref ++ rest
+
 
 -- | Parser to parse a string comment between two outermost parentheses.
 -- Calls itself recursively to allow for nested parentheses inside comments.
