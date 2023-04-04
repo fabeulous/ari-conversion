@@ -18,7 +18,7 @@ where
 import Data.Conversion.Parse.Utils (Parser, lexeme, parens)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
 import Text.Megaparsec (between, many, noneOf, optional, sepBy, some, try, (<?>), (<|>), empty, skipSome, option, takeP, lookAhead, takeWhileP, MonadParsec (notFollowedBy), anySingle, sepEndBy)
-import Text.Megaparsec.Char (char, string, newline, hspace, eol, space1, space)
+import Text.Megaparsec.Char (char, string, newline, hspace, eol, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 import Data.Text (pack, unpack)
 import Data.Char (readLitChar, isSpace)
