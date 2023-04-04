@@ -16,7 +16,7 @@ where
 
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..))
 import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import Prettyprinter (Doc, comma, emptyDoc, hsep, parens, pretty, punctuate, vsep, (<+>), semi)
+import Prettyprinter (Doc, comma, emptyDoc, hsep, parens, pretty, punctuate, vsep, (<+>), semi, hardline)
 
 -- | Unparse TRS 'MetaInfo' to fit into a single COPS @COMMENT@ block.
 -- If the 'MetaInfo' is empty then returns 'emptyDoc'.
@@ -27,7 +27,7 @@ unparseCopsMetaInfo :: MetaInfo -> Doc ann
 unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
   if null metaBlocks
     then emptyDoc
-    else prettyBlock "COMMENT" (vsep $ emptyDoc : metaBlocks)
+    else prettyBlock "COMMENT" (vsep (emptyDoc : metaBlocks) <> hardline)
   where
     metaBlocks :: [Doc ann]
     metaBlocks =

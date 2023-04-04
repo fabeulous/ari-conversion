@@ -7,11 +7,13 @@
 module Data.Conversion.Problem.Common.MetaInfo
   ( -- * Types
     MetaInfo (..),
+    mergeMetaInfo,
 
     -- * Defaults
     emptyMetaInfo,
   )
 where
+import Control.Applicative ((<|>))
 
 -- | The type for additional information about a TRS. Includes keywords for the problem 'origin',
 -- 'doi', and arbitrary 'comment's.
@@ -31,6 +33,19 @@ data MetaInfo = MetaInfo
     submitted :: Maybe [String]
   }
   deriving (Eq, Show)
+
+-- | Merge two @MetaInfo@ values.
+--
+-- Comments are concatenated, while any doi origin or submitted fields are chosen left biased.
+mergeMetaInfo :: MetaInfo -> MetaInfo -> MetaInfo
+mergeMetaInfo m1 m2 =
+  MetaInfo { doi = doi m1 <|> doi m2
+           , origin = origin m1 <|> origin m2
+           , submitted = submitted m1 <|> submitted m2
+           , comment = case (comment m1, comment m2) of
+               (Just c1, Just c2) -> Just (c1 ++ '\n':c2)
+               (a, b)->  a <|> b
+           }
 
 -- | Default value for an empty 'MetaInfo' object. Can be modified as shown below.
 --

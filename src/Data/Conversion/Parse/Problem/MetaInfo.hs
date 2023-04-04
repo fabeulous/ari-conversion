@@ -16,20 +16,37 @@ module Data.Conversion.Parse.Problem.MetaInfo
 where
 
 import Data.Conversion.Parse.Utils (Parser, lexeme, parens)
-import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
-import Text.Megaparsec (between, many, noneOf, optional, sepBy, some, try, (<?>), (<|>), empty, skipSome, option, takeP, lookAhead)
-import Text.Megaparsec.Char (char, string, newline, hspace)
+import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
+import Text.Megaparsec (between, many, noneOf, optional, sepBy, some, try, (<?>), (<|>), empty, skipSome, option, takeP, lookAhead, takeWhileP, MonadParsec (notFollowedBy), anySingle, sepEndBy)
+import Text.Megaparsec.Char (char, string, newline, hspace, eol, space1, space)
 import qualified Text.Megaparsec.Char.Lexer as L
 import Data.Text (pack, unpack)
-import Data.Char (readLitChar)
+import Data.Char (readLitChar, isSpace)
+import Control.Monad (void)
 
 -- | Parser to extract comments as a @String@ from the (optional) @COMMENT@ block of the COPS TRS format.
 --
--- qqjf should this be updated to try to infer structure from comments (e.g. author, source, etc.)?
 parseCopsMetaInfo :: Parser MetaInfo
 parseCopsMetaInfo = do
-  cs <- parseComment
-  return $ emptyMetaInfo {comment = Just cs}
+  ls <- sepEndBy (metaDoi <|> metaAuthors <|> metaComment) space
+  return $ foldr mergeMetaInfo emptyMetaInfo ls
+ where
+   metaDoi = (\v -> emptyMetaInfo {doi = Just v}) <$> copsDoiLine
+   metaAuthors = (\v -> emptyMetaInfo {submitted = Just [v]}) <$> copsAuthorsLine
+   metaComment = (\v -> emptyMetaInfo {comment = Just v}) <$> copsCommentLine
+
+copsDoiLine :: Parser String
+copsDoiLine = "doi:" *> (pDoi <?> "doi")
+  where
+    pDoi = unpack <$> takeWhileP Nothing (not . isSpace)
+
+copsAuthorsLine :: Parser String
+copsAuthorsLine = "submitted by:" *> hspace *> (pAuthors <?> "authors")
+  where
+    pAuthors = some (notFollowedBy eol *> anySingle)
+
+copsCommentLine :: Parser String
+copsCommentLine = some (notFollowedBy (void eol <|> void (char ')')) *> anySingle)
 
 -- | Parser to parse a string comment between two outermost parentheses.
 -- Calls itself recursively to allow for nested parentheses inside comments.
