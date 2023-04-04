@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- |
 -- Module      : Data.Conversion.Unparse.Problem.MetaInfo
 -- Description : Unparser for MetaInfo
@@ -15,7 +16,7 @@ where
 
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..))
 import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import Prettyprinter (Doc, comma, emptyDoc, hsep, parens, pretty, punctuate, vsep, (<+>))
+import Prettyprinter (Doc, comma, emptyDoc, hsep, parens, pretty, punctuate, vsep, (<+>), semi)
 
 -- | Unparse TRS 'MetaInfo' to fit into a single COPS @COMMENT@ block.
 -- If the 'MetaInfo' is empty then returns 'emptyDoc'.
@@ -30,15 +31,15 @@ unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
   where
     metaBlocks :: [Doc ann]
     metaBlocks =
-      filterEmptyDocs [maybe emptyDoc (\d -> pretty "doi:" <> pretty d) ds]
+      filterEmptyDocs [maybe emptyDoc (\d -> "doi:" <> pretty d) ds]
         ++ maybe [] (\c -> [pretty c]) cs
         ++ filterEmptyDocs
-          [ maybe emptyDoc (\org -> pretty "origin:" <+> pretty org) orig,
+          [ maybe emptyDoc (\org -> "origin:" <+> pretty org) orig,
             maybe emptyDoc unparseSubmitters sub
           ]
     -- Unparse submitters as a comma-separated list
     unparseSubmitters :: [String] -> Doc ann
-    unparseSubmitters xs = pretty "submitted by:" <+> hsep (punctuate comma $ map pretty xs)
+    unparseSubmitters xs = "submitted by:" <+> hsep (punctuate comma $ map pretty xs)
 
 -- | Unparse 'MetaInfo' into ARI format: see the tests for more examples.
 --
@@ -69,5 +70,6 @@ unparseAriMetaInfo (MetaInfo cs ds orig sub) =
     -- Unparse submitters as a space-separated list of strings
     unparseSubmitters :: [String] -> Doc ann
     unparseSubmitters xs = metaBlock "submitted" (hsep $ map (pretty . show) xs)
+
     metaBlock :: Show a => String -> a -> Doc ann
-    metaBlock name xs = parens $ pretty "meta-info" <+> parens (pretty name <+> pretty (show xs))
+    metaBlock name xs = semi <+> parens ("meta-info" <+> parens (pretty name <+> pretty (show xs)))

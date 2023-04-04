@@ -15,10 +15,12 @@ module Data.Conversion.Parse.Problem.MetaInfo
   )
 where
 
-import Data.Conversion.Parse.Utils (Parser, lexeme, parseBlock)
+import Data.Conversion.Parse.Utils (Parser, lexeme, parens)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
-import Text.Megaparsec (between, many, noneOf, optional, sepBy, some, try, (<?>), (<|>))
-import Text.Megaparsec.Char (char, spaceChar)
+import Text.Megaparsec (between, many, noneOf, optional, sepBy, some, try, (<?>), (<|>), empty, skipSome)
+import Text.Megaparsec.Char (char, string, newline, hspace)
+import qualified Text.Megaparsec.Char.Lexer as L
+import Data.Text (pack)
 
 -- | Parser to extract comments as a @String@ from the (optional) @COMMENT@ block of the COPS TRS format.
 --
@@ -67,10 +69,36 @@ parseAriMetaInfo = go emptyMetaInfo
     -- Recursively update MetaInfo from start to end of stream
     go :: MetaInfo -> Parser MetaInfo
     go oldMeta = do
-      maybeMeta <- optional $ try (parseBlock "meta-info" (parseAriMetaInfoBlock oldMeta))
+      maybeMeta <- optional $ try (commentLexeme (char ';') *> metaInfoBlock (parseAriMetaInfoBlock oldMeta))
       case maybeMeta of
         Nothing -> return oldMeta
         Just updatedMeta -> go updatedMeta
+
+    metaInfoBlock :: Parser a -> Parser a
+    metaInfoBlock p =
+      parens
+        ( commentLexeme (string $ pack "meta-info") -- Parse block name
+            *> commentLexeme p -- Parse block contents
+        )
+        <?> ("meta-info" ++ " block")
+
+commentBlock :: String -> Parser a -> Parser a
+commentBlock name p =
+  commentParens
+    ( commentLexeme (string $ pack name) -- Parse block name
+        *> commentLexeme p -- Parse block contents
+    )
+    <?> (name ++ " block")
+ where
+   commentSymbol = L.symbol commentSpace
+   commentParens = between (commentSymbol "(") (commentSymbol ")")
+
+commentSpace :: Parser ()
+commentSpace =
+  L.space (skipSome (char ' ' <|> char '\t' <|> try (newline <* hspace <* char ';'))) empty empty
+
+commentLexeme :: Parser a -> Parser a
+commentLexeme = L.lexeme commentSpace
 
 -- | Parse a single meta-info block for a TRS in ARI format and updates the given 'MetaInfo' variable.
 -- The parsers for each block type are deliberately left flexible
@@ -79,7 +107,7 @@ parseAriMetaInfo = go emptyMetaInfo
 -- qqjf Currently overwrites duplicate doi, origin, and submitted values.
 parseAriMetaInfoBlock :: MetaInfo -> Parser MetaInfo
 parseAriMetaInfoBlock meta =
-  lexeme
+  commentLexeme
     ( try parseAriComment
         <|> try parseDoi
         <|> try parseOrigin
@@ -98,9 +126,9 @@ parseAriMetaInfoBlock meta =
       newOrigin <- parseCommentBlock "origin"
       return $ meta {origin = Just newOrigin} -- Overwrite old origin
     parseSubmitters = do
-      submitters <- lexeme $ parseBlock "submitted" (parseSubmitterName `sepBy` some spaceChar)
+      submitters <- lexeme $ commentBlock "submitted" (parseSubmitterName `sepBy` commentSpace)
       return $ meta {submitted = Just submitters}
     -- Parse a non-empty name wrapped in @"@s
     parseSubmitterName = between (char '"') (char '"') (some $ noneOf ['(', ')', '"'])
     -- Parse a (possible empty) comment between @"@s
-    parseCommentBlock name = parseBlock name (between (char '"') (char '"') (many $ noneOf ['"']))
+    parseCommentBlock name = commentBlock name (between (char '"') (char '"') (many $ noneOf ['"']))
