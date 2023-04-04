@@ -17,10 +17,11 @@ where
 
 import Data.Conversion.Parse.Utils (Parser, lexeme, parens)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
-import Text.Megaparsec (between, many, noneOf, optional, sepBy, some, try, (<?>), (<|>), empty, skipSome)
+import Text.Megaparsec (between, many, noneOf, optional, sepBy, some, try, (<?>), (<|>), empty, skipSome, option, takeP, lookAhead)
 import Text.Megaparsec.Char (char, string, newline, hspace)
 import qualified Text.Megaparsec.Char.Lexer as L
-import Data.Text (pack)
+import Data.Text (pack, unpack)
+import Data.Char (readLitChar)
 
 -- | Parser to extract comments as a @String@ from the (optional) @COMMENT@ block of the COPS TRS format.
 --
@@ -131,4 +132,20 @@ parseAriMetaInfoBlock meta =
     -- Parse a non-empty name wrapped in @"@s
     parseSubmitterName = between (char '"') (char '"') (some $ noneOf ['(', ')', '"'])
     -- Parse a (possible empty) comment between @"@s
-    parseCommentBlock name = commentBlock name (between (char '"') (char '"') (many $ noneOf ['"']))
+    parseCommentBlock name = commentBlock name (between (char '"') (char '"') pComment)
+
+    -- take care of escaped characters
+    pComment = do
+      prefix <- many $ noneOf ['"','\\']
+      rest <- option "" $ do
+        _ <- lookAhead (char '\\')
+        c <- escapedChar
+        rest <- pComment
+        pure $ c:rest
+      pure $ prefix ++ rest
+
+    escapedChar = do
+      c <- takeP (Just "escaped character") 2
+      case readLitChar (unpack c) of
+        [(res,"")] -> pure res
+        _ -> fail $ "'" ++ unpack c ++ "' is not a valid escaped character"
