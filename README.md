@@ -195,6 +195,33 @@ The parsing module currently only check that a given input _can_ be parsed. It d
 - type correctness (for many-sorted TRSs)
 - that variables on the right-hand side of a `Rule` also appear in the left-hand side of a rule
 
+### Parsing meta data in COPS problems
+
+The tool attempts to parse some meta data from the `(COMMENT ... )` block of a COPS problem.
+It currently supports:
+
+ - DOIs when the block contains a line of the shape
+
+    ```
+    doi:....../.....
+    ```
+
+ - names of submitters, when the block contains a line of the shape
+
+    ```
+    submitted by: [names]*
+    ```
+
+Note that in both cases there can be no other content in the same line. Moreover, in cases where the block ends
+in the same line as the data there must be at least one white space character (space, tab, or newline) after
+the DOI or the last name.
+For example the following is not a valid COMMENT block since there is no white space after the DOI and before
+the closing parenthesis.
+
+    (COMMENT
+      doi:10.0000/SOMESUFFIX)
+
+
 ### Disclaimer
 
 This is still an early version and has not been tested extensively on real-world examples. Comments marked with `qq[initals]` indicate decisions or assumptions that might be liable to change.
