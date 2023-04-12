@@ -17,14 +17,13 @@ where
 
 import Data.Char (isSpace)
 import Data.Text (unpack, Text)
-import Text.Megaparsec (MonadParsec (notFollowedBy), between, noneOf, option, sepEndBy, many, some, takeWhile1P, takeWhileP, try, (<?>), (<|>), sepBy1, satisfy, region)
+import Text.Megaparsec (MonadParsec (notFollowedBy, withRecovery), between, noneOf, option, sepEndBy, many, some, takeWhile1P, takeWhileP, try, (<?>), (<|>), sepBy1, satisfy, eof, registerParseError)
 import Text.Megaparsec.Char (char, hspace, space, string, hspace1)
 
 import TRSConversion.Parse.Utils (Parser)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
 import Data.Foldable (foldl')
-import qualified Text.Megaparsec.Error as E
-import Data.List.NonEmpty (NonEmpty((:|)))
+import Control.Monad (void)
 
 -- | Parser to extract comments as a @String@ from the (optional) @COMMENT@ block of the COPS TRS format.
 --
@@ -97,19 +96,21 @@ parseAriMetaInfo = do
   meta <- foldl' mergeMetaInfo emptyMetaInfo <$> many structuredMeta
   comments <- foldl' mergeMetaInfo emptyMetaInfo <$> many ariLeadingComment
   pure $ mergeMetaInfo meta comments
-  where
-    structuredMeta = ariAuthorLine <|> ariDoiLine
+
+structuredMeta :: Parser MetaInfo
+structuredMeta = structure $ ariAuthorLine <|> ariDoiLine
+ where
+   structure = between (try (string "; @")) (void (char '\n') <|> eof) . continue
+
+   continue = withRecovery $ \err -> do
+     registerParseError err
+     _ <- takeWhileP Nothing (/= '\n')
+     pure emptyMetaInfo
 
 metaKeyValue :: Text -> Parser Text
-metaKeyValue key =
-   between
-    (try (string "; " *> region shapeErr (string ("@" <> key) <* char ' ')))
-    (char '\n')
-    (takeWhileP (Just "character") (\c -> c `notElem` ['\r','\n']))
- where
-   shapeErr (E.TrivialError o (Just (E.Tokens ('@' :| tl))) expS)
-            = E.TrivialError o (Just (E.Tokens ('@' :| takeWhile (not . isSpace) tl))) expS
-   shapeErr e = e
+metaKeyValue key = do
+   _ <- string key <* char ' '
+   takeWhileP (Just "character") (\c -> c `notElem` ['\r','\n'])
 
 
 ariDoiLine :: Parser MetaInfo
@@ -123,7 +124,8 @@ ariAuthorLine = do
   pure $ emptyMetaInfo {submitted = Just [unpack doiStr]}
 
 ariLeadingComment :: Parser MetaInfo
-ariLeadingComment = between (char ';') (char '\n') $ do
-  notFollowedBy (string " @")
+ariLeadingComment = between commentStart (char '\n') $ do
   cmt <- takeWhileP (Just "character") (/= '\n')
   pure $ emptyMetaInfo {comment = Just [unpack cmt]}
+ where
+   commentStart = try (char ';' <* notFollowedBy (string " @"))

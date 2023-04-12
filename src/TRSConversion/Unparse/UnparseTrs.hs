@@ -43,7 +43,7 @@ unparseAriTrs :: (Pretty f, Pretty v, Eq v, Eq f, Show f) => Trs f v -> Either S
 unparseAriTrs (Trs rs sig meta) = do
   ariSig <- unparseAriTrsSig rs sig
   let trsElements =
-        [ fromMaybe emptyDoc (unparseAriMetaInfo meta),
+        [ unparseAriMetaInfo meta,
           pretty "(format TRS)",
           ariSig,
           fromMaybe emptyDoc (unparseAriRules rs)

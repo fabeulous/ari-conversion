@@ -53,11 +53,11 @@ unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
 --
 -- >>> unparseAriMetaInfo emptyMetaInfo
 -- Nothing
-unparseAriMetaInfo :: MetaInfo -> Maybe (Doc ann)
+unparseAriMetaInfo :: MetaInfo -> Doc ann
 unparseAriMetaInfo (MetaInfo cs ds orig sub) =
   if null metaBlocks
-    then Nothing
-    else Just $ vsep metaBlocks
+    then mempty
+    else vsep metaBlocks
   where
     metaBlocks :: [Doc ann]
     metaBlocks =

@@ -42,7 +42,7 @@ unparseAriMsTrs :: (Eq s, Pretty f, Pretty v, Pretty s) => MsTrs f v s -> Doc an
 unparseAriMsTrs (MsTrs rs sig ss meta) = do
   vsep $
     filterEmptyDocs
-      [ fromMaybe emptyDoc (unparseAriMetaInfo meta),
+      [ unparseAriMetaInfo meta,
         pretty "(format MSTRS)",
         prettySorts $ fromMaybe (inferSorts sig) ss,
         unparseAriMsSig sig,

@@ -17,8 +17,10 @@ import System.Exit (exitFailure, exitSuccess)
 import System.IO (Handle, IOMode (WriteMode), hClose, hPrint, hPutStrLn, openFile, stderr, stdout)
 import Text.Megaparsec (choice, eof, errorBundlePretty, parse, try)
 
-import qualified TRSConversion.Parse.ParseMsTrs as P
-import qualified TRSConversion.Parse.ParseTrs as P
+import TRSConversion.Parse.ARI.MSTrs (parseAriMsTrs)
+import TRSConversion.Parse.ARI.Trs (parseAriTrs)
+import TRSConversion.Parse.COPS.MSTrs (parseCopsMsTrs)
+import TRSConversion.Parse.COPS.Trs (parseCopsTrs)
 import TRSConversion.Parse.Utils (Parser)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs)
 import TRSConversion.Problem.Trs.Trs (Trs)
@@ -174,15 +176,15 @@ data Problem = TTrs (Trs String String) | TMSTrs (MsTrs String String String)
 copsParser :: Parser Problem
 copsParser =
   choice
-    [ TTrs <$> try P.parseCopsTrs
-    , TMSTrs <$> try P.parseCopsMsTrs
+    [ TTrs <$> try parseCopsTrs
+    , TMSTrs <$> try parseCopsMsTrs
     ]
 
 ariParser :: Parser Problem
 ariParser =
   choice
-    [ TTrs <$> try P.parseAriTrs
-    , TMSTrs <$> try P.parseAriMsTrs
+    [ TTrs <$> try parseAriTrs
+    , TMSTrs <$> try parseAriMsTrs
     ]
 
 parseIO :: Parser a -> String -> Text -> IO a
