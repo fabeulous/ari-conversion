@@ -20,8 +20,8 @@ import Data.Text (unpack, Text)
 import Text.Megaparsec (MonadParsec (notFollowedBy), between, noneOf, option, sepEndBy, many, some, takeWhile1P, takeWhileP, try, (<?>), (<|>), sepBy1, satisfy, region)
 import Text.Megaparsec.Char (char, hspace, space, string, hspace1)
 
-import Data.Conversion.Parse.Utils (Parser)
-import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
+import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
 import Data.Foldable (foldl')
 import qualified Text.Megaparsec.Error as E
 import Data.List.NonEmpty (NonEmpty((:|)))

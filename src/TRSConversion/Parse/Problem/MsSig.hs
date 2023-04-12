@@ -16,9 +16,9 @@ module Data.Conversion.Parse.Problem.MsSig
 where
 
 import Control.Monad (guard)
-import Data.Conversion.Parse.Problem.Term (parseFunSymbol)
-import Data.Conversion.Parse.Utils (Parser, lexeme, parens, stripSpaces)
-import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
+import TRSConversion.Parse.Problem.Term (parseFunSymbol)
+import TRSConversion.Parse.Utils (Parser, lexeme, parens, stripSpaces)
+import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import Text.Megaparsec (many, sepBy, some, (<?>))
 import Text.Megaparsec.Char (spaceChar, string)
 
