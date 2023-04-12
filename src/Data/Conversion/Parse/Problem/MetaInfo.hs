@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, TypeFamilies #-}
 
 -- |
 -- Module      : Data.Conversion.Parse.Problem.MetaInfo
@@ -15,14 +15,16 @@ module Data.Conversion.Parse.Problem.MetaInfo
   )
 where
 
-import Data.Char (isSpace, readLitChar)
-import Data.Text (pack, unpack)
-import Text.Megaparsec (MonadParsec (notFollowedBy), anySingle, between, empty, lookAhead, many, noneOf, option, optional, sepBy, sepEndBy, skipSome, some, takeP, takeWhile1P, takeWhileP, try, (<?>), (<|>))
-import Text.Megaparsec.Char (char, eol, hspace, newline, space, string)
-import qualified Text.Megaparsec.Char.Lexer as L
+import Data.Char (isSpace)
+import Data.Text (unpack, Text)
+import Text.Megaparsec (MonadParsec (notFollowedBy), between, noneOf, option, sepEndBy, many, some, takeWhile1P, takeWhileP, try, (<?>), (<|>), sepBy1, satisfy, region)
+import Text.Megaparsec.Char (char, hspace, space, string, hspace1)
 
-import Data.Conversion.Parse.Utils (Parser, lexeme, parens)
+import Data.Conversion.Parse.Utils (Parser)
 import Data.Conversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
+import Data.Foldable (foldl')
+import qualified Text.Megaparsec.Error as E
+import Data.List.NonEmpty (NonEmpty((:|)))
 
 -- | Parser to extract comments as a @String@ from the (optional) @COMMENT@ block of the COPS TRS format.
 --
@@ -32,18 +34,21 @@ parseCopsMetaInfo = do
   return $ foldr mergeMetaInfo emptyMetaInfo ls
  where
    metaDoi = (\v -> emptyMetaInfo {doi = Just v}) <$> copsDoiLine
-   metaAuthors = (\v -> emptyMetaInfo {submitted = Just [v]}) <$> copsAuthorsLine
-   metaComment = (\v -> emptyMetaInfo {comment = Just v}) <$> copsCommentLine
+   metaAuthors = (\v -> emptyMetaInfo {submitted = Just v}) <$> copsAuthorsLine
+   metaComment = (\v -> emptyMetaInfo {comment = Just [v]}) <$> copsCommentLine
 
 copsDoiLine :: Parser String
 copsDoiLine = "doi:" *> (pDoi <?> "doi")
   where
     pDoi = unpack <$> takeWhileP Nothing (not . isSpace)
 
-copsAuthorsLine :: Parser String
+copsAuthorsLine :: Parser [String]
 copsAuthorsLine = "submitted by:" *> hspace *> (pAuthors <?> "authors")
   where
-    pAuthors = some (notFollowedBy eol *> anySingle)
+    pAuthors =
+      sepBy1
+        (some . try $ (char 'a' <* notFollowedBy (string "nd" <* hspace1)) <|> satisfy (\c -> c /= ',' && c /= '\n'))
+        (some $ (string "," <|> string "and") <* hspace)
 
 copsCommentLine :: Parser String
 copsCommentLine = do
@@ -73,103 +78,52 @@ parseComment =
       suf <- parseComment
       return $ "(" ++ pre ++ ")" ++ suf
 
--- | Parse meta-info blocks in a TRS in ARI format by starting with 'emptyMetaInfo' and
--- recursively updating the current 'MetaInfo' value.
+-- | Parse meta-info blocks in ARI format
+--
+-- If multiple DOIs are specified only the first is used.
 --
 -- Expects e.g. something like
 -- @
--- (meta-info (origin "COPS #20"))
--- (meta-info (doi "10.1007/11805618_6"))
--- (meta-info (comment "[7] Example 2"))
--- (meta-info (submitted "Takahito Aoto" "Junichi Yoshida" "Yoshihito Toyama"))
+-- ; @origin COPS #20
+-- ; @doi 10.1007/11805618_6
+-- ; @author Takahito Aoto
+-- ; @author Junichi Yoshida
+-- ; @author Yoshihito Toyama
+-- ; [7] Example 2
 -- @.
 --
--- See the tests for more examples of expected inputs.
---
--- qqjf I wasn't sure what the behaviour should be if multiple blocks are specified, so this
--- implementation currently overwrites duplicate doi, origin, and submitted values.
 parseAriMetaInfo :: Parser MetaInfo
-parseAriMetaInfo = go emptyMetaInfo
+parseAriMetaInfo = do
+  meta <- foldl' mergeMetaInfo emptyMetaInfo <$> many structuredMeta
+  comments <- foldl' mergeMetaInfo emptyMetaInfo <$> many ariLeadingComment
+  pure $ mergeMetaInfo meta comments
   where
-    -- Recursively update MetaInfo from start to end of stream
-    go :: MetaInfo -> Parser MetaInfo
-    go oldMeta = do
-      maybeMeta <- optional $ try (commentLexeme (char ';') *> metaInfoBlock (parseAriMetaInfoBlock oldMeta))
-      case maybeMeta of
-        Nothing -> return oldMeta
-        Just updatedMeta -> go updatedMeta
+    structuredMeta = ariAuthorLine <|> ariDoiLine
 
-    metaInfoBlock :: Parser a -> Parser a
-    metaInfoBlock p =
-      parens
-        ( commentLexeme (string $ pack "meta-info") -- Parse block name
-            *> commentLexeme p -- Parse block contents
-        )
-        <?> ("meta-info" ++ " block")
-
-commentBlock :: String -> Parser a -> Parser a
-commentBlock name p =
-  commentParens
-    ( commentLexeme (string $ pack name) -- Parse block name
-        *> commentLexeme p -- Parse block contents
-    )
-    <?> (name ++ " block")
+metaKeyValue :: Text -> Parser Text
+metaKeyValue key =
+   between
+    (try (string "; " *> region shapeErr (string ("@" <> key) <* char ' ')))
+    (char '\n')
+    (takeWhileP (Just "character") (\c -> c `notElem` ['\r','\n']))
  where
-   commentSymbol = L.symbol commentSpace
-   commentParens = between (commentSymbol "(") (commentSymbol ")")
+   shapeErr (E.TrivialError o (Just (E.Tokens ('@' :| tl))) expS)
+            = E.TrivialError o (Just (E.Tokens ('@' :| takeWhile (not . isSpace) tl))) expS
+   shapeErr e = e
 
-commentSpace :: Parser ()
-commentSpace =
-  L.space (skipSome (char ' ' <|> char '\t' <|> try (newline <* hspace <* char ';'))) empty empty
 
-commentLexeme :: Parser a -> Parser a
-commentLexeme = L.lexeme commentSpace
+ariDoiLine :: Parser MetaInfo
+ariDoiLine = do
+  doiStr <- metaKeyValue "doi"
+  pure $ emptyMetaInfo {doi = Just $ unpack doiStr}
 
--- | Parse a single meta-info block for a TRS in ARI format and updates the given 'MetaInfo' variable.
--- The parsers for each block type are deliberately left flexible
--- to allow adding additional validation checks or constraints later.
---
--- qqjf Currently overwrites duplicate doi, origin, and submitted values.
-parseAriMetaInfoBlock :: MetaInfo -> Parser MetaInfo
-parseAriMetaInfoBlock meta =
-  commentLexeme
-    ( try parseAriComment
-        <|> try parseDoi
-        <|> try parseOrigin
-        <|> try parseSubmitters
-    )
-    <?> "meta-info"
-  where
-    parseAriComment, parseDoi, parseOrigin, parseSubmitters :: Parser MetaInfo
-    parseAriComment = do
-      newComment <- parseCommentBlock "comment"
-      return $ meta {comment = Just newComment} -- Overwrite old comment
-    parseDoi = do
-      newDoi <- parseCommentBlock "doi"
-      return $ meta {doi = Just newDoi} -- Overwrite old doi
-    parseOrigin = do
-      newOrigin <- parseCommentBlock "origin"
-      return $ meta {origin = Just newOrigin} -- Overwrite old origin
-    parseSubmitters = do
-      submitters <- lexeme $ commentBlock "submitted" (parseSubmitterName `sepBy` commentSpace)
-      return $ meta {submitted = Just submitters}
-    -- Parse a non-empty name wrapped in @"@s
-    parseSubmitterName = between (char '"') (char '"') (some $ noneOf ['(', ')', '"'])
-    -- Parse a (possible empty) comment between @"@s
-    parseCommentBlock name = commentBlock name (between (char '"') (char '"') pComment)
+ariAuthorLine :: Parser MetaInfo
+ariAuthorLine = do
+  doiStr <- metaKeyValue "author"
+  pure $ emptyMetaInfo {submitted = Just [unpack doiStr]}
 
-    -- take care of escaped characters
-    pComment = do
-      prefix <- many $ noneOf ['"','\\']
-      rest <- option "" $ do
-        _ <- lookAhead (char '\\')
-        c <- escapedChar
-        rest <- pComment
-        pure $ c:rest
-      pure $ prefix ++ rest
-
-    escapedChar = do
-      c <- takeP (Just "escaped character") 2
-      case readLitChar (unpack c) of
-        [(res,"")] -> pure res
-        _ -> fail $ "'" ++ unpack c ++ "' is not a valid escaped character"
+ariLeadingComment :: Parser MetaInfo
+ariLeadingComment = between (char ';') (char '\n') $ do
+  notFollowedBy (string " @")
+  cmt <- takeWhileP (Just "character") (/= '\n')
+  pure $ emptyMetaInfo {comment = Just [unpack cmt]}

@@ -15,7 +15,7 @@ import System.Console.GetOpt (
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure, exitSuccess)
 import System.IO (Handle, IOMode (WriteMode), hClose, hPrint, hPutStrLn, openFile, stderr, stdout)
-import Text.Megaparsec (choice, eof, errorBundlePretty, parse, try, (<?>))
+import Text.Megaparsec (choice, eof, errorBundlePretty, parse, try)
 
 import qualified Data.Conversion.Parse.ParseMsTrs as P
 import qualified Data.Conversion.Parse.ParseTrs as P
@@ -154,8 +154,8 @@ runApp config inputFile = do
   fileContents <- Text.readFile inputFile
 
   problem <- case source config of
-    COPS -> parseIO copsParser "COPS TRS" fileContents
-    ARI -> parseIO ariParser "ARI TRS" fileContents
+    COPS -> parseIO copsParser inputFile fileContents
+    ARI -> parseIO ariParser inputFile fileContents
 
   doc <- case problem of
     TTrs trs -> case target config of
@@ -177,7 +177,6 @@ copsParser =
     [ TTrs <$> try P.parseCopsTrs
     , TMSTrs <$> try P.parseCopsMsTrs
     ]
-    <?> "COPS problem"
 
 ariParser :: Parser Problem
 ariParser =
@@ -185,12 +184,14 @@ ariParser =
     [ TTrs <$> try P.parseAriTrs
     , TMSTrs <$> try P.parseAriMsTrs
     ]
-    <?> "ARI problem"
 
 parseIO :: Parser a -> String -> Text -> IO a
 parseIO p inpName inp =
   case parse (p <* eof) inpName inp of
-    Left err -> ioError $ userError (errorBundlePretty err)
+    Left err -> do
+      putStrLn "Error: invalid input"
+      putStr $ errorBundlePretty err
+      exitFailure
     Right trs -> return trs
 
 -- | Takes an unparsing function @up@ as an argument and wraps the result in the IO monad

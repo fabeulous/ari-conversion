@@ -23,7 +23,7 @@ import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import Data.Conversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
 import Data.Maybe (fromMaybe)
 import Text.Megaparsec (many, optional, try, (<|>))
-import Text.Megaparsec.Char (string)
+import Text.Megaparsec.Char (string, space)
 
 -- | Parse a first-order TRS in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php):
 -- see the COCO website for details on the grammar and the tests for more examples.
@@ -53,7 +53,7 @@ parseCopsTrs = stripSpaces $ do
 --
 -- qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @fun@ then @rule@.
 parseAriTrs :: Parser (Trs String String)
-parseAriTrs = stripSpaces $ do
+parseAriTrs = (<* space) $ do
   trsMetaInfo <- parseAriMetaInfo
   _ <- parseBlock "format" (string "TRS")
   funSig <- many (try $ parseBlock "fun " parseFsymArity)

@@ -24,7 +24,7 @@ import Control.Applicative ((<|>))
 --      * a known value @xs@ is represented by @Just xs@. In particular, an empty entry is represented by @Just ""@ or @Just []@.
 data MetaInfo = MetaInfo
   { -- | Arbitrary comment that does not fit into the remaining 'MetaInfo' categories. e.g. @Just "An example TRS"@
-    comment :: Maybe String,
+    comment :: Maybe [String],
     -- | The doi of the problem if available. e.g. @Just "10.1007/11805618_6"@
     doi :: Maybe String,
     -- | The origin of the problem. e.g. @Just "COPS #20"@
@@ -41,9 +41,11 @@ mergeMetaInfo :: MetaInfo -> MetaInfo -> MetaInfo
 mergeMetaInfo m1 m2 =
   MetaInfo { doi = doi m1 <|> doi m2
            , origin = origin m1 <|> origin m2
-           , submitted = submitted m1 <|> submitted m2
+           , submitted = case (submitted m1, submitted m2) of
+               (Just a1, Just a2) -> Just (a1 ++ a2)
+               (a,b) -> a <|> b
            , comment = case (comment m1, comment m2) of
-               (Just c1, Just c2) -> Just (c1 ++ '\n':c2)
+               (Just c1, Just c2) -> Just (c1 ++ c2)
                (a, b)->  a <|> b
            }
 
