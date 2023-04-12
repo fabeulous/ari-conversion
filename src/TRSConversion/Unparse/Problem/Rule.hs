@@ -1,10 +1,10 @@
 -- |
--- Module      : Data.Conversion.Unparse.Problem.Rule
+-- Module      : TRSConversion.Unparse.Problem.Rule
 -- Description : Unparser for rewrite rules
 --
 -- This module defines functions to unparse single TRS 'Rule's and blocks of rules
 -- in COPS and ARI format.
-module Data.Conversion.Unparse.Problem.Rule
+module TRSConversion.Unparse.Problem.Rule
   ( -- * COPS
     unparseCopsRules,
     unparseCopsRule,
@@ -15,10 +15,10 @@ module Data.Conversion.Unparse.Problem.Rule
   )
 where
 
-import Data.Conversion.Problem.Common.Rule (Rule (..))
-import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Unparse.Problem.Term (unparsePrefixTerm, unparseTerm)
-import Data.Conversion.Unparse.Utils (prettyBlock)
+import TRSConversion.Problem.Common.Rule (Rule (..))
+import TRSConversion.Problem.Common.Term (Term (..))
+import TRSConversion.Unparse.Problem.Term (unparsePrefixTerm, unparseTerm)
+import TRSConversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, indent, parens, pretty, vsep, (<+>))
 
 -- | Unparse a list of 'Rule's into the expected [COPS format](http://project-coco.uibk.ac.at/problems/trs.php)

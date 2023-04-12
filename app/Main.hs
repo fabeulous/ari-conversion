@@ -17,13 +17,13 @@ import System.Exit (exitFailure, exitSuccess)
 import System.IO (Handle, IOMode (WriteMode), hClose, hPrint, hPutStrLn, openFile, stderr, stdout)
 import Text.Megaparsec (choice, eof, errorBundlePretty, parse, try)
 
-import qualified Data.Conversion.Parse.ParseMsTrs as P
-import qualified Data.Conversion.Parse.ParseTrs as P
-import Data.Conversion.Parse.Utils (Parser)
-import Data.Conversion.Problem.MsTrs.MsTrs (MsTrs)
-import Data.Conversion.Problem.Trs.Trs (Trs)
-import Data.Conversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
-import Data.Conversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
+import qualified TRSConversion.Parse.ParseMsTrs as P
+import qualified TRSConversion.Parse.ParseTrs as P
+import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Problem.MsTrs.MsTrs (MsTrs)
+import TRSConversion.Problem.Trs.Trs (Trs)
+import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
+import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 
 data Format
   = COPS

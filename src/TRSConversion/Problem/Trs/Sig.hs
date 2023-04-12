@@ -1,11 +1,11 @@
 -- |
--- Module      : Data.Conversion.Problem.Trs.Sig
+-- Module      : TRSConversion.Problem.Trs.Sig
 -- Description : TRS signature type definition
 --
 -- This module contains the 'Sig' type definition and helper functions for
 -- the signature of first-order term rewriting systems. @Sig(..)@ is re-exported
 -- from 'TrsSig', so only import this module if 'TrsSig' is not needed.
-module Data.Conversion.Problem.Trs.Sig
+module TRSConversion.Problem.Trs.Sig
   ( -- * Untyped Signature datatype
     Sig (..),
 

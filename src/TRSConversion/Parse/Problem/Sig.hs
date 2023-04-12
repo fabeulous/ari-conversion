@@ -1,17 +1,17 @@
 -- |
--- Module      : Data.Conversion.Parse.Problem.Sig
+-- Module      : TRSConversion.Parse.Problem.Sig
 -- Description : TRS signature parsers
 --
 -- This module defines functions to parse a 'Sig' from a @String@ input.
-module Data.Conversion.Parse.Problem.Sig
+module TRSConversion.Parse.Problem.Sig
   ( parseCopsSig,
     parseFsymArity,
   )
 where
 
-import Data.Conversion.Parse.Problem.Term (parseFunSymbol)
-import Data.Conversion.Parse.Utils (Parser, lexeme, parens, stripSpaces)
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
+import TRSConversion.Parse.Problem.Term (parseFunSymbol)
+import TRSConversion.Parse.Utils (Parser, lexeme, parens, stripSpaces)
+import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (many, some)
 import Text.Megaparsec.Char (digitChar)
 

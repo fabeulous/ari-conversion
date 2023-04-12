@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Unparse.UnparseTrs
+-- Module      : TRSConversion.Unparse.UnparseTrs
 -- Description : Unparser for TRSs
 --
 -- This module defines functions to output a 'Trs' in COPS and ARI format.
-module Data.Conversion.Unparse.UnparseTrs
+module TRSConversion.Unparse.UnparseTrs
   ( -- * COPS
     unparseCopsTrs,
 
@@ -12,11 +12,11 @@ module Data.Conversion.Unparse.UnparseTrs
   )
 where
 
-import Data.Conversion.Problem.Trs.Trs (Trs (..))
-import Data.Conversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
-import Data.Conversion.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
-import Data.Conversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
-import Data.Conversion.Unparse.Utils (filterEmptyDocs)
+import TRSConversion.Problem.Trs.Trs (Trs (..))
+import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
+import TRSConversion.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
+import TRSConversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vsep)
 

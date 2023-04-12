@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Unparse.UnparseMsTrs
+-- Module      : TRSConversion.Unparse.UnparseMsTrs
 -- Description : Unparser for MSTRSs
 --
 -- This module defines functions to output an 'MsTrs' in COPS and ARI format.
-module Data.Conversion.Unparse.UnparseMsTrs
+module TRSConversion.Unparse.UnparseMsTrs
   ( -- * COPS
     unparseCopsMsTrs,
 
@@ -12,12 +12,12 @@ module Data.Conversion.Unparse.UnparseMsTrs
   )
 where
 
-import Data.Conversion.Problem.MsTrs.MsSig (inferSorts)
-import Data.Conversion.Problem.MsTrs.MsTrs (MsTrs (..))
-import Data.Conversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
-import Data.Conversion.Unparse.Problem.MsSig (unparseAriMsSig, unparseCopsMsSig)
-import Data.Conversion.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
-import Data.Conversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Problem.MsTrs.MsSig (inferSorts)
+import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
+import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
+import TRSConversion.Unparse.Problem.MsSig (unparseAriMsSig, unparseCopsMsSig)
+import TRSConversion.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
+import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vcat, vsep)
 

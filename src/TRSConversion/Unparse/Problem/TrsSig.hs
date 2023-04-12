@@ -1,5 +1,5 @@
 -- |
--- Module      : Data.Conversion.Unparse.Problem.TrsSig
+-- Module      : TRSConversion.Unparse.Problem.TrsSig
 -- Description : Unparser for TrsSig
 --
 -- This module defines functions to unparse a 'TrsSig' into COPS and ARI format.
@@ -8,7 +8,7 @@
 -- whereas ARI format only specifies function symbols.
 -- So it is sometimes necessary to infer variables or function symbols from the
 -- given signature and the rewrite system rules.
-module Data.Conversion.Unparse.Problem.TrsSig
+module TRSConversion.Unparse.Problem.TrsSig
   ( -- * COPS
     unparseCopsTrsSig,
 
@@ -17,9 +17,9 @@ module Data.Conversion.Unparse.Problem.TrsSig
   )
 where
 
-import Data.Conversion.Problem.Common.Rule (Rule, inferSigFromRules, ruleVars)
-import Data.Conversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
-import Data.Conversion.Unparse.Utils (prettyBlock)
+import TRSConversion.Problem.Common.Rule (Rule, inferSigFromRules, ruleVars)
+import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
+import TRSConversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
 
 -- | Pretty print a 'TrsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php).

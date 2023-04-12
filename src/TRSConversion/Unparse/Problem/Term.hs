@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Unparse.Problem.Term
+-- Module      : TRSConversion.Unparse.Problem.Term
 -- Description : Unparser for terms
 --
 -- This module defines functions to unparse terms into prefix and applicative formats.
-module Data.Conversion.Unparse.Problem.Term
+module TRSConversion.Unparse.Problem.Term
   ( -- * COPS
     unparseTerm,
 
@@ -12,7 +12,7 @@ module Data.Conversion.Unparse.Problem.Term
   )
 where
 
-import Data.Conversion.Problem.Common.Term (Term (..))
+import TRSConversion.Problem.Common.Term (Term (..))
 import Prettyprinter (Doc, Pretty, comma, emptyDoc, encloseSep, hsep, lparen, parens, pretty, rparen, (<+>))
 
 -- | Unparse 'Term's using applicative notation:

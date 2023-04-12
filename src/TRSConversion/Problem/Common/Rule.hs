@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Problem.Common.Rule
+-- Module      : TRSConversion.Problem.Common.Rule
 -- Description : Rule type and helpers
 --
 -- This module contains the 'Rule' type definition to represent rewriting rules and helper functions for Rules.
-module Data.Conversion.Problem.Common.Rule
+module TRSConversion.Problem.Common.Rule
   ( -- * Types
     Rule (..),
 
@@ -13,8 +13,8 @@ module Data.Conversion.Problem.Common.Rule
   )
 where
 
-import Data.Conversion.Problem.Common.Term (Term (..), termFunArities)
-import Data.Conversion.Problem.Trs.Sig (Sig, checkDistinctSig)
+import TRSConversion.Problem.Common.Term (Term (..), termFunArities)
+import TRSConversion.Problem.Trs.Sig (Sig, checkDistinctSig)
 import Data.List (nub)
 
 -- | Datatype representing a rewrite rule @lhs->rhs@.

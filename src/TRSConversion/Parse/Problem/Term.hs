@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parse.Problem.Term
+-- Module      : TRSConversion.Parse.Problem.Term
 -- Description : Term, function symbol, and variable parser
 --
 -- This module defines functions to parse terms from a @String@ input.
 -- Also specifies the allowed tokens for function symbols and variables.
-module Data.Conversion.Parse.Problem.Term
+module TRSConversion.Parse.Problem.Term
   ( -- * COPS Terms
     parseTerm,
     parseTermF,
@@ -21,9 +21,9 @@ module Data.Conversion.Parse.Problem.Term
 where
 
 import Control.Monad (guard)
-import Data.Conversion.Parse.Utils (Parser, lexeme, stripSpaces, symbol)
-import Data.Conversion.Problem.Common.Term (Term (..))
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
+import TRSConversion.Parse.Utils (Parser, lexeme, stripSpaces, symbol)
+import TRSConversion.Problem.Common.Term (Term (..))
+import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Data.List (find)
 import Data.Text (Text)
 import Text.Megaparsec (Tokens, anySingle, between, choice, eof, lookAhead, many, notFollowedBy, sepBy, sepEndBy, some, try, (<?>), (<|>))

@@ -1,10 +1,10 @@
 -- |
--- Module      : Data.Conversion.Problem.MsTrs.MsSig
+-- Module      : TRSConversion.Problem.MsTrs.MsSig
 -- Description : Type definition for MSTRS signature
 --
 -- This module contains the 'MsSig' type definition for specifying the signature of a many-sorted
 -- term rewriting system and helper functions.
-module Data.Conversion.Problem.MsTrs.MsSig
+module TRSConversion.Problem.MsTrs.MsSig
   ( -- * Many-sorted signature datatype
     MsSig (..),
 

@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings, TypeFamilies #-}
 
 -- |
--- Module      : Data.Conversion.Parse.Problem.MetaInfo
+-- Module      : TRSConversion.Parse.Problem.MetaInfo
 -- Description : Comment parser
 --
 -- This module defines parsers to parse the additional information (comment, author, etc.) of a
 -- given rewriting system.
-module Data.Conversion.Parse.Problem.MetaInfo
+module TRSConversion.Parse.Problem.MetaInfo
   ( -- * COPS
     parseCopsMetaInfo,
 

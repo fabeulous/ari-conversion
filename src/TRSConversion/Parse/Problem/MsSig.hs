@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parse.Problem.MsSig
+-- Module      : TRSConversion.Parse.Problem.MsSig
 -- Description : Parser for MSTRS signatures
 --
 -- This module defines functions to parse an MSTRS signature into an 'MsSig'.
-module Data.Conversion.Parse.Problem.MsSig
+module TRSConversion.Parse.Problem.MsSig
   ( -- * COPS
     parseCopsMsSigs,
     parseCopsMsSig,

@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parse.ParseMsTrs
+-- Module      : TRSConversion.Parse.ParseMsTrs
 -- Description : Functions to parse MSTRSs
 --
 -- This module defines functions to parse a many-sorted TRS in COPS and ARI format.
-module Data.Conversion.Parse.ParseMsTrs
+module TRSConversion.Parse.ParseMsTrs
   ( -- ** COPS
     parseCopsMsTrs,
 
@@ -14,14 +14,14 @@ module Data.Conversion.Parse.ParseMsTrs
   )
 where
 
-import Data.Conversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
-import Data.Conversion.Parse.Problem.MsSig (parseAriMsSig, parseCopsMsSigs)
-import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsMsTrsRules)
-import Data.Conversion.Parse.Problem.Term (parseFunSymbol)
-import Data.Conversion.Parse.Utils (Parser, parseBlock, stripSpaces)
-import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
-import Data.Conversion.Problem.MsTrs.MsTrs (MsSig (..), MsTrs (..))
-import Data.Conversion.Problem.Trs.Sig (Sig (..))
+import TRSConversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
+import TRSConversion.Parse.Problem.MsSig (parseAriMsSig, parseCopsMsSigs)
+import TRSConversion.Parse.Problem.Rule (parseAriRule, parseCopsMsTrsRules)
+import TRSConversion.Parse.Problem.Term (parseFunSymbol)
+import TRSConversion.Parse.Utils (Parser, parseBlock, stripSpaces)
+import TRSConversion.Problem.Common.MetaInfo (emptyMetaInfo)
+import TRSConversion.Problem.MsTrs.MsTrs (MsSig (..), MsTrs (..))
+import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Data.Maybe (fromMaybe)
 import Text.Megaparsec (many, optional, try)
 import Text.Megaparsec.Char (string)

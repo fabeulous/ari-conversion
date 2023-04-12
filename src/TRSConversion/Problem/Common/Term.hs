@@ -1,9 +1,9 @@
 -- |
--- Module      : Data.Conversion.Problem.Common.Term
+-- Module      : TRSConversion.Problem.Common.Term
 -- Description : Term type and helpers
 --
 -- This module contains the 'Term' type definition and helper functions for Terms.
-module Data.Conversion.Problem.Common.Term
+module TRSConversion.Problem.Common.Term
   ( -- * Types
     Term (..),
 
@@ -12,7 +12,7 @@ module Data.Conversion.Problem.Common.Term
   )
 where
 
-import Data.Conversion.Problem.Trs.Sig (Sig (..), checkDistinctSig)
+import TRSConversion.Problem.Trs.Sig (Sig (..), checkDistinctSig)
 import Data.List (nub)
 
 -- | The type for a term with function symbol type @f@ and variable type @v@.

@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parse.ParseTrs
+-- Module      : TRSConversion.Parse.ParseTrs
 -- Description : Parser for first-order TRSs
 --
 -- This module defines functions to parse a first-order TRS in COPS and ARI format.
-module Data.Conversion.Parse.ParseTrs
+module TRSConversion.Parse.ParseTrs
   ( -- ** COPS
     parseCopsTrs,
 
@@ -14,13 +14,13 @@ module Data.Conversion.Parse.ParseTrs
   )
 where
 
-import Data.Conversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
-import Data.Conversion.Parse.Problem.Rule (parseAriRule, parseCopsTrsRules)
-import Data.Conversion.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
-import Data.Conversion.Parse.Problem.Term (parseVariable)
-import Data.Conversion.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
-import Data.Conversion.Problem.Common.MetaInfo (emptyMetaInfo)
-import Data.Conversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
+import TRSConversion.Parse.Problem.MetaInfo (parseAriMetaInfo, parseCopsMetaInfo)
+import TRSConversion.Parse.Problem.Rule (parseAriRule, parseCopsTrsRules)
+import TRSConversion.Parse.Problem.Sig (parseCopsSig, parseFsymArity)
+import TRSConversion.Parse.Problem.Term (parseVariable)
+import TRSConversion.Parse.Utils (Parser, lexeme, parseBlock, stripSpaces)
+import TRSConversion.Problem.Common.MetaInfo (emptyMetaInfo)
+import TRSConversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
 import Data.Maybe (fromMaybe)
 import Text.Megaparsec (many, optional, try, (<|>))
 import Text.Megaparsec.Char (string, space)

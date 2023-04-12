@@ -1,10 +1,10 @@
 -- |
--- Module      : Data.Conversion.Problem.Common.MetaInfo
+-- Module      : TRSConversion.Problem.Common.MetaInfo
 -- Description : MetaInfo type definition
 --
 -- This module contains an extensible 'MetaInfo' type definition. It is intended to store
 -- any additional information about rewriting systems such as general comments, the originm etc.
-module Data.Conversion.Problem.Common.MetaInfo
+module TRSConversion.Problem.Common.MetaInfo
   ( -- * Types
     MetaInfo (..),
     mergeMetaInfo,
@@ -13,6 +13,7 @@ module Data.Conversion.Problem.Common.MetaInfo
     emptyMetaInfo,
   )
 where
+
 import Control.Applicative ((<|>))
 
 -- | The type for additional information about a TRS. Includes keywords for the problem 'origin',

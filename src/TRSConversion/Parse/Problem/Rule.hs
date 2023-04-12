@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : Data.Conversion.Parse.Problem.Rule
+-- Module      : TRSConversion.Parse.Problem.Rule
 -- Description : Rule parsers
 --
 -- This module defines parsers to parse a single rule and a block of rules in different rewriting formats.
-module Data.Conversion.Parse.Problem.Rule
+module TRSConversion.Parse.Problem.Rule
   ( -- * COPS
     parseCopsRule,
     parseCopsTrsRules,
@@ -16,11 +16,11 @@ module Data.Conversion.Parse.Problem.Rule
   )
 where
 
-import Data.Conversion.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
-import Data.Conversion.Parse.Utils (Parser, lexeme)
-import Data.Conversion.Problem.Common.Rule (Rule (..), inferSigFromRules)
-import Data.Conversion.Problem.MsTrs.MsSig (MsSig (..))
-import Data.Conversion.Problem.Trs.TrsSig (Sig, TrsSig (..))
+import TRSConversion.Parse.Problem.Term (parsePrefixTerm, parseTerm, parseTermF)
+import TRSConversion.Parse.Utils (Parser, lexeme)
+import TRSConversion.Problem.Common.Rule (Rule (..), inferSigFromRules)
+import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
+import TRSConversion.Problem.Trs.TrsSig (Sig, TrsSig (..))
 import Text.Megaparsec (many, some, (<?>))
 import Text.Megaparsec.Char (spaceChar, string)
 
