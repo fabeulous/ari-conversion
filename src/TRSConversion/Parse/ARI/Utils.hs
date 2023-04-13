@@ -1,18 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module TRSConversion.Parse.ARI.Utils (
-    module TRSConversion.Parse.Utils,
-    lexeme,
-    spaces,
-    symbol,
-    keyword,
-    ident,
-    sExpr,
+  module TRSConversion.Parse.Utils,
+  lexeme,
+  spaces,
+  symbol,
+  keyword,
+  ident,
+  sExpr,
+  parens,
 ) where
 
-import Data.Text (Text)
-import Text.Megaparsec (notFollowedBy, between, empty, noneOf, takeWhile1P, try, takeWhileP)
-import Text.Megaparsec.Char (space1, string, char)
+import Data.Text (Text, unpack)
+import Text.Megaparsec (between, empty, noneOf, notFollowedBy, takeWhile1P, takeWhileP, try, (<?>))
+import Text.Megaparsec.Char (char, space1, string)
 import qualified Text.Megaparsec.Char.Lexer as L
 
 import TRSConversion.Parse.Utils (Parser)
@@ -32,8 +33,9 @@ lexeme = L.lexeme spaces
 symbol :: Text -> Parser Text
 symbol = L.symbol spaces
 
-ident :: Parser Text
-ident = takeWhile1P (Just "ident-character") (\c -> c `notElem` ("(); \t\n\r" :: [Char]))
+ident :: Parser String
+ident = lexeme (unpack <$> takeWhile1P Nothing (\c -> c `notElem` ("(); \t\n\r" :: [Char])))
+        <?> "identifier"
 
 keywordChar :: Parser Char
 keywordChar = noneOf ("(); \t\n\r" :: [Char])
@@ -43,3 +45,6 @@ keyword word = lexeme (try (string word <* notFollowedBy keywordChar))
 
 sExpr :: Text -> Parser a -> Parser a
 sExpr hd = between (try (symbol "(" *> keyword hd)) (symbol ")")
+
+parens :: Parser a -> Parser a
+parens = between (symbol "(") (symbol ")")

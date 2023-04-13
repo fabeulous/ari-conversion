@@ -13,11 +13,10 @@ module TRSConversion.Parse.ARI.MSTrs (
 where
 
 import Data.Text (Text)
-import TRSConversion.Parse.ARI.Utils (Parser, keyword, sExpr)
-import TRSConversion.Parse.Problem.MetaInfo (parseAriMetaInfo)
-import TRSConversion.Parse.Problem.MsSig (parseAriMsSig)
-import TRSConversion.Parse.Problem.Rule (parseAriRule)
-import TRSConversion.Parse.Problem.Term (parseFunSymbol)
+import TRSConversion.Parse.ARI.Utils (Parser, keyword, sExpr, ident)
+import TRSConversion.Parse.ARI.MetaInfo (parseAriMetaInfo)
+import TRSConversion.Parse.ARI.MsSig (parseAriMsSig)
+import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.MsTrs.MsTrs (MsSig (..), MsTrs (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
@@ -56,7 +55,7 @@ pFormat :: Text -> Parser Text
 pFormat name = sExpr "format" (keyword name)
 
 pSorts :: Parser [String]
-pSorts = many (sExpr "sort" parseFunSymbol)
+pSorts = many (sExpr "sort" ident)
 
 pMSSig :: Parser [MsSig String String]
 pMSSig = many (sExpr "fun " parseAriMsSig)

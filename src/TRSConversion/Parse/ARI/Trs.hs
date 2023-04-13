@@ -13,10 +13,10 @@ module TRSConversion.Parse.ARI.Trs (
 where
 
 import Data.Text (Text)
+import TRSConversion.Parse.ARI.MetaInfo (parseAriMetaInfo)
+import TRSConversion.Parse.ARI.Rule (parseAriRule)
+import TRSConversion.Parse.ARI.Sig (parseFsymArity)
 import TRSConversion.Parse.ARI.Utils (Parser, keyword, sExpr, spaces)
-import TRSConversion.Parse.Problem.MetaInfo (parseAriMetaInfo)
-import TRSConversion.Parse.Problem.Rule (parseAriRule)
-import TRSConversion.Parse.Problem.Sig (parseFsymArity)
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.Trs (Sig, Trs (..), TrsSig (..))
 import Text.Megaparsec (many)

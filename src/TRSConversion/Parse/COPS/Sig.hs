@@ -3,17 +3,17 @@
 -- Description : TRS signature parsers
 --
 -- This module defines functions to parse a 'Sig' from a @String@ input.
-module TRSConversion.Parse.Problem.Sig
+module TRSConversion.Parse.COPS.Sig
   ( parseCopsSig,
     parseFsymArity,
   )
 where
 
-import TRSConversion.Parse.Problem.Term (parseFunSymbol)
-import TRSConversion.Parse.Utils (Parser, lexeme, parens, stripSpaces)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
-import Text.Megaparsec (many, some)
-import Text.Megaparsec.Char (digitChar)
+import Text.Megaparsec (many, takeWhile1P, (<?>))
+import Data.Char (isDigit)
+import TRSConversion.Parse.COPS.Utils (Parser, parens, lexeme, ident)
+import Data.Text (unpack)
 
 -- | Parser to extract the signature from a @SIG@ block of the COPS [extended TRS format](http://project-coco.uibk.ac.at/problems/trs.php#extended).
 -- Expects a sequence of blocks @(fsym int)@ where the @int@ is the arity of the given symbol (see example below).
@@ -22,7 +22,7 @@ import Text.Megaparsec.Char (digitChar)
 -- >>> parseTest parseCopsSig "(f 2) (a 0) (h 1)"
 -- [Sig "f" 2,Sig "a" 0,Sig "h" 1]
 parseCopsSig :: Parser [Sig String]
-parseCopsSig = stripSpaces $ many (parens parseFsymArity)
+parseCopsSig = many (parens parseFsymArity)
 
 -- | Parser to extract the function symbol and arity from a string @fsym int@ where int is
 -- the arity of the given symbol (see example below). Leading and trailing spaces are removed.
@@ -32,7 +32,8 @@ parseCopsSig = stripSpaces $ many (parens parseFsymArity)
 -- >>> parseTest parseCopsSig "fun 2"
 -- Right (Sig "fun" 2)
 parseFsymArity :: Parser (Sig String)
-parseFsymArity = stripSpaces $ do
-  fsym <- lexeme parseFunSymbol
-  arity <- read <$> some digitChar
-  return $ Sig fsym arity
+parseFsymArity = Sig <$> ident <*> naturalNumber
+
+naturalNumber :: Parser Int
+naturalNumber =
+  lexeme (read . unpack <$> takeWhile1P (Just "digit") isDigit) <?> "natural number"

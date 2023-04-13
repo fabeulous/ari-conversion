@@ -11,11 +11,10 @@ module TRSConversion.Parse.COPS.Trs
   )
 where
 
-import TRSConversion.Parse.Problem.MetaInfo (parseCopsMetaInfo)
-import TRSConversion.Parse.Problem.Rule (parseCopsTrsRules)
-import TRSConversion.Parse.Problem.Sig (parseCopsSig)
-import TRSConversion.Parse.Problem.Term (parseVariable)
-import TRSConversion.Parse.COPS.Utils (Parser, lexeme, block,)
+import TRSConversion.Parse.COPS.MetaInfo (parseCopsMetaInfo)
+import TRSConversion.Parse.COPS.Rule (parseCopsTrsRules)
+import TRSConversion.Parse.COPS.Sig (parseCopsSig)
+import TRSConversion.Parse.COPS.Utils (Parser, block, ident)
 import TRSConversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import TRSConversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
 import Data.Maybe (fromMaybe)
@@ -28,7 +27,7 @@ import Text.Megaparsec (many, optional, option)
 -- Note that the entire input will not necessarily be consumed: : use `<* eof` if this is needed.
 parseCopsTrs :: Parser (Trs String String)
 parseCopsTrs = do
-  vs <- option [] $ block "VAR" (many $ lexeme parseVariable)
+  vs <- option [] $ block "VAR" (many ident)
   funSig <- optional (block "SIG" parseCopsSig)
   let trsSig = case funSig of
         Nothing -> Vars vs -- If no SIG block is given
