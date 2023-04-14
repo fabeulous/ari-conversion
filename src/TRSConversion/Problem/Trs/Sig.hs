@@ -37,11 +37,11 @@ data Sig f
 --
 -- >>> checkDistinctSig [Sig "f" 2, Sig "g" 1, Sig "f" 1]
 -- Left "A function symbol appears multiple times in signature...
-checkDistinctSig :: (Show f, Eq f) => [Sig f] -> Either String [Sig f]
+checkDistinctSig :: (Eq f) => [Sig f] -> Either String [Sig f]
 checkDistinctSig sig =
   if distinct $ foldr (\(Sig fsym _) -> (fsym :)) [] sig
     then Right sig
-    else Left $ "A function symbol appears multiple times in signature " ++ show sig
+    else Left $ "A function symbol appears multiple times in signature"
   where
     distinct :: Eq a => [a] -> Bool
     distinct xs = nub xs == xs

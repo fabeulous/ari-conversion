@@ -26,6 +26,9 @@ import TRSConversion.Problem.MsTrs.MsTrs (MsTrs)
 import TRSConversion.Problem.Trs.Trs (Trs)
 import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
 import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
+import TRSConversion.Problem.CTrs.CTrs (CTrs)
+import TRSConversion.Parse.COPS.CTrs (parseCopsCTrs)
+import TRSConversion.Unparse.CTrs (unparseCopsCTrs, unparseAriCTrs)
 
 data Format
   = COPS
@@ -166,18 +169,22 @@ runApp config inputFile = do
     TMSTrs trs -> case target config of
       COPS -> unparseIO unparseCopsMsTrs trs
       ARI -> unparseIO (pure . unparseAriMsTrs) trs
+    TCTrs trs -> case target config of
+      COPS -> unparseIO unparseCopsCTrs trs
+      ARI -> unparseIO unparseAriCTrs trs
 
   hPrint (outputHandle config) doc
 
   hClose (outputHandle config)
 
-data Problem = TTrs (Trs String String) | TMSTrs (MsTrs String String String)
+data Problem = TTrs (Trs String String) | TMSTrs (MsTrs String String String) | TCTrs (CTrs String String)
 
 copsParser :: Parser Problem
 copsParser =
   choice
     [ TTrs <$> try parseCopsTrs
     , TMSTrs <$> try parseCopsMsTrs
+    , TCTrs <$> try parseCopsCTrs
     ]
 
 ariParser :: Parser Problem

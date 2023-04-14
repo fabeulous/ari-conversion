@@ -20,11 +20,12 @@ data CRule f v = CRule
     }
     deriving (Eq, Show)
 
-data CTrs f v s = CTrs
+
+data CTrs f v = CTrs
     { conditionType :: CondType
     , rules :: [CRule f v]
     -- ^ A list of the MSTRS rewrite rules
-    , signature :: TrsSig String String
+    , signature :: TrsSig f v
     -- ^ The signature (function symbols and corresponding sorts) for the MSTRS
     , metaInfo :: MetaInfo
     -- ^ Additional information about the MSTRS (e.g. the origin and general comments). See 'MetaInfo' definition for more details.

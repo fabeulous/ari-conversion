@@ -66,7 +66,7 @@ unparseCopsTrsSig rs trsSig = case trsSig of
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 -- function symbols, consistency with rules, etc. This should be done separately.
-unparseAriTrsSig :: (Eq v, Eq f, Show f, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
+unparseAriTrsSig :: (Eq v, Eq f, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
 unparseAriTrsSig _ (FunSig fs) = Right (vsep $ map (prettyBlock "fun" . pretty) fs)
 unparseAriTrsSig rs (FullSig _ fs) = unparseAriTrsSig rs (FunSig fs)
 unparseAriTrsSig rs (Vars _) = case inferSigFromRules rs of -- Extract signature from TRS rules

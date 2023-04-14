@@ -25,7 +25,7 @@ import Text.Megaparsec (Parsec, many, option, sepBy1, (<|>))
 
 type Parser = Parsec Void Text
 
-parseCopsCTrs :: Parser (CTrs String String String)
+parseCopsCTrs :: Parser (CTrs String String)
 parseCopsCTrs = do
   condType <- pCondTypeBlock
   vars <- option [] pVarsBlock

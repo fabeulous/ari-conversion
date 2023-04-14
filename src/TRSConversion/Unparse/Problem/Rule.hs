@@ -12,6 +12,7 @@ module TRSConversion.Unparse.Problem.Rule
     -- * ARI
     unparseAriRules,
     unparseAriRule,
+    parensTerm,
   )
 where
 
@@ -57,9 +58,8 @@ unparseAriRules rs =
 -- (rule (f x (g y)) (g y))
 unparseAriRule :: (Pretty f, Pretty v) => Rule f v -> Doc ann
 unparseAriRule (Rule l r) = parensTerm l <+> parensTerm r
-  where
-    -- Only add parentheses if not a constant or variable
-    parensTerm :: (Pretty f, Pretty v) => Term f v -> Doc ann
-    parensTerm v@(Var _) = unparsePrefixTerm v
-    parensTerm t@(Fun _ []) = unparsePrefixTerm t -- Constant
-    parensTerm t = parens $ unparsePrefixTerm t
+
+parensTerm :: (Pretty f, Pretty v) => Term f v -> Doc ann
+parensTerm v@(Var _) = unparsePrefixTerm v
+parensTerm t@(Fun _ []) = unparsePrefixTerm t -- Constant
+parensTerm t = parens $ unparsePrefixTerm t

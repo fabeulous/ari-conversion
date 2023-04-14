@@ -6,9 +6,10 @@
 module TRSConversion.Problem.Common.Term
   ( -- * Types
     Term (..),
-
+    vars,
     -- * Helper Functions
     termFunArities,
+
   )
 where
 
@@ -36,7 +37,7 @@ data Term f v
 --
 -- >>> termFunArities $ Fun "f" [Var "x", Fun "f" [Var "y", Var "y"]]
 -- Right [Sig "f" 2] -- Duplicates are removed
-termFunArities :: (Eq f, Show f) => Term f v -> Either String [Sig f]
+termFunArities :: (Eq f) => Term f v -> Either String [Sig f]
 termFunArities t = checkDistinctSig $ nub arities
   where
     -- \| Recursively get arities of each function symbol in term. Logic copied from Haskell package 'Data.Rewriting.Term.Type'
@@ -44,3 +45,7 @@ termFunArities t = checkDistinctSig $ nub arities
     foldTerm var _ (Var v) = var v
     foldTerm var fun (Fun f ts) = fun f (fmap (foldTerm var fun) ts)
     arities = foldTerm (const id) (\f xs -> (Sig f (length xs) :) . foldr (.) id xs) t []
+
+vars :: Term f v -> [v]
+vars (Var v) = [v]
+vars (Fun _ ts) = concatMap vars ts

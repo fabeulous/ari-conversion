@@ -34,7 +34,7 @@ data Rule f v = Rule
 --
 -- >>> ruleFunArities $ Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Fun "f" [Var "x"]}
 -- Left "A function symbol appears multiple times in signature ...
-ruleFunArities :: (Eq f, Show f) => Rule f v -> Either String [Sig f]
+ruleFunArities :: (Eq f) => Rule f v -> Either String [Sig f]
 ruleFunArities (Rule l r) = do
   lhsArities <- termFunArities l
   rhsArities <- termFunArities r
@@ -48,7 +48,7 @@ ruleFunArities (Rule l r) = do
 --
 -- >>> inferSigFromRules [Rule {lhs = Fun "a" [Var "x"], rhs = Var "x"}, Rule {lhs = Fun "a" [], rhs = Fun "b" []}]
 -- Left "A function symbol appears multiple times in signature...
-inferSigFromRules :: (Eq f, Show f) => [Rule f v] -> Either String [Sig f]
+inferSigFromRules :: (Eq f) => [Rule f v] -> Either String [Sig f]
 inferSigFromRules rs = do
   case mapM ruleFunArities rs of
     -- Each individual signature might be consistent but we need to check their union
