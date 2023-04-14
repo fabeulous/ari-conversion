@@ -17,18 +17,19 @@ import System.Exit (exitFailure, exitSuccess)
 import System.IO (Handle, IOMode (WriteMode), hClose, hPrint, hPutStrLn, openFile, stderr, stdout)
 import Text.Megaparsec (choice, eof, errorBundlePretty, parse, try)
 
+import TRSConversion.Parse.ARI.CTrs (parseAriCTrs)
 import TRSConversion.Parse.ARI.MSTrs (parseAriMsTrs)
 import TRSConversion.Parse.ARI.Trs (parseAriTrs)
+import TRSConversion.Parse.COPS.CTrs (parseCopsCTrs)
 import TRSConversion.Parse.COPS.MSTrs (parseCopsMsTrs)
 import TRSConversion.Parse.COPS.Trs (parseCopsTrs)
 import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Problem.CTrs.CTrs (CTrs)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs)
 import TRSConversion.Problem.Trs.Trs (Trs)
+import TRSConversion.Unparse.CTrs (unparseAriCTrs, unparseCopsCTrs)
 import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
 import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
-import TRSConversion.Problem.CTrs.CTrs (CTrs)
-import TRSConversion.Parse.COPS.CTrs (parseCopsCTrs)
-import TRSConversion.Unparse.CTrs (unparseCopsCTrs, unparseAriCTrs)
 
 data Format
   = COPS
@@ -192,6 +193,7 @@ ariParser =
   choice
     [ TTrs <$> try parseAriTrs
     , TMSTrs <$> try parseAriMsTrs
+    , TCTrs <$> try parseAriCTrs
     ]
 
 parseIO :: Parser a -> String -> Text -> IO a
