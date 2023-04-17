@@ -13,7 +13,7 @@ where
 
 import TRSConversion.Parse.COPS.MsSig (parseCopsMsSigs)
 import TRSConversion.Parse.COPS.Rule (parseCopsMsTrsRules)
-import TRSConversion.Parse.COPS.Utils (Parser, block)
+import TRSConversion.Parse.COPS.Utils (COPSParser, block)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
 
 -- | Parse a many-sorted TRS in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php):
@@ -23,7 +23,7 @@ import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
 --
 -- Leading and trailing spaces are consumed.
 -- Note that the entire input will not necessarily be consumed: use `<* eof` if this is needed.
-parseCopsMsTrs :: Parser (MsTrs String String String)
+parseCopsMsTrs :: COPSParser (MsTrs String String String)
 parseCopsMsTrs = do
   msSigs <- block "SIG" parseCopsMsSigs
   rs <- block "RULES" (parseCopsMsTrsRules msSigs)

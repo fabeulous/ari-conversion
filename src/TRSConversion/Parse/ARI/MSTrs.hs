@@ -13,7 +13,7 @@ module TRSConversion.Parse.ARI.MSTrs (
 where
 
 import Data.Text (Text)
-import TRSConversion.Parse.ARI.Utils (Parser, keyword, sExpr, ident)
+import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, sExpr, ident)
 import TRSConversion.Parse.ARI.MsSig (parseAriMsSig)
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Problem.Common.Rule (Rule)
@@ -32,7 +32,7 @@ Rules are parsed using 'parseAriRule' as in the untyped TRS setting.
 
 qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @sort@ then @fun@ then @rule@.
 -}
-parseAriMsTrs :: Parser (MsTrs String String String)
+parseAriMsTrs :: ARIParser (MsTrs String String String)
 parseAriMsTrs = do
   _ <- pFormat "MSTRS"
   sortsList <- pSorts
@@ -48,14 +48,14 @@ parseAriMsTrs = do
   msSigToSigList :: [MsSig String String] -> [Sig String]
   msSigToSigList = map (\(MsSig fsym (inputSorts, _)) -> Sig fsym (length inputSorts))
 
-pFormat :: Text -> Parser Text
+pFormat :: Text -> ARIParser Text
 pFormat name = sExpr "format" (keyword name)
 
-pSorts :: Parser [String]
+pSorts :: ARIParser [String]
 pSorts = many (sExpr "sort" ident)
 
-pMSSig :: Parser [MsSig String String]
+pMSSig :: ARIParser [MsSig String String]
 pMSSig = many (sExpr "fun" parseAriMsSig)
 
-pRules :: [Sig String] -> Parser [Rule String String]
+pRules :: [Sig String] -> ARIParser [Rule String String]
 pRules sig = many (sExpr "rule" (parseAriRule sig))

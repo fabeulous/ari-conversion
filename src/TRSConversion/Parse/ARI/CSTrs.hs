@@ -11,18 +11,14 @@ module TRSConversion.Parse.ARI.CSTrs (
 where
 
 import Data.Foldable (foldl')
-import Data.Text (Text)
-import Data.Void (Void)
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
-import TRSConversion.Parse.ARI.Utils (ident, keyword, naturalNumber, parens, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, naturalNumber, parens, sExpr)
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
-import Text.Megaparsec (Parsec, many, option)
+import Text.Megaparsec (many, option)
 
-type Parser = Parsec Void Text
-
-parseAriCSTrs :: Parser (CSTrs String String)
+parseAriCSTrs :: ARIParser (CSTrs String String)
 parseAriCSTrs = do
   _ <- sExpr "format" (keyword "CSTRS")
   (sig, repMap) <- pSignatureReplacementMap
@@ -34,11 +30,11 @@ parseAriCSTrs = do
       , replacementMap = repMap
       }
 
-pSignatureReplacementMap :: Parser ([Sig String], ReplacementMap String)
+pSignatureReplacementMap :: ARIParser ([Sig String], ReplacementMap String)
 pSignatureReplacementMap =
   foldl' (\(sigs, reps) (sig, rep) -> (sig : sigs, rep ++ reps)) ([], []) <$> many (sExpr "fun" pSigRep)
 
-pSigRep :: Parser (Sig String, ReplacementMap String)
+pSigRep :: ARIParser (Sig String, ReplacementMap String)
 pSigRep = do
   funSymb <- ident
   arity <- naturalNumber
@@ -46,8 +42,8 @@ pSigRep = do
   pure (Sig funSymb arity, repMap)
  where
 
-  pReplacementMap :: String -> Parser (String, [Int])
+  pReplacementMap :: String -> ARIParser (String, [Int])
   pReplacementMap f = keyword ":replacement-map" *>  ((f,) <$> parens (many naturalNumber))
 
-pRules :: [Sig String] -> Parser [Rule String String]
+pRules :: [Sig String] -> ARIParser [Rule String String]
 pRules funSig = many (sExpr "rule" (parseAriRule funSig))

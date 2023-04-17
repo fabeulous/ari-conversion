@@ -7,24 +7,19 @@ Description : Parser for first-order CTRSs
 This module defines functions to parse a first-order CTRS in ARI format.
 -}
 module TRSConversion.Parse.ARI.CTrs (
-  -- ** COPS
   parseAriCTrs,
 )
 where
 
 import Data.Functor (($>))
-import Data.Text (Text)
-import Data.Void (Void)
 import TRSConversion.Parse.ARI.Sig (parseFsymArity)
 import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
-import TRSConversion.Parse.ARI.Utils (keyword, parens, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, parens, sExpr)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Trs.TrsSig (Sig, TrsSig (..))
-import Text.Megaparsec (Parsec, many, option, (<|>), some)
+import Text.Megaparsec (many, option, (<|>), some)
 
-type Parser = Parsec Void Text
-
-parseAriCTrs :: Parser (CTrs String String)
+parseAriCTrs :: ARIParser (CTrs String String)
 parseAriCTrs = do
   condType <- pFormat
   sig <- pSignature
@@ -36,22 +31,22 @@ parseAriCTrs = do
       , signature = FunSig sig
       }
 
-pFormat :: Parser CondType
+pFormat :: ARIParser CondType
 pFormat = sExpr "format" (keyword "CTRS" *> pCondType)
 
-pCondType :: Parser CondType
+pCondType :: ARIParser CondType
 pCondType =
   (keyword "oriented" $> Oriented)
     <|> (keyword "join" $> Join)
     <|> (keyword "semi-equational" $> SemiEquational)
 
-pSignature :: Parser [Sig String]
+pSignature :: ARIParser [Sig String]
 pSignature = many (sExpr "fun" parseFsymArity)
 
-pCRules :: [Sig String] -> Parser [CRule String String]
+pCRules :: [Sig String] -> ARIParser [CRule String String]
 pCRules funSig = many (sExpr "rule" (parseAriCRule funSig))
 
-parseAriCRule :: [Sig String] -> Parser (CRule String String)
+parseAriCRule :: [Sig String] -> ARIParser (CRule String String)
 parseAriCRule funSig = CRule <$> term <*> term <*> pConds
  where
   term = parsePrefixTerm funSig

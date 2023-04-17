@@ -18,7 +18,7 @@ module TRSConversion.Parse.ARI.Term (
 where
 
 import Data.Text (pack, unpack)
-import TRSConversion.Parse.ARI.Utils (Parser, ident, keyword, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr)
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (choice, count, (<?>), (<|>))
@@ -27,7 +27,7 @@ import Text.Megaparsec (choice, count, (<?>), (<|>))
 
 Does not consume trailing whitespace (needed for parsing terms in prefix notation).
 -}
-parseVariable :: Parser String
+parseVariable :: ARIParser String
 parseVariable = ident <?> "variable"
 
 {- | Parses a function symbol either until the first '(' or as long as characters allowed by 'parseCopsSym' are present.
@@ -35,7 +35,7 @@ Does not consume the final @'('@ and does not consume all input.
 
 This function doesn't consume trailing whitespace (needed for parsing terms in prefix notation).
 -}
-parseFunSymbol :: Parser String
+parseFunSymbol :: ARIParser String
 parseFunSymbol = ident <?> "function symbol"
 
 {- | Parses a term in prefix notation (see also [S-expressions](https://en.wikipedia.org/wiki/S-expression)).
@@ -49,7 +49,7 @@ Consumes trailing white space only after the term has been recursively parsed as
 >>> parseTest (parseTerm [Sig "f" 2, Sig "g" 1]) "f x (g c)"
 Fun "f" [Var "x", Fun "g" [Fun "x" []]]
 -}
-parsePrefixTerm :: [Sig String] -> Parser (Term String String)
+parsePrefixTerm :: [Sig String] -> ARIParser (Term String String)
 parsePrefixTerm funSig = parseT
  where
    parseT =

@@ -19,15 +19,14 @@ import Data.Text (unpack)
 import Text.Megaparsec (MonadParsec (notFollowedBy), between, noneOf, option, satisfy, sepBy1, sepEndBy, some, takeWhile1P, takeWhileP, try, (<?>), (<|>))
 import Text.Megaparsec.Char (char, hspace, hspace1, space, string)
 
-import TRSConversion.Parse.COPS.Utils (block)
-import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Parse.COPS.Utils (COPSParser, block)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
 
-parseCopsMetaInfoBlock :: Parser MetaInfo
+parseCopsMetaInfoBlock :: COPSParser MetaInfo
 parseCopsMetaInfoBlock = block "COMMENT" parseCopsMetaInfo
 
 -- | Parser to extract comments as a @String@ from the (optional) @COMMENT@ block of the COPS TRS format.
-parseCopsMetaInfo :: Parser MetaInfo
+parseCopsMetaInfo :: COPSParser MetaInfo
 parseCopsMetaInfo = do
   ls <- sepEndBy (metaDoi <|> metaAuthors <|> metaComment) space
   return $ foldr mergeMetaInfo emptyMetaInfo ls
@@ -36,20 +35,20 @@ parseCopsMetaInfo = do
   metaAuthors = (\v -> emptyMetaInfo{submitted = Just v}) <$> copsAuthorsLine
   metaComment = (\v -> emptyMetaInfo{comment = Just [v]}) <$> copsCommentLine
 
-copsDoiLine :: Parser String
-copsDoiLine = "doi:" *> (pDoi <?> "doi")
+copsDoiLine :: COPSParser String
+copsDoiLine = string "doi:" *> (pDoi <?> "doi")
  where
   pDoi = unpack <$> takeWhileP Nothing (not . isSpace)
 
-copsAuthorsLine :: Parser [String]
-copsAuthorsLine = "submitted by:" *> hspace *> (pAuthors <?> "authors")
+copsAuthorsLine :: COPSParser [String]
+copsAuthorsLine = string "submitted by:" *> hspace *> (pAuthors <?> "authors")
  where
   pAuthors =
     sepBy1
       (some . try $ (char 'a' <* notFollowedBy (string "nd" <* hspace1)) <|> satisfy (\c -> c /= ',' && c /= '\n'))
       (some $ (string "," <|> string "and") <* hspace)
 
-copsCommentLine :: Parser String
+copsCommentLine :: COPSParser String
 copsCommentLine = do
   pref <- unpack <$> takeWhile1P (Just "comment") (\c -> c `notElem` ['\n', '\r', '(', ')'])
   rest <- option "" $ do
@@ -63,13 +62,13 @@ Calls itself recursively to allow for nested parentheses inside comments.
 
 The recursive logic is adapted from the library @term-rewriting@.
 -}
-parseComment :: Parser String
+parseComment :: COPSParser String
 parseComment =
   withParens
     <|> (++) <$> some (noneOf ['(', ')']) <*> parseComment
     <|> return ""
  where
-  withParens :: Parser String
+  withParens :: COPSParser String
   withParens = do
     _ <- char '('
     pre <- parseComment

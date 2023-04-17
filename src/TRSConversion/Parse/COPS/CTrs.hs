@@ -13,17 +13,13 @@ module TRSConversion.Parse.COPS.CTrs (
 where
 
 import Data.Functor (($>))
-import Data.Text (Text)
-import Data.Void (Void)
 import TRSConversion.Parse.COPS.Term (parseTermVars)
-import TRSConversion.Parse.COPS.Utils (block, ident, keyword, symbol)
+import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident, keyword, symbol)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig(Vars))
-import Text.Megaparsec (Parsec, many, option, sepBy1, (<|>))
+import Text.Megaparsec (many, option, sepBy1, (<|>))
 
-type Parser = Parsec Void Text
-
-parseCopsCTrs :: Parser (CTrs String String)
+parseCopsCTrs :: COPSParser (CTrs String String)
 parseCopsCTrs = do
   condType <- pCondTypeBlock
   vars <- option [] pVarsBlock
@@ -35,26 +31,26 @@ parseCopsCTrs = do
       , signature = Vars vars
       }
 
-pCondType :: Parser CondType
+pCondType :: COPSParser CondType
 pCondType =
   (keyword "ORIENTED" $> Oriented)
     <|> (keyword "JOIN" $> Join)
     <|> (keyword "SEMI-EQUATIONAL" $> SemiEquational)
 
-pCondTypeBlock :: Parser CondType
+pCondTypeBlock :: COPSParser CondType
 pCondTypeBlock = block "CONDITIONTYPE" pCondType
 
-pVarsBlock :: Parser [String]
+pVarsBlock :: COPSParser [String]
 pVarsBlock = block "VAR" pVars
  where
   pVars = many ident
 
-pRulesBlock :: [String] -> Parser [CRule String String]
+pRulesBlock :: [String] -> COPSParser [CRule String String]
 pRulesBlock vars = block "RULES" pRules
  where
   pRules = many (pCRule vars)
 
-pCRule :: [String] -> Parser (CRule String String)
+pCRule :: [String] -> COPSParser (CRule String String)
 pCRule vars = CRule <$> parseTermVars vars <*> (symbol "->" *> parseTermVars vars) <*> pConditions
  where
   pConditions =

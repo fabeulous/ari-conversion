@@ -12,7 +12,7 @@ where
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (many, takeWhile1P, (<?>))
 import Data.Char (isDigit)
-import TRSConversion.Parse.COPS.Utils (Parser, parens, lexeme, ident)
+import TRSConversion.Parse.COPS.Utils (COPSParser, parens, lexeme, ident)
 import Data.Text (unpack)
 
 -- | Parser to extract the signature from a @SIG@ block of the COPS [extended TRS format](http://project-coco.uibk.ac.at/problems/trs.php#extended).
@@ -21,7 +21,7 @@ import Data.Text (unpack)
 --
 -- >>> parseTest parseCopsSig "(f 2) (a 0) (h 1)"
 -- [Sig "f" 2,Sig "a" 0,Sig "h" 1]
-parseCopsSig :: Parser [Sig String]
+parseCopsSig :: COPSParser [Sig String]
 parseCopsSig = many (parens parseFsymArity)
 
 -- | Parser to extract the function symbol and arity from a string @fsym int@ where int is
@@ -31,9 +31,9 @@ parseCopsSig = many (parens parseFsymArity)
 --
 -- >>> parseTest parseCopsSig "fun 2"
 -- Right (Sig "fun" 2)
-parseFsymArity :: Parser (Sig String)
+parseFsymArity :: COPSParser (Sig String)
 parseFsymArity = Sig <$> ident <*> naturalNumber
 
-naturalNumber :: Parser Int
+naturalNumber :: COPSParser Int
 naturalNumber =
   lexeme (read . unpack <$> takeWhile1P (Just "digit") isDigit) <?> "natural number"

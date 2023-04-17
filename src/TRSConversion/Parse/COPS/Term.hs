@@ -18,14 +18,14 @@ module TRSConversion.Parse.COPS.Term (
 )
 where
 
-import TRSConversion.Parse.COPS.Utils (Parser, ident, parens, symbol)
+import TRSConversion.Parse.COPS.Utils (COPSParser, ident, parens, symbol)
 import TRSConversion.Problem.Common.Term (Term (..))
 import Text.Megaparsec (option, sepBy)
 
-parseTermVars :: [String] -> Parser (Term String String)
+parseTermVars :: [String] -> COPSParser (Term String String)
 parseTermVars vars = parseTerm (varsIn vars)
 
-parseTermFuns :: [String] -> Parser (Term String String)
+parseTermFuns :: [String] -> COPSParser (Term String String)
 parseTermFuns funs = parseTerm (funsIn funs)
 
 data SymbolType = FunSymb | VarSymb
@@ -41,7 +41,7 @@ funsIn fs symb
   | symb `elem` fs = FunSymb
   | otherwise = VarSymb
 
-parseTerm :: (String -> SymbolType) -> Parser (Term String String)
+parseTerm :: (String -> SymbolType) -> COPSParser (Term String String)
 parseTerm symbTest = go
  where
   go = do

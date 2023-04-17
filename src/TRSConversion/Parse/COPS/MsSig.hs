@@ -13,7 +13,7 @@ module TRSConversion.Parse.COPS.MsSig (
 )
 where
 
-import TRSConversion.Parse.COPS.Utils (Parser, ident, parens, symbol)
+import TRSConversion.Parse.COPS.Utils (COPSParser, ident, parens, symbol)
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import Text.Megaparsec (many, (<?>))
 
@@ -29,7 +29,7 @@ Leading and trailing spaces are consumed.
 >>> parseTest parseCopsMsSig "(n  -> Nat)"
 [MsSig "n" ([], "Nat")]
 -}
-parseCopsMsSigs :: Parser [MsSig String String]
+parseCopsMsSigs :: COPSParser [MsSig String String]
 parseCopsMsSigs = many (parens parseCopsMsSig)
 
 {- | Parser to extract the function symbol and arity from a string @fsym  t1 ... tn -> t@ where
@@ -41,7 +41,7 @@ Called in 'parseCopsMsSigs' to parse the @SIG@ block of the COPS [MSTRS format](
 >>> parseTest parseCopsSig "cons  Nat List -> List"
 MsSig "cons" (["Nat","List"], "List")
 -}
-parseCopsMsSig :: Parser (MsSig String String)
+parseCopsMsSig :: COPSParser (MsSig String String)
 parseCopsMsSig = do
   fsym <- ident <?> "MsSig function symbol"
   inputSorts <- many ident

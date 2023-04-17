@@ -13,7 +13,7 @@ module TRSConversion.Parse.ARI.Rule (
 where
 
 import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
-import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Parse.ARI.Utils (ARIParser)
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Trs.TrsSig (Sig)
 
@@ -28,7 +28,7 @@ Rule {lhs=Fun "f" [Var "x"], rhs=Var "x"}
 
 See the tests for more examples.
 -}
-parseAriRule :: [Sig String] -> Parser (Rule String String)
+parseAriRule :: [Sig String] -> ARIParser (Rule String String)
 parseAriRule funSig = do
   l <- parsePrefixTerm funSig
   r <- parsePrefixTerm funSig

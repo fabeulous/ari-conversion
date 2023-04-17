@@ -12,13 +12,13 @@ import TRSConversion.Parse.COPS.CTrs (parseCopsCTrs)
 import TRSConversion.Parse.COPS.MSTrs (parseCopsMsTrs)
 import TRSConversion.Parse.COPS.MetaInfo (parseCopsMetaInfoBlock)
 import TRSConversion.Parse.COPS.Trs (parseCopsTrs)
-import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Parse.COPS.Utils (COPSParser)
 import TRSConversion.Problem.Problem (Problem (Problem))
 import qualified TRSConversion.Problem.Problem as Prob
 import Text.Megaparsec (choice, try, option)
 import TRSConversion.Problem.Common.MetaInfo (emptyMetaInfo)
 
-parseProblem :: Parser Problem
+parseProblem :: COPSParser Problem
 parseProblem = do
   system <-
     choice

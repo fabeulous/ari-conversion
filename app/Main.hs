@@ -18,7 +18,9 @@ import System.IO (Handle, IOMode (WriteMode), hClose, hPrint, hPutStrLn, openFil
 import Text.Megaparsec (eof, errorBundlePretty, parse)
 
 import TRSConversion.Parse.Utils (Parser)
+import qualified TRSConversion.Parse.COPS.Utils as COPS
 import qualified TRSConversion.Parse.COPS.Problem as COPS
+import qualified TRSConversion.Parse.ARI.Utils as ARI
 import qualified TRSConversion.Parse.ARI.Problem as ARI
 import TRSConversion.Unparse.Problem (unparseCopsProblem, unparseAriProblem)
 
@@ -151,8 +153,8 @@ runApp config inputFile = do
   fileContents <- Text.readFile inputFile
 
   problem <- case source config of
-    COPS -> parseIO COPS.parseProblem inputFile fileContents
-    ARI -> parseIO ARI.parseProblem inputFile fileContents
+    COPS -> parseIO (COPS.toParser COPS.parseProblem) inputFile fileContents
+    ARI -> parseIO (ARI.toParser ARI.parseProblem) inputFile fileContents
 
   doc <- case target config of
     COPS -> unparseIO unparseCopsProblem problem

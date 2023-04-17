@@ -11,13 +11,13 @@ import TRSConversion.Parse.ARI.CTrs (parseAriCTrs)
 import TRSConversion.Parse.ARI.MSTrs (parseAriMsTrs)
 import TRSConversion.Parse.ARI.MetaInfo (parseAriMetaInfo)
 import TRSConversion.Parse.ARI.Trs (parseAriTrs)
-import TRSConversion.Parse.ARI.Utils (Parser)
+import TRSConversion.Parse.ARI.Utils (ARIParser)
 import TRSConversion.Problem.Problem (Problem (Problem))
 import qualified TRSConversion.Problem.Problem as Prob
 import Text.Megaparsec (choice, try)
 import TRSConversion.Parse.ARI.CSTrs (parseAriCSTrs)
 
-parseProblem :: Parser Problem
+parseProblem :: ARIParser Problem
 parseProblem = do
   metaInfo <- parseAriMetaInfo
   system <-

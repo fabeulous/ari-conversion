@@ -11,7 +11,7 @@ module TRSConversion.Parse.COPS.CSTrs (
 where
 
 import TRSConversion.Parse.COPS.Rule (parseCopsTrsRules)
-import TRSConversion.Parse.COPS.Utils (Parser, block, ident, parens, symbol, naturalNumber)
+import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident, parens, symbol, naturalNumber)
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import Text.Megaparsec (many, option, some, sepBy)
@@ -19,7 +19,7 @@ import Text.Megaparsec (many, option, some, sepBy)
 {- | Parse a CSTRS in [COPS format](http://project-coco.uibk.ac.at/problems/cstrs.php):
 see the COCO website for details on the grammar and the tests for more examples.
 -}
-parseCopsCSTrs :: Parser (CSTrs String String)
+parseCopsCSTrs :: COPSParser (CSTrs String String)
 parseCopsCSTrs = do
   vs <- option [] $ block "VAR" (many ident)
   repMap <- block "REPLACEMENT-MAP" pReplacementMap
@@ -32,8 +32,8 @@ parseCopsCSTrs = do
       , replacementMap = repMap
       }
 
-pReplacementMap :: Parser (ReplacementMap String)
+pReplacementMap :: COPSParser (ReplacementMap String)
 pReplacementMap = some replacementMapping
 
-replacementMapping :: Parser (String, [Int])
+replacementMapping :: COPSParser (String, [Int])
 replacementMapping = parens $ (,) <$> ident <*> sepBy naturalNumber (symbol ",")

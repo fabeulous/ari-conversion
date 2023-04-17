@@ -20,7 +20,7 @@ import Text.Megaparsec.Char (char, string, eol)
 
 import Control.Monad (void)
 import Data.Foldable (foldl')
-import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Parse.ARI.Utils (ARIParser)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
 
 {- | Parse meta-info blocks in ARI format
@@ -37,13 +37,13 @@ Expects e.g. something like
 ; [7] Example 2
 @.
 -}
-parseAriMetaInfo :: Parser MetaInfo
+parseAriMetaInfo :: ARIParser MetaInfo
 parseAriMetaInfo = do
     meta <- foldl' mergeMetaInfo emptyMetaInfo <$> many structuredMeta
     comments <- foldl' mergeMetaInfo emptyMetaInfo <$> many ariLeadingComment
     pure $ mergeMetaInfo meta comments
 
-structuredMeta :: Parser MetaInfo
+structuredMeta :: ARIParser MetaInfo
 structuredMeta = structure $ ariAuthorLine <|> ariDoiLine
   where
     structure = between (try (string "; @")) (void eol <|> eof) . continue
@@ -53,22 +53,22 @@ structuredMeta = structure $ ariAuthorLine <|> ariDoiLine
         _ <- takeWhileP Nothing (\c -> c /= '\n' && c /= '\r')
         pure emptyMetaInfo
 
-metaKeyValue :: Text -> Parser Text
+metaKeyValue :: Text -> ARIParser Text
 metaKeyValue key = do
     _ <- string key <* char ' '
     takeWhileP (Just "character") (\c -> c `notElem` ['\r', '\n'])
 
-ariDoiLine :: Parser MetaInfo
+ariDoiLine :: ARIParser MetaInfo
 ariDoiLine = do
     doiStr <- metaKeyValue "doi"
     pure $ emptyMetaInfo{doi = Just $ unpack doiStr}
 
-ariAuthorLine :: Parser MetaInfo
+ariAuthorLine :: ARIParser MetaInfo
 ariAuthorLine = do
     doiStr <- metaKeyValue "author"
     pure $ emptyMetaInfo{submitted = Just [unpack doiStr]}
 
-ariLeadingComment :: Parser MetaInfo
+ariLeadingComment :: ARIParser MetaInfo
 ariLeadingComment = between commentStart (char '\n') $ do
     cmt <- takeWhileP (Just "character") (/= '\n')
     pure $ emptyMetaInfo{comment = Just [unpack cmt]}

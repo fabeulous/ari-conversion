@@ -15,7 +15,7 @@ where
 import Data.Text (Text)
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Parse.ARI.Sig (parseFsymArity)
-import TRSConversion.Parse.ARI.Utils (Parser, keyword, sExpr, spaces)
+import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, sExpr, spaces)
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.Trs (Sig, Trs (..), TrsSig (..))
 import Text.Megaparsec (many)
@@ -27,7 +27,7 @@ Note that the entire input will not necessarily be consumed: use `<* eof` if thi
 
 qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @fun@ then @rule@.
 -}
-parseAriTrs :: Parser (Trs String String)
+parseAriTrs :: ARIParser (Trs String String)
 parseAriTrs = do
   spaces
   _ <- pFormat
@@ -39,11 +39,11 @@ parseAriTrs = do
       , signature = FunSig funSig
       }
 
-pFormat :: Parser Text
+pFormat :: ARIParser Text
 pFormat = sExpr "format" (keyword "TRS")
 
-pSignature :: Parser [Sig String]
+pSignature :: ARIParser [Sig String]
 pSignature = many (sExpr "fun" parseFsymArity)
 
-pRules :: [Sig String] -> Parser [Rule String String]
+pRules :: [Sig String] -> ARIParser [Rule String String]
 pRules funSig = many (sExpr "rule" (parseAriRule funSig))

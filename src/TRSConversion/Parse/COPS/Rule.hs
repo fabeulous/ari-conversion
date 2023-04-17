@@ -15,7 +15,7 @@ module TRSConversion.Parse.COPS.Rule (
 where
 
 import TRSConversion.Parse.COPS.Term (parseTermFuns, parseTermVars)
-import TRSConversion.Parse.COPS.Utils (Parser, symbol)
+import TRSConversion.Parse.COPS.Utils (COPSParser, symbol)
 import TRSConversion.Problem.Common.Rule (Rule (..), inferSigFromRules)
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import TRSConversion.Problem.Trs.TrsSig (Sig, TrsSig (..))
@@ -33,7 +33,7 @@ Ignores whitespace around the @"->"@ and does not necessarily consume all input.
 >>> parseTest (parseCopsRule ["x"]) "f(x) -> x"
 Rule {lhs = Fun "f" [Var "x"], rhs = Var "x"}
 -}
-parseCopsRule :: Vars -> Parser (Rule String String)
+parseCopsRule :: Vars -> COPSParser (Rule String String)
 parseCopsRule vs = do
   l <- parseTermVars vs
   _ <- symbol "->"
@@ -52,7 +52,7 @@ inferred function signature is a subset of @fs@.
 
 * @'FunSig' fs@ (specifying only function symbols) is not supported for the COPS TRS format.
 -}
-parseCopsTrsRules :: TrsSig String String -> Parser [Rule String String]
+parseCopsTrsRules :: TrsSig String String -> COPSParser [Rule String String]
 parseCopsTrsRules trsSig = case trsSig of
   Vars vs -> do
     rules <- many (parseCopsRule vs)
@@ -70,7 +70,7 @@ parseCopsTrsRules trsSig = case trsSig of
   subList :: Eq a => [a] -> [a] -> Bool
   subList xs ys = all (`elem` ys) xs
   -- 'checkSignatureSubset' asserts that maybeSig is contained in inferredSig
-  checkSignatureSubset :: [Sig String] -> [Sig String] -> [Rule String String] -> Parser [Rule String String]
+  checkSignatureSubset :: [Sig String] -> [Sig String] -> [Rule String String] -> COPSParser [Rule String String]
   checkSignatureSubset inferredSig funSig rs =
     if inferredSig `subList` funSig
       then return rs
@@ -86,11 +86,11 @@ whereas for MSTRSs function symbols are specified.
 Does not necessarily consume all input and does not type check function applications.
 See the tests for examples.
 -}
-parseCopsMsTrsRules :: [MsSig String String] -> Parser [Rule String String]
+parseCopsMsTrsRules :: [MsSig String String] -> COPSParser [Rule String String]
 parseCopsMsTrsRules msSigs = do many parseMsTrsCopsRule
  where
   fsyms = map (\(MsSig fsym _) -> fsym) msSigs
-  parseMsTrsCopsRule :: Parser (Rule String String)
+  parseMsTrsCopsRule :: COPSParser (Rule String String)
   parseMsTrsCopsRule = do
     l <- parseTermFuns fsyms
     _ <- symbol "->"

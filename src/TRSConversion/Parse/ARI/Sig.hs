@@ -11,7 +11,7 @@ where
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (takeWhile1P, (<?>))
 import Data.Char (isDigit)
-import TRSConversion.Parse.ARI.Utils (Parser, lexeme, ident)
+import TRSConversion.Parse.ARI.Utils (ARIParser, lexeme, ident)
 import Data.Text (unpack)
 
 -- | Parser to extract the function symbol and arity from a string @fsym int@ where int is
@@ -21,9 +21,9 @@ import Data.Text (unpack)
 --
 -- >>> parseTest parseCopsSig "fun 2"
 -- Right (Sig "fun" 2)
-parseFsymArity :: Parser (Sig String)
+parseFsymArity :: ARIParser (Sig String)
 parseFsymArity = Sig <$> ident <*> naturalNumber
 
-naturalNumber :: Parser Int
+naturalNumber :: ARIParser Int
 naturalNumber =
   lexeme (read . unpack <$> takeWhile1P (Just "digit") isDigit) <?> "natural number"

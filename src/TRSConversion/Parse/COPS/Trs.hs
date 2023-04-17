@@ -13,7 +13,7 @@ where
 
 import TRSConversion.Parse.COPS.Rule (parseCopsTrsRules)
 import TRSConversion.Parse.COPS.Sig (parseCopsSig)
-import TRSConversion.Parse.COPS.Utils (Parser, block, ident)
+import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident)
 import TRSConversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
 import Text.Megaparsec (many, optional, option)
 
@@ -22,7 +22,7 @@ import Text.Megaparsec (many, optional, option)
 --
 -- Leading and trailing spaces are consumed.
 -- Note that the entire input will not necessarily be consumed: : use `<* eof` if this is needed.
-parseCopsTrs :: Parser (Trs String String)
+parseCopsTrs :: COPSParser (Trs String String)
 parseCopsTrs = do
   vs <- option [] $ block "VAR" (many ident)
   funSig <- optional (block "SIG" parseCopsSig)
