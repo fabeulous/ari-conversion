@@ -14,7 +14,6 @@ where
 
 import Data.Text (Text)
 import TRSConversion.Parse.ARI.Utils (Parser, keyword, sExpr, ident)
-import TRSConversion.Parse.ARI.MetaInfo (parseAriMetaInfo)
 import TRSConversion.Parse.ARI.MsSig (parseAriMsSig)
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Problem.Common.Rule (Rule)
@@ -35,7 +34,6 @@ qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ 
 -}
 parseAriMsTrs :: Parser (MsTrs String String String)
 parseAriMsTrs = do
-  mstrsMetaInfo <- parseAriMetaInfo
   _ <- pFormat "MSTRS"
   sortsList <- pSorts
   msSigs <- pMSSig
@@ -45,7 +43,6 @@ parseAriMsTrs = do
       { rules = rs
       , signature = msSigs
       , sorts = Just sortsList
-      , metaInfo = mstrsMetaInfo
       }
  where
   msSigToSigList :: [MsSig String String] -> [Sig String]

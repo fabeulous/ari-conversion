@@ -13,7 +13,6 @@ module TRSConversion.Parse.ARI.Trs (
 where
 
 import Data.Text (Text)
-import TRSConversion.Parse.ARI.MetaInfo (parseAriMetaInfo)
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Parse.ARI.Sig (parseFsymArity)
 import TRSConversion.Parse.ARI.Utils (Parser, keyword, sExpr, spaces)
@@ -30,7 +29,6 @@ qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ 
 -}
 parseAriTrs :: Parser (Trs String String)
 parseAriTrs = do
-  trsMetaInfo <- parseAriMetaInfo
   spaces
   _ <- pFormat
   funSig <- pSignature
@@ -39,7 +37,6 @@ parseAriTrs = do
     Trs
       { rules = rs
       , signature = FunSig funSig
-      , metaInfo = trsMetaInfo
       }
 
 pFormat :: Parser Text

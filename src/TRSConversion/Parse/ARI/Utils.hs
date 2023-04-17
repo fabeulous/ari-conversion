@@ -9,6 +9,7 @@ module TRSConversion.Parse.ARI.Utils (
   ident,
   sExpr,
   parens,
+  naturalNumber,
 ) where
 
 import Data.Text (Text, unpack)
@@ -48,3 +49,6 @@ sExpr hd = between (try (symbol "(" *> keyword hd)) (symbol ")")
 
 parens :: Parser a -> Parser a
 parens = between (symbol "(") (symbol ")")
+
+naturalNumber :: Parser Int
+naturalNumber = lexeme L.decimal

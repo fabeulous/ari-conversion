@@ -15,21 +15,12 @@ import System.Console.GetOpt (
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure, exitSuccess)
 import System.IO (Handle, IOMode (WriteMode), hClose, hPrint, hPutStrLn, openFile, stderr, stdout)
-import Text.Megaparsec (choice, eof, errorBundlePretty, parse, try)
+import Text.Megaparsec (eof, errorBundlePretty, parse)
 
-import TRSConversion.Parse.ARI.CTrs (parseAriCTrs)
-import TRSConversion.Parse.ARI.MSTrs (parseAriMsTrs)
-import TRSConversion.Parse.ARI.Trs (parseAriTrs)
-import TRSConversion.Parse.COPS.CTrs (parseCopsCTrs)
-import TRSConversion.Parse.COPS.MSTrs (parseCopsMsTrs)
-import TRSConversion.Parse.COPS.Trs (parseCopsTrs)
 import TRSConversion.Parse.Utils (Parser)
-import TRSConversion.Problem.CTrs.CTrs (CTrs)
-import TRSConversion.Problem.MsTrs.MsTrs (MsTrs)
-import TRSConversion.Problem.Trs.Trs (Trs)
-import TRSConversion.Unparse.CTrs (unparseAriCTrs, unparseCopsCTrs)
-import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
-import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
+import qualified TRSConversion.Parse.COPS.Problem as COPS
+import qualified TRSConversion.Parse.ARI.Problem as ARI
+import TRSConversion.Unparse.Problem (unparseCopsProblem, unparseAriProblem)
 
 data Format
   = COPS
@@ -160,41 +151,17 @@ runApp config inputFile = do
   fileContents <- Text.readFile inputFile
 
   problem <- case source config of
-    COPS -> parseIO copsParser inputFile fileContents
-    ARI -> parseIO ariParser inputFile fileContents
+    COPS -> parseIO COPS.parseProblem inputFile fileContents
+    ARI -> parseIO ARI.parseProblem inputFile fileContents
 
-  doc <- case problem of
-    TTrs trs -> case target config of
-      COPS -> unparseIO unparseCopsTrs trs
-      ARI -> unparseIO unparseAriTrs trs
-    TMSTrs trs -> case target config of
-      COPS -> unparseIO unparseCopsMsTrs trs
-      ARI -> unparseIO (pure . unparseAriMsTrs) trs
-    TCTrs trs -> case target config of
-      COPS -> unparseIO unparseCopsCTrs trs
-      ARI -> unparseIO unparseAriCTrs trs
+  doc <- case target config of
+    COPS -> unparseIO unparseCopsProblem problem
+    ARI -> unparseIO unparseAriProblem problem
 
   hPrint (outputHandle config) doc
 
   hClose (outputHandle config)
 
-data Problem = TTrs (Trs String String) | TMSTrs (MsTrs String String String) | TCTrs (CTrs String String)
-
-copsParser :: Parser Problem
-copsParser =
-  choice
-    [ TTrs <$> try parseCopsTrs
-    , TMSTrs <$> try parseCopsMsTrs
-    , TCTrs <$> try parseCopsCTrs
-    ]
-
-ariParser :: Parser Problem
-ariParser =
-  choice
-    [ TTrs <$> try parseAriTrs
-    , TMSTrs <$> try parseAriMsTrs
-    , TCTrs <$> try parseAriCTrs
-    ]
 
 parseIO :: Parser a -> String -> Text -> IO a
 parseIO p inpName inp =

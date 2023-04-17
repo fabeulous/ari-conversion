@@ -11,11 +11,9 @@ module TRSConversion.Problem.MsTrs.MsTrs
     Rule (..),
     Term (..),
     MsSig (..),
-    MetaInfo (..),
   )
 where
 
-import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
@@ -31,8 +29,6 @@ data MsTrs f v s = MsTrs
     -- | The signature (function symbols and corresponding sorts) for the MSTRS
     signature :: [MsSig f s],
     -- | A list of sorts (if given). Will be @Nothing@ for COPS format and @Just ss@ for ARI format.
-    sorts :: Maybe [s],
-    -- | Additional information about the MSTRS (e.g. the origin and general comments). See 'MetaInfo' definition for more details.
-    metaInfo :: MetaInfo
+    sorts :: Maybe [s]
   }
   deriving (Show, Eq)

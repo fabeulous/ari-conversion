@@ -9,6 +9,7 @@ module TRSConversion.Parse.COPS.Utils (
     ident,
     block,
     parens,
+    naturalNumber,
 ) where
 
 import Data.Text (Text)
@@ -56,3 +57,6 @@ block hd = between (try (string "(" *> keyword hd)) (symbol ")")
 
 parens :: Parser a -> Parser a
 parens = between (symbol "(") (symbol ")")
+
+naturalNumber :: Parser Int
+naturalNumber = lexeme L.decimal

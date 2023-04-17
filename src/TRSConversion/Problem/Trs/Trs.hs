@@ -13,11 +13,9 @@ module TRSConversion.Problem.Trs.Trs
     Term (..),
     TrsSig (..),
     Sig (..),
-    MetaInfo (..),
   )
 where
 
-import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
@@ -29,8 +27,6 @@ data Trs f v = Trs
     rules :: [Rule f v],
     -- | The signature (function symbols and arities) of the TRS.
     -- It is possible to specify only variables, only function symbols, or both (see 'TrsSig') in order to support more TRS formats.
-    signature :: TrsSig f v,
-    -- | Additional information about the TRS (e.g. the origin and general comments). See 'MetaInfo' definition for more details.
-    metaInfo :: MetaInfo
+    signature :: TrsSig f v
   }
   deriving (Show, Eq)

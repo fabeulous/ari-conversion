@@ -15,7 +15,6 @@ where
 import Data.Functor (($>))
 import Data.Text (Text)
 import Data.Void (Void)
-import TRSConversion.Parse.ARI.MetaInfo (parseAriMetaInfo)
 import TRSConversion.Parse.ARI.Sig (parseFsymArity)
 import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
 import TRSConversion.Parse.ARI.Utils (keyword, parens, sExpr, symbol)
@@ -27,7 +26,6 @@ type Parser = Parsec Void Text
 
 parseAriCTrs :: Parser (CTrs String String)
 parseAriCTrs = do
-  metaInf <- parseAriMetaInfo
   condType <- pFormat
   sig <- pSignature
   rs <- pCRules sig
@@ -36,7 +34,6 @@ parseAriCTrs = do
       { conditionType = condType
       , rules = rs
       , signature = FunSig sig
-      , metaInfo = metaInf
       }
 
 pFormat :: Parser CondType

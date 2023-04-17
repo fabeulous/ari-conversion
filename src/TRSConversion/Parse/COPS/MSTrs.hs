@@ -11,14 +11,10 @@ module TRSConversion.Parse.COPS.MSTrs
   )
 where
 
-import TRSConversion.Parse.COPS.MetaInfo (parseCopsMetaInfo)
 import TRSConversion.Parse.COPS.MsSig (parseCopsMsSigs)
 import TRSConversion.Parse.COPS.Rule (parseCopsMsTrsRules)
 import TRSConversion.Parse.COPS.Utils (Parser, block)
-import TRSConversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
-import Data.Maybe (fromMaybe)
-import Text.Megaparsec (optional)
 
 -- | Parse a many-sorted TRS in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php):
 -- see the COCO website for details on the grammar and the tests for more examples.
@@ -31,12 +27,10 @@ parseCopsMsTrs :: Parser (MsTrs String String String)
 parseCopsMsTrs = do
   msSigs <- block "SIG" parseCopsMsSigs
   rs <- block "RULES" (parseCopsMsTrsRules msSigs)
-  maybeMetaInfo <- optional (block "COMMENT" parseCopsMetaInfo)
   return $
     MsTrs
       { rules = rs,
         signature = msSigs,
-        sorts = Nothing, -- Not set for COPS format
-        metaInfo = fromMaybe emptyMetaInfo maybeMetaInfo
+        sorts = Nothing -- Not set for COPS format
       }
 

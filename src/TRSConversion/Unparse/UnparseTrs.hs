@@ -13,7 +13,6 @@ module TRSConversion.Unparse.UnparseTrs
 where
 
 import TRSConversion.Problem.Trs.Trs (Trs (..))
-import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
 import TRSConversion.Unparse.Problem.Rule (unparseAriRules, unparseCopsRules)
 import TRSConversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
@@ -28,9 +27,9 @@ import Prettyprinter (Doc, Pretty, emptyDoc, pretty, vsep)
 --
 -- See the tests for examples of expected output.
 unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
-unparseCopsTrs (Trs rs sig meta) = do
+unparseCopsTrs (Trs rs sig) = do
   copsSig <- unparseCopsTrsSig rs sig
-  return $ vsep (filterEmptyDocs [copsSig, unparseCopsRules rs, unparseCopsMetaInfo meta])
+  return $ vsep (filterEmptyDocs [copsSig, unparseCopsRules rs])
 
 -- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 -- [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).
@@ -39,12 +38,11 @@ unparseCopsTrs (Trs rs sig meta) = do
 -- unparse each part of the 'Trs'.
 --
 -- See the tests for examples of expected output.
-unparseAriTrs :: (Pretty f, Pretty v, Eq v, Eq f, Show f) => Trs f v -> Either String (Doc ann)
-unparseAriTrs (Trs rs sig meta) = do
+unparseAriTrs :: (Pretty f, Pretty v, Eq v, Eq f) => Trs f v -> Either String (Doc ann)
+unparseAriTrs (Trs rs sig) = do
   ariSig <- unparseAriTrsSig rs sig
   let trsElements =
-        [ unparseAriMetaInfo meta,
-          pretty "(format TRS)",
+        [ pretty "(format TRS)",
           ariSig,
           fromMaybe emptyDoc (unparseAriRules rs)
         ]

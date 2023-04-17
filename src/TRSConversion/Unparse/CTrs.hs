@@ -16,12 +16,11 @@ module TRSConversion.Unparse.CTrs (
 where
 
 import Data.List (group, sort)
-import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, indent, nest, parens, pretty, space, vsep, (<+>))
+import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, nest, parens, pretty, space, vsep, (<+>))
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import qualified TRSConversion.Problem.Common.Rule as R
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
-import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
 import TRSConversion.Unparse.Problem.Rule (parensTerm)
 import TRSConversion.Unparse.Problem.Term (unparseTerm)
 import TRSConversion.Unparse.Problem.TrsSig (unparseAriTrsSig)
@@ -42,7 +41,6 @@ unparseCopsCTrs ctrs = do
       [ prettyBlock "CONDITIONTYPE" (prettyCondType $ conditionType ctrs)
       , prettyBlock "VAR" (hsep [pretty v | v <- vs])
       , prettyBlock "RULES" (nest 2 (vsep $ mempty : [prettyCRule r | r <- rules ctrs]) <> hardline)
-      , unparseCopsMetaInfo (metaInfo ctrs)
       ]
  where
   vs = varsOfTrs (signature ctrs) (rules ctrs)
@@ -72,8 +70,7 @@ unparseAriCTrs :: (Ord v, Pretty f, Pretty v, Eq f) => CTrs f v -> Either String
 unparseAriCTrs ctrs = do
   ariSig <- unparseAriTrsSig (map (\r -> R.Rule (lhs r) (rhs r)) $ rules ctrs) (signature ctrs)
   let trsElements =
-        [ unparseAriMetaInfo (metaInfo ctrs)
-        , prettyAriFormat (conditionType ctrs)
+        [prettyAriFormat (conditionType ctrs)
         , ariSig
         , unparseAriCRules (rules ctrs)
         ]
@@ -87,7 +84,7 @@ unparseCRule (CRule{lhs = l, rhs = r, conditions = cnds}) =
   parens $ "rule" <+> parensTerm l <+> parensTerm r <> conds cnds
  where
   conds [] = mempty
-  conds cnds = space <> ":condition" <+> parens (hsep (map unparseCond cnds))
+  conds cs = space <> ":condition" <+> parens (hsep (map unparseCond cs))
 
 unparseCond :: (Pretty f, Pretty v) => Condition f v -> Doc ann
 unparseCond (t1 :== t2) = parens $ "=" <+> parensTerm t1 <+> parensTerm t2

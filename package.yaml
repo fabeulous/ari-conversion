@@ -27,6 +27,7 @@ dependencies:
   - prettyprinter >= 1.7.1 && < 1.8
   - megaparsec >=9.3.0 && < 9.4
   - text >= 2.0.1 && < 2.1 # For Data.Text
+  - containers >= 0.6.0.1 && < 0.7
 ghc-options:
   - -Wall
   - -Wcompat

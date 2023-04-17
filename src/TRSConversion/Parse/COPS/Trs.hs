@@ -11,13 +11,10 @@ module TRSConversion.Parse.COPS.Trs
   )
 where
 
-import TRSConversion.Parse.COPS.MetaInfo (parseCopsMetaInfo)
 import TRSConversion.Parse.COPS.Rule (parseCopsTrsRules)
 import TRSConversion.Parse.COPS.Sig (parseCopsSig)
 import TRSConversion.Parse.COPS.Utils (Parser, block, ident)
-import TRSConversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import TRSConversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
-import Data.Maybe (fromMaybe)
 import Text.Megaparsec (many, optional, option)
 
 -- | Parse a first-order TRS in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php):
@@ -33,11 +30,8 @@ parseCopsTrs = do
         Nothing -> Vars vs -- If no SIG block is given
         Just inputFunSig -> FullSig vs inputFunSig
   rs <- block "RULES" (parseCopsTrsRules trsSig)
-  maybeMetaInfo <- optional (block "COMMENT" parseCopsMetaInfo)
   return $
     Trs
       { rules = rs,
-        signature = trsSig,
-        metaInfo = fromMaybe emptyMetaInfo maybeMetaInfo
+        signature = trsSig
       }
-

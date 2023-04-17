@@ -10,6 +10,8 @@ where
 
 import Prettyprinter (Doc, hardline)
 import TRSConversion.Problem.Problem (Problem (..), System (..))
+import TRSConversion.Unparse.CSTrs (unparseAriCSTrs, unparseCopsCSTrs)
+import TRSConversion.Unparse.CTrs (unparseAriCTrs, unparseCopsCTrs)
 import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
 import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
 import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
@@ -23,6 +25,8 @@ unparseCopsProblem problem = do
         case system problem of
             Trs trs -> unparseCopsTrs trs
             MSTrs trs -> unparseCopsMsTrs trs
+            CTrs trs -> unparseCopsCTrs trs
+            CSTrs trs -> unparseCopsCSTrs trs
     prettyMeta = unparseCopsMetaInfo (metaInfo problem)
 
 unparseAriProblem :: Problem -> Either String (Doc ann)
@@ -34,4 +38,6 @@ unparseAriProblem problem = do
         case system problem of
             Trs trs -> unparseAriTrs trs
             MSTrs trs -> pure $ unparseAriMsTrs trs
+            CTrs trs -> unparseAriCTrs trs
+            CSTrs trs -> unparseAriCSTrs trs
     prettyMeta = unparseAriMetaInfo (metaInfo problem)

@@ -15,11 +15,9 @@ where
 import Data.Functor (($>))
 import Data.Text (Text)
 import Data.Void (Void)
-import TRSConversion.Parse.COPS.MetaInfo (parseCopsMetaInfo)
 import TRSConversion.Parse.COPS.Term (parseTermVars)
 import TRSConversion.Parse.COPS.Utils (block, ident, keyword, symbol)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
-import TRSConversion.Problem.Common.MetaInfo (emptyMetaInfo)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (Vars))
 import Text.Megaparsec (Parsec, many, option, sepBy1, (<|>))
 
@@ -30,13 +28,11 @@ parseCopsCTrs = do
   condType <- pCondTypeBlock
   vars <- option [] pVarsBlock
   rs <- pRulesBlock vars
-  metaInf <- option emptyMetaInfo (block "COMMENT" parseCopsMetaInfo)
   return $
     CTrs
       { conditionType = condType
       , rules = rs
       , signature = TRSConversion.Problem.Trs.TrsSig.Vars vars
-      , metaInfo = metaInf
       }
 
 pCondType :: Parser CondType
