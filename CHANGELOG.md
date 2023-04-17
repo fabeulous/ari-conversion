@@ -8,8 +8,10 @@ and this project adheres to the
 
 ## Unreleased
 
+- restructure Parser modules to separate COPS and ARI parsers
+- Add CTrs and CSTrs problem types
 - Change ARI `(meta-info ..)` syntax.
-  All lines containing `(meta-info ..)` content must be prefixed by a ';'
+  meta info is now stored in a leading comment using `; @key value` pairs
 - Meta data parsing from COPS `(COMMENT .. )` block.
   The tool now parses DOIs and "submitted by:" lines.
 
