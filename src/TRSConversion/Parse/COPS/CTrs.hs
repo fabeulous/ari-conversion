@@ -18,7 +18,7 @@ import Data.Void (Void)
 import TRSConversion.Parse.COPS.Term (parseTermVars)
 import TRSConversion.Parse.COPS.Utils (block, ident, keyword, symbol)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
-import TRSConversion.Problem.Trs.TrsSig (TrsSig (Vars))
+import TRSConversion.Problem.Trs.TrsSig (TrsSig(Vars))
 import Text.Megaparsec (Parsec, many, option, sepBy1, (<|>))
 
 type Parser = Parsec Void Text
@@ -32,7 +32,7 @@ parseCopsCTrs = do
     CTrs
       { conditionType = condType
       , rules = rs
-      , signature = TRSConversion.Problem.Trs.TrsSig.Vars vars
+      , signature = Vars vars
       }
 
 pCondType :: Parser CondType

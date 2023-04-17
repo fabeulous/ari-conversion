@@ -15,7 +15,8 @@ import TRSConversion.Parse.COPS.Trs (parseCopsTrs)
 import TRSConversion.Parse.Utils (Parser)
 import TRSConversion.Problem.Problem (Problem (Problem))
 import qualified TRSConversion.Problem.Problem as Prob
-import Text.Megaparsec (choice, try)
+import Text.Megaparsec (choice, try, option)
+import TRSConversion.Problem.Common.MetaInfo (emptyMetaInfo)
 
 parseProblem :: Parser Problem
 parseProblem = do
@@ -26,7 +27,7 @@ parseProblem = do
       , try $ Prob.CTrs <$> parseCopsCTrs
       , Prob.CSTrs <$> parseCopsCSTrs
       ]
-  metaInfo <- parseCopsMetaInfoBlock
+  metaInfo <- option emptyMetaInfo parseCopsMetaInfoBlock
   pure $
     Problem
       { Prob.metaInfo = metaInfo

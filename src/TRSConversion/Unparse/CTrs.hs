@@ -17,13 +17,11 @@ where
 
 import Data.List (group, sort)
 import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, nest, parens, pretty, space, vsep, (<+>))
-import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
-import qualified TRSConversion.Problem.Common.Rule as R
+import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..), inferSigFromRules)
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import TRSConversion.Unparse.Problem.Rule (parensTerm)
 import TRSConversion.Unparse.Problem.Term (unparseTerm)
-import TRSConversion.Unparse.Problem.TrsSig (unparseAriTrsSig)
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 
 {- | Unparse a first-order TRS from the Haskell 'Trs' representation into
@@ -66,15 +64,22 @@ prettyCondType SemiEquational = "SEMI-EQUATIONAL"
 prettyCondType Join = "JOIN"
 prettyCondType Oriented = "ORIENTED"
 
-unparseAriCTrs :: (Ord v, Pretty f, Pretty v, Eq f) => CTrs f v -> Either String (Doc ann)
+unparseAriCTrs :: (Ord v, Pretty f, Pretty v, Ord f) => CTrs f v -> Either String (Doc ann)
 unparseAriCTrs ctrs = do
-  ariSig <- unparseAriTrsSig (map (\r -> R.Rule (lhs r) (rhs r)) $ rules ctrs) (signature ctrs)
+  ariSig <- unparseAriCTrsSig (rules ctrs) (signature ctrs)
   let trsElements =
-        [prettyAriFormat (conditionType ctrs)
+        [ prettyAriFormat (conditionType ctrs)
         , ariSig
         , unparseAriCRules (rules ctrs)
         ]
   return $ vsep (filterEmptyDocs trsElements)
+
+unparseAriCTrsSig :: (Eq v, Ord f, Pretty f, Pretty v) => [CRule f v] -> TrsSig f v -> Either String (Doc ann)
+unparseAriCTrsSig _ (FunSig fs) = Right (vsep $ map (prettyBlock "fun" . pretty) fs)
+unparseAriCTrsSig rs (FullSig _ fs) = unparseAriCTrsSig rs (FunSig fs)
+unparseAriCTrsSig rs (Vars _) = case inferSigFromRules rs of -- Extract signature from TRS rules
+  Right fs -> unparseAriCTrsSig rs (FunSig fs)
+  Left err -> Left err
 
 unparseAriCRules :: (Pretty f, Pretty v) => [CRule f v] -> Doc ann
 unparseAriCRules = vsep . map unparseCRule

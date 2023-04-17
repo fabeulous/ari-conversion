@@ -17,10 +17,10 @@ import Data.Text (Text)
 import Data.Void (Void)
 import TRSConversion.Parse.ARI.Sig (parseFsymArity)
 import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
-import TRSConversion.Parse.ARI.Utils (keyword, parens, sExpr, symbol)
+import TRSConversion.Parse.ARI.Utils (keyword, parens, sExpr)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Trs.TrsSig (Sig, TrsSig (..))
-import Text.Megaparsec (Parsec, many, option, sepBy, (<|>))
+import Text.Megaparsec (Parsec, many, option, (<|>), some)
 
 type Parser = Parsec Void Text
 
@@ -55,5 +55,5 @@ parseAriCRule :: [Sig String] -> Parser (CRule String String)
 parseAriCRule funSig = CRule <$> term <*> term <*> pConds
  where
   term = parsePrefixTerm funSig
-  pConds = option [] (keyword ":condition" *> parens (sepBy pCond (symbol ",")))
+  pConds = option [] (keyword ":condition" *> parens (some pCond))
   pCond = sExpr "=" ((:==) <$> term <*> term)

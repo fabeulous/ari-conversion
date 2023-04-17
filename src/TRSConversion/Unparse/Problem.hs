@@ -8,13 +8,14 @@ module TRSConversion.Unparse.Problem (
 )
 where
 
-import Prettyprinter (Doc, hardline)
+import Prettyprinter (Doc, hardline, vsep)
 import TRSConversion.Problem.Problem (Problem (..), System (..))
 import TRSConversion.Unparse.CSTrs (unparseAriCSTrs, unparseCopsCSTrs)
 import TRSConversion.Unparse.CTrs (unparseAriCTrs, unparseCopsCTrs)
 import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
 import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
 import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseCopsProblem :: Problem -> Either String (Doc ann)
 unparseCopsProblem problem = do
@@ -32,7 +33,7 @@ unparseCopsProblem problem = do
 unparseAriProblem :: Problem -> Either String (Doc ann)
 unparseAriProblem problem = do
     prettySystem <- prettySystemErr
-    pure (prettyMeta <> hardline <> prettySystem)
+    pure (vsep $ filterEmptyDocs [prettyMeta, prettySystem])
   where
     prettySystemErr =
         case system problem of

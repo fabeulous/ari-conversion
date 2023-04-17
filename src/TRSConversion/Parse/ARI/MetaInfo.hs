@@ -16,7 +16,7 @@ where
 
 import Data.Text (Text, unpack)
 import Text.Megaparsec (MonadParsec (notFollowedBy, withRecovery), between, eof, many, registerParseError, takeWhileP, try, (<|>))
-import Text.Megaparsec.Char (char, string)
+import Text.Megaparsec.Char (char, string, eol)
 
 import Control.Monad (void)
 import Data.Foldable (foldl')
@@ -46,11 +46,11 @@ parseAriMetaInfo = do
 structuredMeta :: Parser MetaInfo
 structuredMeta = structure $ ariAuthorLine <|> ariDoiLine
   where
-    structure = between (try (string "; @")) (void (char '\n') <|> eof) . continue
+    structure = between (try (string "; @")) (void eol <|> eof) . continue
 
     continue = withRecovery $ \err -> do
         registerParseError err
-        _ <- takeWhileP Nothing (/= '\n')
+        _ <- takeWhileP Nothing (\c -> c /= '\n' && c /= '\r')
         pure emptyMetaInfo
 
 metaKeyValue :: Text -> Parser Text

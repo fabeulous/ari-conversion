@@ -36,7 +36,7 @@ symbol = L.symbol spaces
 ident :: Parser String
 ident =
     lexeme
-        ( some
+        ( try $ some
             ( (char '-' <* (notFollowedBy (char '>') <|> fail "identifiers may not contain the sequence \"->\""))
                 <|> (char '=' <* (notFollowedBy (string "=") <|> fail "identifiers may not contain the sequence \"==\""))
                 <|> (char 'C' <* (notFollowedBy (string "OMMENT") <|> fail "identifiers may not contain the sequence \"COMMENT\""))
