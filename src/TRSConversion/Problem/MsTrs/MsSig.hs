@@ -7,12 +7,13 @@
 module TRSConversion.Problem.MsTrs.MsSig
   ( -- * Many-sorted signature datatype
     MsSig (..),
-
+    map,
     -- * Helper functions
     inferSorts,
   )
 where
 
+import Prelude hiding (map)
 import Data.List (nub)
 
 -- | Datatype for the signature of a single function symbol in a many-sorted TRS ('MsTrs').
@@ -28,6 +29,9 @@ data MsSig f s
       ([s], s)
       -- ^ A list of the input sorts and the single output sorts of the function symbol
   deriving (Eq, Show)
+
+map :: (f -> f') -> (s -> s') -> MsSig f s -> MsSig f' s'
+map f s (MsSig g (args,res)) = MsSig (f g) (fmap s args, s res)
 
 -- | Function to infer a list of all unique sorts in an 'MsSig'.
 --

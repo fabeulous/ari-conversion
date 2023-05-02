@@ -52,14 +52,8 @@ unparseTerm (Fun f ts) = pretty f <> args
 unparsePrefixTerm :: (Pretty f, Pretty v) => Term f v -> Doc ann
 unparsePrefixTerm (Var x) = pretty x
 unparsePrefixTerm (Fun fsym []) = pretty fsym -- Constant
-unparsePrefixTerm (Fun fsym args) = pretty fsym <+> unparseTerms args
+unparsePrefixTerm (Fun fsym args) = parens (pretty fsym <+> unparseTerms args)
   where
     -- Unparse a list of terms, adding parentheses to nested terms
     unparseTerms :: (Pretty f, Pretty v) => [Term f v] -> Doc ann
-    unparseTerms ts = hsep $ map unparseArgs ts
-    -- Unparse a nested term, adding parentheses and spaces where needed.
-    unparseArgs :: (Pretty f, Pretty v) => Term f v -> Doc ann
-    unparseArgs (Var x) = pretty x
-    unparseArgs (Fun f ts)
-      | null ts = pretty f -- Constant (no spaces or parentheses)
-      | otherwise = parens (pretty f <+> unparseTerms ts)
+    unparseTerms ts = hsep $ map unparsePrefixTerm ts

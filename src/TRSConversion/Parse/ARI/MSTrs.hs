@@ -55,7 +55,7 @@ pSorts :: ARIParser [String]
 pSorts = many (sExpr "sort" ident)
 
 pMSSig :: ARIParser [MsSig String String]
-pMSSig = many (sExpr "fun" parseAriMsSig)
+pMSSig = many parseAriMsSig
 
 pRules :: [Sig String] -> ARIParser [Rule String String]
-pRules sig = many (sExpr "rule" (parseAriRule sig))
+pRules sig = many (parseAriRule sig)

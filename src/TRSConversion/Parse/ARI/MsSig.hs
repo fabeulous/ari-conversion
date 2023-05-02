@@ -12,7 +12,7 @@ module TRSConversion.Parse.ARI.MsSig (
 )
 where
 
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, parens, keyword)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, parens, sExpr)
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import Text.Megaparsec (some)
 
@@ -29,7 +29,7 @@ MsSig "add" (["Nat","List"], "Nat")
 MsSig "0" ([], "Nat")
 -}
 parseAriMsSig :: ARIParser (MsSig String String)
-parseAriMsSig = do
+parseAriMsSig = sExpr "fun" $ do
   fsym <- ident
   _ <- keyword ":sort"
   args <- parens (some ident)

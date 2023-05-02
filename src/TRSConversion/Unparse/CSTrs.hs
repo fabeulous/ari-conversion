@@ -34,7 +34,7 @@ unparseCopsCSTrs cstrs = do
   pure $
     vsep
       [ prettyBlock "VAR" (hsep [pretty v | v <- vs])
-      , prettyBlock "REPLACEMENT-MAP" ( nest 2 ( hardline <> copsReplacementMap (replacementMap cstrs)) <> hardline)
+      , prettyBlock "REPLACEMENT-MAP" (nest 2 (hardline <> copsReplacementMap (replacementMap cstrs)) <> hardline)
       , prettyBlock "RULES" (nest 2 (vsep $ mempty : [unparseCopsRule r | r <- rules cstrs]) <> hardline)
       ]
  where

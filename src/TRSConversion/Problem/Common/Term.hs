@@ -6,6 +6,7 @@
 module TRSConversion.Problem.Common.Term
   ( -- * Types
     Term (..),
+    map,
     vars,
     -- * Helper Functions
     termFunArities,
@@ -13,6 +14,7 @@ module TRSConversion.Problem.Common.Term
   )
 where
 
+import Prelude hiding (map)
 import TRSConversion.Problem.Trs.Sig (Sig (..), checkDistinctSig)
 import Data.List (nub)
 
@@ -25,6 +27,10 @@ data Term f v
   | -- | 'Var' is used for a single variable
     Var v
   deriving (Show, Eq)
+
+map :: (f -> f') -> (v -> v') -> Term f v -> Term f' v'
+map _ v (Var x) = Var (v x)
+map f v (Fun g ts) = Fun (f g) (fmap (map f v) ts)
 
 -- | Returns a list of a function symbols appearing in a term and their arities (number of arguments).
 -- Removes duplicates and asserts that each function symbol name has at most one arity.

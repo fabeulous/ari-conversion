@@ -17,6 +17,9 @@ module TRSConversion.Parse.ARI.Utils (
   -- * Combinators
   sExpr,
   parens,
+
+  -- * Predicates
+  isNewline
 ) where
 
 import Data.Text (Text, unpack)
@@ -111,3 +114,7 @@ It consumes trailing whitespace
 -}
 naturalNumber :: ARIParser Int
 naturalNumber = lexeme L.decimal
+
+
+isNewline :: Char -> Bool
+isNewline c = c == '\n' || c == '\r'

@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- |
 -- Module      : TRSConversion.Unparse.Problem.TrsSig
 -- Description : Unparser for TrsSig
@@ -14,13 +15,14 @@ module TRSConversion.Unparse.Problem.TrsSig
 
     -- * ARI
     unparseAriTrsSig,
+    unparseAriSigs,
   )
 where
 
 import TRSConversion.Problem.Common.Rule (Rule, inferSigFromRules, ruleVars)
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import TRSConversion.Unparse.Utils (prettyBlock)
-import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
+import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep, (<+>))
 
 -- | Pretty print a 'TrsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php).
 -- @Right doc@ indicates a success, and @Left err@ indicates an error due to a variable being in
@@ -67,8 +69,12 @@ unparseCopsTrsSig rs trsSig = case trsSig of
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 -- function symbols, consistency with rules, etc. This should be done separately.
 unparseAriTrsSig :: (Eq v, Eq f, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
-unparseAriTrsSig _ (FunSig fs) = Right (vsep $ map (prettyBlock "fun" . pretty) fs)
+unparseAriTrsSig _ (FunSig fs) = Right (unparseAriSigs fs)
 unparseAriTrsSig rs (FullSig _ fs) = unparseAriTrsSig rs (FunSig fs)
 unparseAriTrsSig rs (Vars _) = case inferSigFromRules rs of -- Extract signature from TRS rules
   Right fs -> unparseAriTrsSig rs (FunSig fs)
   Left err -> Left err
+
+
+unparseAriSigs :: Pretty f => [Sig f] -> Doc ann
+unparseAriSigs sigs = vsep $ map (\(Sig f a) -> parens $ "fun" <+> pretty f <+> pretty a) sigs

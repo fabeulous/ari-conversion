@@ -20,8 +20,7 @@ import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, nest, parens, pre
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..), inferSigFromRules)
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
-import TRSConversion.Unparse.Problem.Rule (parensTerm)
-import TRSConversion.Unparse.Problem.Term (unparseTerm)
+import TRSConversion.Unparse.Problem.Term (unparseTerm, unparsePrefixTerm)
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 
 {- | Unparse a first-order TRS from the Haskell 'Trs' representation into
@@ -86,13 +85,13 @@ unparseAriCRules = vsep . map unparseCRule
 
 unparseCRule :: (Pretty f, Pretty v) => CRule f v -> Doc ann
 unparseCRule (CRule{lhs = l, rhs = r, conditions = cnds}) =
-  parens $ "rule" <+> parensTerm l <+> parensTerm r <> conds cnds
+  parens $ "rule" <+> unparsePrefixTerm l <+> unparsePrefixTerm r <> conds cnds
  where
   conds [] = mempty
   conds cs = space <> ":condition" <+> parens (hsep (map unparseCond cs))
 
 unparseCond :: (Pretty f, Pretty v) => Condition f v -> Doc ann
-unparseCond (t1 :== t2) = parens $ "=" <+> parensTerm t1 <+> parensTerm t2
+unparseCond (t1 :== t2) = parens $ "=" <+> unparsePrefixTerm t1 <+> unparsePrefixTerm t2
 
 prettyAriFormat :: CondType -> Doc ann
 prettyAriFormat SemiEquational = "(format CTRS semi-equational)"

@@ -12,7 +12,7 @@ module TRSConversion.Parse.ARI.CTrs (
 where
 
 import Data.Functor (($>))
-import TRSConversion.Parse.ARI.Sig (parseFsymArity)
+import TRSConversion.Parse.ARI.Sig (parseAriSig)
 import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
 import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, parens, sExpr)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
@@ -41,7 +41,7 @@ pCondType =
     <|> (keyword "semi-equational" $> SemiEquational)
 
 pSignature :: ARIParser [Sig String]
-pSignature = many (sExpr "fun" parseFsymArity)
+pSignature = many parseAriSig
 
 pCRules :: [Sig String] -> ARIParser [CRule String String]
 pCRules funSig = many (sExpr "rule" (parseAriCRule funSig))

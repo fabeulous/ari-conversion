@@ -20,7 +20,7 @@ import Text.Megaparsec.Char (char, string, eol)
 
 import Control.Monad (void)
 import Data.Foldable (foldl')
-import TRSConversion.Parse.ARI.Utils (ARIParser)
+import TRSConversion.Parse.ARI.Utils (ARIParser, isNewline)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
 
 {- | Parse meta-info blocks in ARI format
@@ -50,13 +50,13 @@ structuredMeta = structure $ ariAuthorLine <|> ariDoiLine
 
     continue = withRecovery $ \err -> do
         registerParseError err
-        _ <- takeWhileP Nothing (\c -> c /= '\n' && c /= '\r')
+        _ <- takeWhileP Nothing (not . isNewline)
         pure emptyMetaInfo
 
 metaKeyValue :: Text -> ARIParser Text
 metaKeyValue key = do
     _ <- string key <* char ' '
-    takeWhileP (Just "character") (\c -> c `notElem` ['\r', '\n'])
+    takeWhileP (Just "character") (not . isNewline)
 
 ariDoiLine :: ARIParser MetaInfo
 ariDoiLine = do
@@ -69,8 +69,8 @@ ariAuthorLine = do
     pure $ emptyMetaInfo{submitted = Just [unpack doiStr]}
 
 ariLeadingComment :: ARIParser MetaInfo
-ariLeadingComment = between commentStart (char '\n') $ do
-    cmt <- takeWhileP (Just "character") (/= '\n')
+ariLeadingComment = between commentStart eol $ do
+    cmt <- takeWhileP (Just "character") (not . isNewline)
     pure $ emptyMetaInfo{comment = Just [unpack cmt]}
   where
     commentStart = try (char ';' <* notFollowedBy (string " @"))

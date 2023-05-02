@@ -12,12 +12,10 @@ module TRSConversion.Unparse.Problem.Rule
     -- * ARI
     unparseAriRules,
     unparseAriRule,
-    parensTerm,
   )
 where
 
 import TRSConversion.Problem.Common.Rule (Rule (..))
-import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Unparse.Problem.Term (unparsePrefixTerm, unparseTerm)
 import TRSConversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, indent, parens, pretty, vsep, (<+>))
@@ -46,20 +44,18 @@ unparseAriRules :: (Pretty f, Pretty v) => [Rule f v] -> Maybe (Doc ann)
 unparseAriRules rs =
   if null rs
     then Nothing
-    else Just $ vsep (map (\r -> parens $ pretty "rule" <+> unparseAriRule r) rs)
+    else Just $ vsep (map unparseAriRule rs)
 
 -- | Unparse a 'Rule' into the format expected by ARI. Uses 'unparsePrefixTerm' to
 -- unparse each side of the rule into prefix format.
 --
--- >>> unparseCopsRule $ Rule {lhs=Fun "f" [Var "x", Fun "a" []], rhs=Var "x"}
+-- >>> unparseAriRule $ Rule {lhs=Fun "f" [Var "x", Fun "a" []], rhs=Var "x"}
 -- (rule (f x a) x)
 --
--- >>> unparseCopsRule $ Rule {lhs=Fun "f" [Var "x", Fun "g" [Var "y"]], rhs=Fun "g" [Var "y"]}
+-- >>> unparseAriRule $ Rule {lhs=Fun "f" [Var "x", Fun "g" [Var "y"]], rhs=Fun "g" [Var "y"]}
 -- (rule (f x (g y)) (g y))
 unparseAriRule :: (Pretty f, Pretty v) => Rule f v -> Doc ann
-unparseAriRule (Rule l r) = parensTerm l <+> parensTerm r
+unparseAriRule (Rule l r) = parens $ pretty "rule" <+> unparsePrefixTerm l <+> unparsePrefixTerm r
 
-parensTerm :: (Pretty f, Pretty v) => Term f v -> Doc ann
-parensTerm v@(Var _) = unparsePrefixTerm v
-parensTerm t@(Fun _ []) = unparsePrefixTerm t -- Constant
-parensTerm t = parens $ unparsePrefixTerm t
+-- $setup
+-- >>> import TRSConversion.Problem.Common.Term

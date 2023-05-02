@@ -14,7 +14,7 @@ where
 
 import Data.Text (Text)
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
-import TRSConversion.Parse.ARI.Sig (parseFsymArity)
+import TRSConversion.Parse.ARI.Sig (parseAriSig)
 import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, sExpr, spaces)
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.Trs (Sig, Trs (..), TrsSig (..))
@@ -43,7 +43,7 @@ pFormat :: ARIParser Text
 pFormat = sExpr "format" (keyword "TRS")
 
 pSignature :: ARIParser [Sig String]
-pSignature = many (sExpr "fun" parseFsymArity)
+pSignature = many parseAriSig
 
 pRules :: [Sig String] -> ARIParser [Rule String String]
-pRules funSig = many (sExpr "rule" (parseAriRule funSig))
+pRules funSig = many (parseAriRule funSig)

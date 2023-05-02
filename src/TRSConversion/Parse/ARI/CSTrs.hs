@@ -46,4 +46,4 @@ pSigRep = do
   pReplacementMap f = keyword ":replacement-map" *>  ((f,) <$> parens (many naturalNumber))
 
 pRules :: [Sig String] -> ARIParser [Rule String String]
-pRules funSig = many (sExpr "rule" (parseAriRule funSig))
+pRules funSig = many (parseAriRule funSig)

@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies #-}
 
 {- |
-Module      : TRSConversion.Parse.Problem.MetaInfo
+Module      : TRSConversion.Parse.COPS.MetaInfo
 Description : Comment parser
 
 This module defines parsers to parse the additional information (comment, author, etc.) of a
@@ -15,9 +16,32 @@ module TRSConversion.Parse.COPS.MetaInfo (
 where
 
 import Data.Char (isSpace)
+import Data.List.NonEmpty (NonEmpty ((:|)))
 import Data.Text (unpack)
-import Text.Megaparsec (MonadParsec (notFollowedBy), between, noneOf, option, satisfy, sepBy1, sepEndBy, some, takeWhile1P, takeWhileP, try, (<?>), (<|>))
-import Text.Megaparsec.Char (char, hspace, hspace1, space, string)
+import Text.Megaparsec (
+  MonadParsec (lookAhead, notFollowedBy),
+  between,
+  choice,
+  getOffset,
+  hidden,
+  noneOf,
+  option,
+  optional,
+  region,
+  sepBy1,
+  sepEndBy,
+  setOffset,
+  some,
+  takeP,
+  takeWhile1P,
+  takeWhileP,
+  try,
+  unexpected,
+  (<?>),
+  (<|>),
+ )
+import Text.Megaparsec.Char (char, hspace, space, string)
+import qualified Text.Megaparsec.Error as E
 
 import TRSConversion.Parse.COPS.Utils (COPSParser, block)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
@@ -25,7 +49,9 @@ import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, merg
 parseCopsMetaInfoBlock :: COPSParser MetaInfo
 parseCopsMetaInfoBlock = block "COMMENT" parseCopsMetaInfo
 
--- | Parser to extract comments as a @String@ from the (optional) @COMMENT@ block of the COPS TRS format.
+{- | Parser to extract comments as a @String@ from the (optional) @COMMENT@
+block of the COPS TRS format.
+-}
 parseCopsMetaInfo :: COPSParser MetaInfo
 parseCopsMetaInfo = do
   ls <- sepEndBy (metaDoi <|> metaAuthors <|> metaComment) space
@@ -45,12 +71,27 @@ copsAuthorsLine = string "submitted by:" *> hspace *> (pAuthors <?> "authors")
  where
   pAuthors =
     sepBy1
-      (some . try $ (char 'a' <* notFollowedBy (string "nd" <* hspace1)) <|> satisfy (\c -> c /= ',' && c /= '\n'))
-      (some $ (string "," <|> string "and") <* hspace)
+      (name <?> "name")
+      ( choice
+          [ string "," <* hspace <* optional (word "and")
+          , word "and"
+          ]
+      )
+
+  nonWordChars = [',', ';', '(', ')', ' ', '\t', '\n', '\r']
+
+  word str = string str <* notFollowedBy (noneOf nonWordChars) <* hidden hspace
+
+  name = fmap unwords . some . try $ do
+    o <- getOffset
+    nm <- takeWhile1P Nothing (`notElem` nonWordChars)
+    if nm == "and"
+      then region (E.setErrorOffset o) (unexpected (E.Tokens ('a' :| "nd")))
+      else unpack nm <$ hidden hspace
 
 copsCommentLine :: COPSParser String
 copsCommentLine = do
-  pref <- unpack <$> takeWhile1P (Just "comment") (\c -> c `notElem` ['\n', '\r', '(', ')'])
+  pref <- unpack <$> takeWhile1P Nothing (`notElem` ['\n', '\r', '(', ')'])
   rest <- option "" $ do
     par <- between (char '(') (char ')') parseComment
     suf <- option "" copsCommentLine
