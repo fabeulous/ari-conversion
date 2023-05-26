@@ -21,7 +21,7 @@ import Text.Megaparsec (many, option)
 
 parseAriCSTrs :: ARIParser (CSTrs String String)
 parseAriCSTrs = do
-  _ <- sExpr "format" (keyword "CSCTRS")
+  _ <- sExpr "format" (keyword "CSTRS")
   (sig, repMap) <- pSignatureReplacementMap
   rs <- pRules sig
   return $
