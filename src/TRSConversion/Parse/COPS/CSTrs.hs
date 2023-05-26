@@ -5,8 +5,10 @@ Module      : TRSConversion.Parse.COPS.CSTrs
 Description : Parser for CSTRSs ins COPS format
 -}
 module TRSConversion.Parse.COPS.CSTrs (
-  -- ** COPS
+  -- * System
   parseCopsCSTrs,
+  -- * Parsers
+  pReplacementMap
 )
 where
 

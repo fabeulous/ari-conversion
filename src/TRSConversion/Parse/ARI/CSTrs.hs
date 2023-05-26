@@ -7,10 +7,11 @@ Description : Parser for CSTRSs in ARI format
 -}
 module TRSConversion.Parse.ARI.CSTrs (
   parseAriCSTrs,
+  -- * Parsers
+  pSignatureReplacementMap
 )
 where
 
-import Data.Foldable (foldl')
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, naturalNumber, parens, sExpr)
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
@@ -20,7 +21,7 @@ import Text.Megaparsec (many, option)
 
 parseAriCSTrs :: ARIParser (CSTrs String String)
 parseAriCSTrs = do
-  _ <- sExpr "format" (keyword "CSTRS")
+  _ <- sExpr "format" (keyword "CSCTRS")
   (sig, repMap) <- pSignatureReplacementMap
   rs <- pRules sig
   return $
@@ -32,7 +33,7 @@ parseAriCSTrs = do
 
 pSignatureReplacementMap :: ARIParser ([Sig String], ReplacementMap String)
 pSignatureReplacementMap =
-  foldl' (\(sigs, reps) (sig, rep) -> (sig : sigs, rep ++ reps)) ([], []) <$> many (sExpr "fun" pSigRep)
+  foldr (\(sig, rep) (sigs, reps) -> (sig : sigs, rep ++ reps)) ([], []) <$> many (sExpr "fun" pSigRep)
 
 pSigRep :: ARIParser (Sig String, ReplacementMap String)
 pSigRep = do

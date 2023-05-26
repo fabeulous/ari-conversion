@@ -16,6 +16,7 @@ import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMe
 import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
 import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.CSCTrs (unparseAriCSCTrs, unparseCopsCSCTrs)
 
 unparseCopsProblem :: Problem -> Either String (Doc ann)
 unparseCopsProblem problem = do
@@ -28,6 +29,7 @@ unparseCopsProblem problem = do
             MSTrs trs -> unparseCopsMsTrs trs
             CTrs trs -> unparseCopsCTrs trs
             CSTrs trs -> unparseCopsCSTrs trs
+            CSCTrs trs -> unparseCopsCSCTrs trs
     prettyMeta = unparseCopsMetaInfo (metaInfo problem)
 
 unparseAriProblem :: Problem -> Either String (Doc ann)
@@ -41,4 +43,5 @@ unparseAriProblem problem = do
             MSTrs trs -> pure $ unparseAriMsTrs trs
             CTrs trs -> unparseAriCTrs trs
             CSTrs trs -> unparseAriCSTrs trs
+            CSCTrs trs -> unparseAriCSCTrs trs
     prettyMeta = unparseAriMetaInfo (metaInfo problem)

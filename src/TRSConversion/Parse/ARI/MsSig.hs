@@ -12,9 +12,9 @@ module TRSConversion.Parse.ARI.MsSig (
 )
 where
 
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, parens, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, sExpr)
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
-import Text.Megaparsec (some)
+import Text.Megaparsec (some, (<|>))
 
 {- | Parser to extract the signature from a single @fun@ block of the ARI [MSTRS format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
 Expects a block like @fsym :sort (t1 ... tn t0)@ where the @t1@, ..., @tn@ are the input sorts of
@@ -31,6 +31,8 @@ MsSig "0" ([], "Nat")
 parseAriMsSig :: ARIParser (MsSig String String)
 parseAriMsSig = sExpr "fun" $ do
   fsym <- ident
-  _ <- keyword ":sort"
-  args <- parens (some ident)
-  return $ MsSig fsym (take (length args - 1) args, last args)
+  sorts <- sortP
+  return $ MsSig fsym (init sorts, last sorts)
+
+sortP :: ARIParser [String]
+sortP = ((:[]) <$> ident) <|> sExpr "->" ((:) <$> ident <*> some ident)

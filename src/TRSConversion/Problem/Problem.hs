@@ -12,12 +12,14 @@ import TRSConversion.Problem.Common.MetaInfo (MetaInfo)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs)
 import TRSConversion.Problem.Trs.Trs (Trs)
 import TRSConversion.Problem.CSTrs.CSTrs
+import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs)
 
 data System
     = Trs (Trs String String)
     | MSTrs (MsTrs String String String)
     | CTrs (CTrs String String)
     | CSTrs (CSTrs String String)
+    | CSCTrs (CSCTrs String String)
     deriving (Eq, Show)
 
 data Problem = Problem

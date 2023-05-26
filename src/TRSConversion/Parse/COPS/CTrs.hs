@@ -7,8 +7,11 @@ Description : Parser for first-order TRSs
 This module defines functions to parse a first-order TRS in COPS and ARI format.
 -}
 module TRSConversion.Parse.COPS.CTrs (
-  -- ** COPS
+  -- * system
   parseCopsCTrs,
+  -- * parsers
+  pCondTypeBlock,
+  pCRulesBlock
 )
 where
 
@@ -23,7 +26,7 @@ parseCopsCTrs :: COPSParser (CTrs String String)
 parseCopsCTrs = do
   condType <- pCondTypeBlock
   vars <- option [] pVarsBlock
-  rs <- pRulesBlock vars
+  rs <- pCRulesBlock vars
   return $
     CTrs
       { conditionType = condType
@@ -45,8 +48,8 @@ pVarsBlock = block "VAR" pVars
  where
   pVars = many ident
 
-pRulesBlock :: [String] -> COPSParser [CRule String String]
-pRulesBlock vars = block "RULES" pRules
+pCRulesBlock :: [String] -> COPSParser [CRule String String]
+pCRulesBlock vars = block "RULES" pRules
  where
   pRules = many (pCRule vars)
 

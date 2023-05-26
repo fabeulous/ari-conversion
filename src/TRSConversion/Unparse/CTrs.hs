@@ -10,8 +10,14 @@ module TRSConversion.Unparse.CTrs (
   -- * COPS
   unparseCopsCTrs,
 
+  -- ** Helpers
+  prettyCondType,
+  prettyCRule,
+
   -- * ARI
   unparseAriCTrs,
+  unparseAriCRules,
+  prettyAriConditionType,
 )
 where
 
@@ -20,7 +26,7 @@ import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, nest, parens, pre
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..), inferSigFromRules)
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
-import TRSConversion.Unparse.Problem.Term (unparseTerm, unparsePrefixTerm)
+import TRSConversion.Unparse.Problem.Term (unparsePrefixTerm, unparseTerm)
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 
 {- | Unparse a first-order TRS from the Haskell 'Trs' representation into
@@ -88,12 +94,15 @@ unparseCRule (CRule{lhs = l, rhs = r, conditions = cnds}) =
   parens $ "rule" <+> unparsePrefixTerm l <+> unparsePrefixTerm r <> conds cnds
  where
   conds [] = mempty
-  conds cs = space <> ":condition" <+> parens (hsep (map unparseCond cs))
+  conds cs = space <> hsep (map unparseCond cs)
 
 unparseCond :: (Pretty f, Pretty v) => Condition f v -> Doc ann
 unparseCond (t1 :== t2) = parens $ "=" <+> unparsePrefixTerm t1 <+> unparsePrefixTerm t2
 
 prettyAriFormat :: CondType -> Doc ann
-prettyAriFormat SemiEquational = "(format CTRS semi-equational)"
-prettyAriFormat Join = "(format CTRS join)"
-prettyAriFormat Oriented = "(format CTRS oriented)"
+prettyAriFormat condType = parens $ "format CTRS" <+> prettyAriConditionType condType
+
+prettyAriConditionType :: CondType -> Doc ann
+prettyAriConditionType SemiEquational = "semi-equational"
+prettyAriConditionType Join = "join"
+prettyAriConditionType Oriented = "oriented"

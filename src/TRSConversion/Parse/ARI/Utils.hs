@@ -41,6 +41,7 @@ import Control.Applicative (Alternative)
 import Control.Monad (MonadPlus)
 import Data.Void (Void)
 import TRSConversion.Parse.Utils (Parser)
+import Data.Functor (void)
 
 -- | Type of the COPS parser.
 newtype ARIParser a = ARIParser {toParser :: Parser a}
@@ -59,13 +60,17 @@ and continues until a newline character (the newline character is not consumed).
 -}
 lineComment :: ARIParser ()
 lineComment = do
-  _ <- char ';' <* notFollowedBy (string " @")
+  _ <- (char ';' <* hspaces) <* notFollowedBy (symbol "@")
   _ <- takeWhileP Nothing (\c -> c /= '\n' && c /= '\r')
   pure ()
 
 -- | @'spaces'@ skips any whitespace characters, or line-comment
 spaces :: ARIParser ()
 spaces = L.space space1 lineComment empty
+
+-- | none or some horizontal space
+hspaces :: ARIParser ()
+hspaces = void $ takeWhileP Nothing (\c -> c == ' ' || c == '\t')
 
 -- | @'lexeme' p@ skips trailing whitespace after @p@
 lexeme :: ARIParser a -> ARIParser a
@@ -80,13 +85,17 @@ symbol = L.symbol spaces
 that is any string of characters not containing a whitespace, any character in
 {(, ), ;}
 -}
+
+identChar :: [Char]
+identChar = " \t\n\r;:()"
+
 ident :: ARIParser String
 ident =
-  lexeme (unpack <$> takeWhile1P Nothing (`notElem` ("(); \t\n\r" :: [Char])))
+  lexeme (unpack <$> takeWhile1P Nothing (`notElem` identChar))
     <?> "identifier"
 
 keywordChar :: ARIParser Char
-keywordChar = noneOf ("(); \t\n\r" :: [Char])
+keywordChar = noneOf identChar
 
 {- | @'keyword' name@ defines and parses a keyword.
 

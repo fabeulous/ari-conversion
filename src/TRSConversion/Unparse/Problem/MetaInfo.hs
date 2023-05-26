@@ -61,11 +61,11 @@ unparseAriMetaInfo (MetaInfo cs ds orig sub) =
   where
     metaBlocks :: [Doc ann]
     metaBlocks =
-      filterEmptyDocs
-        [ maybe emptyDoc (metaLine "origin") orig
-        , maybe emptyDoc (metaLine "doi") ds
-        ]
-        ++ maybe [] (map (metaLine "author")) sub
+      filterEmptyDocs $
+        maybe [] (map (metaLine "author")) sub
+        ++ [ maybe emptyDoc (metaLine "origin") orig
+           , maybe emptyDoc (metaLine "doi") ds
+           ]
         ++ maybe [] (map commentLine) cs
 
     metaLine :: String -> String -> Doc ann

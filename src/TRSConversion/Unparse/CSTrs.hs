@@ -7,9 +7,13 @@ Description : Unparser for CSTRSs
 module TRSConversion.Unparse.CSTrs (
   -- * COPS
   unparseCopsCSTrs,
+  -- ** Helpers
+  copsReplacementMap,
 
   -- * ARI
   unparseAriCSTrs,
+  -- ** Helpers
+  unparseAriReplacementSig
 )
 where
 

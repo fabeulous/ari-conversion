@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- |
 -- Module      : TRSConversion.Unparse.Problem.MsSig
 -- Description : Unparser for MsSig
@@ -14,7 +15,7 @@ where
 
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep)
+import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep, (<+>))
 
 -- | Pretty print an 'MsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php).
 --
@@ -35,7 +36,7 @@ unparseCopsMsSig msSigs =
           ( filterEmptyDocs
               [ pretty fsym,
                 if null inSorts then emptyDoc else hsep $ map pretty inSorts,
-                pretty "->",
+                "->",
                 pretty outSort
               ]
           )
@@ -53,6 +54,7 @@ unparseAriMsSig = vsep . map (prettyBlock "fun" . prettyAriMsSig)
     prettyAriMsSig (MsSig fsym (inSorts, outSort)) =
       hsep
         [ pretty fsym,
-          pretty ":sort",
-          parens (hsep $ map pretty (inSorts ++ [outSort]))
+          if null inSorts
+          then pretty outSort
+          else parens ("->" <+> hsep [pretty s | s <- inSorts] <+> pretty outSort)
         ]
