@@ -7,13 +7,17 @@ and this project adheres to the
 [Haskell Package Versioning Policy](https://pvp.haskell.org/).
 
 ## Unreleased
+- ARI format supports for multiple systems
+  (not the case yet for COPS)
 
+## 0.3.0.0 - 2023-05-26
 - restructure Parser modules to separate COPS and ARI parsers
 - Add CTrs and CSTrs problem types
 - Change ARI `(meta-info ..)` syntax.
   meta info is now stored in a leading comment using `; @key value` pairs
 - Meta data parsing from COPS `(COMMENT .. )` block.
   The tool now parses DOIs and "submitted by:" lines.
+- Now support ARI format as described in the IWC23 submission
 
 ## 0.2.0.0 - 2023-03-14
 

@@ -20,10 +20,11 @@ import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), inferSigFromRules
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..), Sig (..))
 import TRSConversion.Unparse.CSTrs (copsReplacementMap)
-import TRSConversion.Unparse.CTrs (prettyCRule, prettyCondType, prettyAriConditionType, unparseAriCRules)
+import TRSConversion.Unparse.CTrs (prettyCRule, prettyCondType, prettyAriConditionType, unparseAriCSystems)
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import TRSConversion.Problem.CSTrs.CSTrs (ReplacementMap)
 import qualified Data.Map.Strict as M
+import qualified Data.IntMap as IntMap
 
 {- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).
@@ -34,16 +35,19 @@ unparse each part of the 'Trs'.
 See the tests for examples of expected output.
 -}
 unparseCopsCSCTrs :: (Ord v, Pretty f, Pretty v) => CSCTrs f v -> Either String (Doc ann)
-unparseCopsCSCTrs CSCTrs{ctrs = ctrs, replacementMap = repMap} = do
-  pure $
-    vsep
-      [ prettyBlock "CONDITIONTYPE" (prettyCondType $ conditionType ctrs)
-      , prettyBlock "VAR" (hsep [pretty v | v <- vs])
-      , prettyBlock "REPLACEMENT-MAP" (nest 2 (hardline <> copsReplacementMap repMap) <> hardline)
-      , prettyBlock "RULES" (nest 2 (vsep $ mempty : [prettyCRule r | r <- rules ctrs]) <> hardline)
-      ]
+unparseCopsCSCTrs CSCTrs{ctrs = ctrs, replacementMap = repMap}
+  | numSystems ctrs /= 1 = error "COPS format doesn't support CSCTRSs with multiple systems"
+  | otherwise = do
+      pure $
+        vsep
+          [ prettyBlock "CONDITIONTYPE" (prettyCondType $ conditionType ctrs)
+          , prettyBlock "VAR" (hsep [pretty v | v <- vs])
+          , prettyBlock "REPLACEMENT-MAP" (nest 2 (hardline <> copsReplacementMap repMap) <> hardline)
+          , prettyBlock "RULES" (nest 2 (vsep $ mempty : [prettyCRule r | r <- rs]) <> hardline)
+          ]
  where
-  vs = varsOfTrs (signature ctrs) (rules ctrs)
+  rs = rules ctrs IntMap.! 1
+  vs = varsOfTrs (signature ctrs) rs
 
   varsOfTrs (Vars vas) _ = vas
   varsOfTrs _ rs = map head . group . sort $ concatMap varsOfRules rs
@@ -52,11 +56,11 @@ unparseCopsCSCTrs CSCTrs{ctrs = ctrs, replacementMap = repMap} = do
 
 unparseAriCSCTrs :: (Pretty f, Pretty v, Ord f) =>CSCTrs f v -> Either String (Doc ann)
 unparseAriCSCTrs CSCTrs{ctrs = ctrs, replacementMap = repMap} = do
-  ariSig <- unparseAriCSCTrsSig (rules ctrs) (signature ctrs) repMap
+  ariSig <- unparseAriCSCTrsSig (concat $ rules ctrs) (signature ctrs) repMap
   let trsElements =
         [ parens $ "format CSCTRS" <+> prettyAriConditionType (conditionType ctrs)
         , ariSig
-        , unparseAriCRules (rules ctrs)
+        , unparseAriCSystems (rules ctrs)
         ]
   return $ vsep (filterEmptyDocs trsElements)
 

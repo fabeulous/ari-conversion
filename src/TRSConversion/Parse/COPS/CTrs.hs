@@ -21,6 +21,7 @@ import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident, keyword, symbol
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig(Vars))
 import Text.Megaparsec (many, option, sepBy1, (<|>))
+import qualified Data.IntMap as IntMap
 
 parseCopsCTrs :: COPSParser (CTrs String String)
 parseCopsCTrs = do
@@ -30,8 +31,9 @@ parseCopsCTrs = do
   return $
     CTrs
       { conditionType = condType
-      , rules = rs
+      , rules = IntMap.singleton 1 rs
       , signature = Vars vars
+      , numSystems = 1
       }
 
 pCondType :: COPSParser CondType

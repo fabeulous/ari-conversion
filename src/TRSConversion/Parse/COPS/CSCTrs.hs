@@ -17,6 +17,7 @@ import Text.Megaparsec (many, option)
 import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs(..))
 import TRSConversion.Parse.COPS.CTrs (pCondTypeBlock, pCRulesBlock)
 import TRSConversion.Parse.COPS.CSTrs (pReplacementMap)
+import qualified Data.IntMap as IntMap
 
 parseCopsCSCTrs :: COPSParser (CSCTrs String String)
 parseCopsCSCTrs = do
@@ -29,8 +30,9 @@ parseCopsCSCTrs = do
     CSCTrs
       { ctrs =
          CTrs { conditionType = condType
-              , rules = rs
+              , rules = IntMap.singleton 1 rs
               , signature = trsSig
+              , numSystems = 1
               }
       , replacementMap = repMap
       }

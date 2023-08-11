@@ -10,18 +10,20 @@ module TRSConversion.Parse.ARI.CSCTrs (
 )
 where
 
-import TRSConversion.Parse.ARI.CTrs (pCRules, pCondType)
-import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, sExpr)
-import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs (..))
-import TRSConversion.Problem.CTrs.CTrs (CTrs (..))
-import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
+import Text.Megaparsec (option)
+
 import TRSConversion.Parse.ARI.CSTrs (pSignatureReplacementMap)
+import TRSConversion.Parse.ARI.CTrs (pCSystems, pCondType)
+import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, naturalNumber, sExpr)
+import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs (..))
+import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType)
+import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 
 parseAriCSCTrs :: ARIParser (CSCTrs String String)
 parseAriCSCTrs = do
-  condType <- sExpr "format" (keyword "CSCTRS" *> pCondType)
+  (condType, n) <- pFormat
   (sig, repMap) <- pSignatureReplacementMap
-  rs <- pCRules sig
+  rs <- pCSystems sig
   return $
     CSCTrs
       { ctrs =
@@ -29,6 +31,13 @@ parseAriCSCTrs = do
             { conditionType = condType
             , rules = rs
             , signature = FunSig sig
+            , numSystems = n
             }
       , replacementMap = repMap
       }
+
+pFormat :: ARIParser (CondType, Int)
+pFormat = sExpr "format" $ do
+  condType <- keyword "CSCTRS" *> pCondType
+  n <- option 1 (keyword ":number" >> naturalNumber)
+  pure (condType, n)

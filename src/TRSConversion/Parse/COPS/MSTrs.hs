@@ -15,6 +15,7 @@ import TRSConversion.Parse.COPS.MsSig (parseCopsMsSigs)
 import TRSConversion.Parse.COPS.Rule (parseCopsMsTrsRules)
 import TRSConversion.Parse.COPS.Utils (COPSParser, block)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
+import qualified Data.IntMap as IntMap
 
 -- | Parse a many-sorted TRS in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php):
 -- see the COCO website for details on the grammar and the tests for more examples.
@@ -29,8 +30,9 @@ parseCopsMsTrs = do
   rs <- block "RULES" (parseCopsMsTrsRules msSigs)
   return $
     MsTrs
-      { rules = rs,
+      { rules = IntMap.singleton 1 rs,
         signature = msSigs,
-        sorts = Nothing -- Not set for COPS format
+        sorts = Nothing, -- Not set for COPS format
+        numSystems = 1
       }
 

@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 -- |
 -- Module      : TRSConversion.Unparse.Problem.Rule
 -- Description : Unparser for rewrite rules
@@ -10,6 +11,7 @@ module TRSConversion.Unparse.Problem.Rule
     unparseCopsRule,
 
     -- * ARI
+    unparseAriSystems,
     unparseAriRules,
     unparseAriRule,
   )
@@ -19,6 +21,8 @@ import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Unparse.Problem.Term (unparsePrefixTerm, unparseTerm)
 import TRSConversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, indent, parens, pretty, vsep, (<+>))
+import Data.IntMap (IntMap)
+import qualified Data.IntMap as IntMap
 
 -- | Unparse a list of 'Rule's into the expected [COPS format](http://project-coco.uibk.ac.at/problems/trs.php)
 -- separated by newlines. Uses 'unparseCopsRule' to parse individual rules.
@@ -34,17 +38,19 @@ unparseCopsRules rs =
 -- >>> unparseCopsRule $ Rule {lhs=Fun "f" [Var "x", Fun "a" []], rhs=Var "x"}
 -- f(x,a) -> x
 unparseCopsRule :: (Pretty f, Pretty v) => Rule f v -> Doc ann
-unparseCopsRule (Rule l r) = unparseTerm l <+> pretty "->" <+> unparseTerm r
+unparseCopsRule (Rule l r) = unparseTerm l <+> "->" <+> unparseTerm r
+
+-- | Unparse an indexed map of trss.
+unparseAriSystems :: (Pretty f, Pretty v) => IntMap [Rule f v] -> Doc ann
+unparseAriSystems systems =
+  vsep $ map (uncurry unparseAriRules) (IntMap.toList systems)
 
 -- | Unparse a list of 'Rule's into [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt)
 -- separated by newlines. Uses 'unparseAriRule' to parse individual rules.
 --
 -- If no rules are given, returns @Nothing@ and otherwise returns @Just rulesBlock@.
-unparseAriRules :: (Pretty f, Pretty v) => [Rule f v] -> Maybe (Doc ann)
-unparseAriRules rs =
-  if null rs
-    then Nothing
-    else Just $ vsep (map unparseAriRule rs)
+unparseAriRules :: (Pretty f, Pretty v) => Int -> [Rule f v] -> Doc ann
+unparseAriRules index rs = vsep (map (unparseAriRule index) rs)
 
 -- | Unparse a 'Rule' into the format expected by ARI. Uses 'unparsePrefixTerm' to
 -- unparse each side of the rule into prefix format.
@@ -54,8 +60,12 @@ unparseAriRules rs =
 --
 -- >>> unparseAriRule $ Rule {lhs=Fun "f" [Var "x", Fun "g" [Var "y"]], rhs=Fun "g" [Var "y"]}
 -- (rule (f x (g y)) (g y))
-unparseAriRule :: (Pretty f, Pretty v) => Rule f v -> Doc ann
-unparseAriRule (Rule l r) = parens $ pretty "rule" <+> unparsePrefixTerm l <+> unparsePrefixTerm r
+unparseAriRule :: (Pretty f, Pretty v) => Int -> Rule f v -> Doc ann
+unparseAriRule i (Rule l r) =
+  parens $
+    "rule" <+> unparsePrefixTerm l <+> unparsePrefixTerm r <>
+      if i > 1 then mempty <+> ":index" <+> pretty i else mempty
+
 
 -- $setup
 -- >>> import TRSConversion.Problem.Common.Term

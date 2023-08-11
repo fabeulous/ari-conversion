@@ -11,6 +11,7 @@ import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig)
 import Data.Foldable (foldl')
+import Data.IntMap (IntMap)
 
 data CondType = Oriented | Join | SemiEquational
     deriving (Eq, Show)
@@ -30,10 +31,12 @@ data CRule f v = CRule
 
 data CTrs f v = CTrs
     { conditionType :: CondType
-    , rules :: [CRule f v]
-    -- ^ A list of the MSTRS rewrite rules
+    , rules :: IntMap [CRule f v]
+    -- ^ Mapping index to CTrs
     , signature :: TrsSig f v
     -- ^ The signature (function symbols and corresponding sorts) for the MSTRS
+    , numSystems :: Int
+    -- ^ number of rewrite systems
     }
     deriving (Show, Eq)
 

@@ -12,24 +12,29 @@ module TRSConversion.Parse.ARI.CSTrs (
 )
 where
 
-import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, naturalNumber, parens, sExpr)
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
-import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import Text.Megaparsec (many, option)
+import TRSConversion.Parse.ARI.Trs (parseSystems)
 
 parseAriCSTrs :: ARIParser (CSTrs String String)
 parseAriCSTrs = do
-  _ <- sExpr "format" (keyword "CSTRS")
+  n <- pFormat
   (sig, repMap) <- pSignatureReplacementMap
-  rs <- pRules sig
+  rs <- parseSystems sig
   return $
     CSTrs
       { rules = rs
       , signature = FunSig sig
       , replacementMap = repMap
+      , numSystems = n
       }
+
+pFormat :: ARIParser Int
+pFormat = sExpr "format" $ do
+  _ <- keyword "CSTRS"
+  option 1 (keyword ":number" >> naturalNumber)
 
 pSignatureReplacementMap :: ARIParser ([Sig String], ReplacementMap String)
 pSignatureReplacementMap =
@@ -46,5 +51,3 @@ pSigRep = do
   pReplacementMap :: String -> ARIParser (String, [Int])
   pReplacementMap f = keyword ":replacement-map" *>  ((f,) <$> parens (many naturalNumber))
 
-pRules :: [Sig String] -> ARIParser [Rule String String]
-pRules funSig = many (parseAriRule funSig)

@@ -8,12 +8,13 @@ import qualified Hedgehog.Range as Range
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition ((:==)))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (FunSig))
+import qualified Data.IntMap as IntMap
 
 genCRule :: [Sig f] -> Gen v -> Gen (CRule f v)
 genCRule sig genVars = do
   l <- gTerm
   r <- gTerm
-  nConds <- Gen.integral (Range.constantFrom 0 0 3)
+  nConds <- Gen.integral (Range.constantFrom 0 0 2)
   conds <- replicateM nConds ((:==) <$> gTerm <*> gTerm)
   pure $ CRule l r conds
  where
@@ -27,6 +28,7 @@ genCTrs sig varGen = do
   pure $
     CTrs
       { conditionType = condType
-      , rules = rs
+      , rules = IntMap.singleton 1 rs
       , signature = FunSig sig
+      , numSystems = 1
       }

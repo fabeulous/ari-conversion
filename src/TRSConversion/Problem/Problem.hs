@@ -11,7 +11,7 @@ import TRSConversion.Problem.CTrs.CTrs (CTrs)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs)
 import TRSConversion.Problem.Trs.Trs (Trs)
-import TRSConversion.Problem.CSTrs.CSTrs
+import TRSConversion.Problem.CSTrs.CSTrs ( CSTrs )
 import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs)
 
 data System

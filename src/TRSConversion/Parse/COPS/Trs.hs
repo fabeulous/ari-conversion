@@ -16,6 +16,7 @@ import TRSConversion.Parse.COPS.Sig (parseCopsSig)
 import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident)
 import TRSConversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
 import Text.Megaparsec (many, optional, option)
+import qualified Data.IntMap as IntMap
 
 -- | Parse a first-order TRS in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php):
 -- see the COCO website for details on the grammar and the tests for more examples.
@@ -32,6 +33,7 @@ parseCopsTrs = do
   rs <- block "RULES" (parseCopsTrsRules trsSig)
   return $
     Trs
-      { rules = rs,
-        signature = trsSig
+      { rules = IntMap.singleton 1 rs,
+        signature = trsSig,
+        numSystems = 1
       }

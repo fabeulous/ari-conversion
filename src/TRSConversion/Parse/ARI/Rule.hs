@@ -13,9 +13,10 @@ module TRSConversion.Parse.ARI.Rule (
 where
 
 import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
-import TRSConversion.Parse.ARI.Utils (ARIParser, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, sExpr, keyword, naturalNumber)
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Trs.TrsSig (Sig)
+import Text.Megaparsec (option)
 
 {- | Parse a rule block consisting of two terms in prefix notation
 separated by at least one space character.
@@ -28,8 +29,9 @@ Rule {lhs=Fun "f" [Var "x"], rhs=Var "x"}
 
 See the tests for more examples.
 -}
-parseAriRule :: [Sig String] -> ARIParser (Rule String String)
+parseAriRule :: [Sig String] -> ARIParser (Int, Rule String String)
 parseAriRule funSig = sExpr "rule" $ do
   l <- parsePrefixTerm funSig
   r <- parsePrefixTerm funSig
-  return $ Rule{lhs = l, rhs = r}
+  n <- option 1 $ keyword ":index" >> naturalNumber
+  return $ (n, Rule{lhs = l, rhs = r})

@@ -9,16 +9,20 @@ This module defines functions to parse first-order (MS-)TRSs in ARI format.
 module TRSConversion.Parse.ARI.Trs (
   -- ** ARI
   parseAriTrs,
+  parseSystems,
 )
 where
 
+import Data.IntMap (IntMap)
+import qualified Data.IntMap as IntMap
 import Data.Text (Text)
+import Text.Megaparsec (many, option)
+
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Parse.ARI.Sig (parseAriSig)
-import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, sExpr, spaces)
+import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, naturalNumber, sExpr, spaces)
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.Trs (Sig, Trs (..), TrsSig (..))
-import Text.Megaparsec (many)
 
 {- | Parse a first-order TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).
 
@@ -30,20 +34,29 @@ qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ 
 parseAriTrs :: ARIParser (Trs String String)
 parseAriTrs = do
   spaces
-  _ <- pFormat
+  (_, n) <- pFormat
   funSig <- pSignature
-  rs <- pRules funSig
+  rs <- parseSystems funSig
   return $
     Trs
       { rules = rs
       , signature = FunSig funSig
+      , numSystems = n
       }
 
-pFormat :: ARIParser Text
-pFormat = sExpr "format" (keyword "TRS")
+pFormat :: ARIParser (Text, Int)
+pFormat = sExpr "format"
+  ((,) <$> keyword "TRS" <*> option 1 (keyword ":number" >> naturalNumber))
 
 pSignature :: ARIParser [Sig String]
 pSignature = many parseAriSig
 
-pRules :: [Sig String] -> ARIParser [Rule String String]
+parseSystems :: [Sig String] -> ARIParser (IntMap [Rule String String])
+parseSystems funSig = do
+  indexedRules <- pRules funSig
+  let m = IntMap.fromListWith (++) [(i, [r]) | (i,r) <- indexedRules]
+  pure $ fmap reverse m -- reverse to preserve original order
+
+
+pRules :: [Sig String] -> ARIParser [(Int, Rule String String)]
 pRules funSig = many (parseAriRule funSig)

@@ -16,6 +16,7 @@ module TRSConversion.Problem.MsTrs.MsTrs (
 )
 where
 
+import Data.IntMap (IntMap)
 import Prelude hiding (map)
 
 import TRSConversion.Problem.Common.Rule (Rule (..))
@@ -31,19 +32,21 @@ Specifying a list of 'sorts' is deliberately left optional to support different 
 The sorts can then be inferred from the signature when pretty-printing the MSTRS if needed (see 'inferSorts').
 -}
 data MsTrs f v s = MsTrs
-  { rules :: [Rule f v]
+  { rules :: IntMap [Rule f v]
   -- ^ A list of the MSTRS rewrite rules
   , signature :: [MsSig f s]
   -- ^ The signature (function symbols and corresponding sorts) for the MSTRS
   , sorts :: Maybe [s]
   -- ^ A list of sorts (if given). Will be @Nothing@ for COPS format and @Just ss@ for ARI format.
+  , numSystems :: Int
   }
   deriving (Show, Eq)
 
 map :: (f -> f') -> (v -> v') -> (s -> s') -> MsTrs f v s -> MsTrs f' v' s'
-map f v s MsTrs{rules = rs, signature = sig, sorts = srts} =
+map f v s MsTrs{rules = rs, signature = sig, sorts = srts, numSystems = n} =
   MsTrs
-    { rules = fmap (Rule.map f v) rs
+    { rules = fmap (fmap $ Rule.map f v) rs
     , signature = fmap (Sig.map f s) sig
     , sorts = fmap (fmap s) srts
+    , numSystems = n
     }

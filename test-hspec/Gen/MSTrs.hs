@@ -10,6 +10,7 @@ import qualified Hedgehog.Range as Range
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..), inferSorts)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..), Rule (Rule), Term (..))
 import qualified TRSConversion.Problem.MsTrs.MsTrs as MsTrs
+import qualified Data.IntMap as IntMap
 
 genMsRule :: (Ord s) => [MsSig f s] -> Gen v -> Gen (Rule f (v, s))
 genMsRule sig varGen = do
@@ -45,8 +46,9 @@ genMsTrs sig varGen = do
   pure $
     MsTrs
       { sorts = Just $ inferSorts sig
-      , rules = rs
+      , rules = IntMap.singleton 1 rs
       , signature = sig
+      , numSystems = 1
       }
 
 genMsTrsString :: [MsSig String String] -> Gen String -> Gen (MsTrs String String String)

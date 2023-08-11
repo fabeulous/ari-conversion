@@ -11,6 +11,7 @@ import qualified Hedgehog.Range as Range
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
+import qualified Data.IntMap as IntMap
 
 genReplacementMap :: [Sig f] -> Gen (ReplacementMap f)
 genReplacementMap = mapM (\(Sig f a) -> (f,) <$> genSubseq a)
@@ -25,7 +26,8 @@ genCSTrs sig varGen = do
   let trs =
         CSTrs
           { replacementMap = repMap
-          , rules = rs
+          , rules = IntMap.singleton 1 rs
           , signature = FunSig sig
+          , numSystems = 1
           }
   pure trs
