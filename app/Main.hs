@@ -44,7 +44,7 @@ data Format
   | ARI
   deriving (Eq, Ord, Enum, Bounded, Show)
 
--- | @Config@ holds the information parsed the options given on the comand line.
+-- | @Config@ holds the information parsed from the options given on the command line.
 data Config = Config
   { confTarget :: Maybe String
   , confSource :: Maybe String
@@ -89,7 +89,7 @@ options =
       ["commutation", "comm"]
       ( NoArg (\c -> pure $ c{confCommutationFlag = True})
       )
-      "print problem as a COMMUTATION\nproblem in the COPS foramt"
+      "print problem as a COMMUTATION\nproblem in the COPS format"
   , Option
       ['h']
       ["help"]

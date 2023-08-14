@@ -7,7 +7,9 @@ and this project adheres to the
 [Haskell Package Versioning Policy](https://pvp.haskell.org/).
 
 ## Unreleased
-- ARI format supports for multiple systems
+
+## 0.4.0.0 - 2023-08-14
+- ARI format support for multiple systems
 - new flag '--comm' for printing COMMUTATION problems in COPS
 - COPS format supports COMMUTATION problems
 - new '--version' flag
