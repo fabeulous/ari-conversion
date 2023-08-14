@@ -4,6 +4,8 @@ import Control.Monad (unless)
 import Data.Char (toUpper)
 import Data.Text (Text)
 import qualified Data.Text.IO as Text
+import Data.Version (showVersion)
+import Paths_trs_conversion (version)
 import Prettyprinter (Doc)
 import System.Console.GetOpt (
   ArgDescr (NoArg, ReqArg),
@@ -14,7 +16,16 @@ import System.Console.GetOpt (
  )
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure, exitSuccess)
-import System.IO (Handle, IOMode (WriteMode), hClose, hPrint, hPutStrLn, openFile, stderr, stdout)
+import System.IO (
+  Handle,
+  IOMode (WriteMode),
+  hClose,
+  hPrint,
+  hPutStrLn,
+  openFile,
+  stderr,
+  stdout,
+ )
 import Text.Megaparsec (eof, errorBundlePretty, parse)
 
 import qualified TRSConversion.Parse.ARI.Problem as ARI
@@ -22,7 +33,11 @@ import qualified TRSConversion.Parse.ARI.Utils as ARI
 import qualified TRSConversion.Parse.COPS.Problem as COPS
 import qualified TRSConversion.Parse.COPS.Utils as COPS
 import TRSConversion.Parse.Utils (Parser)
-import TRSConversion.Unparse.Problem (unparseAriProblem, unparseCopsProblem, unparseCopsCOMProblem)
+import TRSConversion.Unparse.Problem (
+  unparseAriProblem,
+  unparseCopsCOMProblem,
+  unparseCopsProblem,
+ )
 
 data Format
   = COPS
@@ -68,7 +83,13 @@ options =
           )
           "FILE"
       )
-      "write output to FILE (defaults to stdout)"
+      "write output to FILE"
+  , Option
+      []
+      ["commutation", "comm"]
+      ( NoArg (\c -> pure $ c{confCommutationFlag = True})
+      )
+      "print problem as a COMMUTATION\nproblem in the COPS foramt"
   , Option
       ['h']
       ["help"]
@@ -79,11 +100,17 @@ options =
       "print this message"
   , Option
       []
-      ["commutation", "comm"]
-      ( NoArg (\c -> pure $ c{confCommutationFlag = True})
+      ["version"]
+      ( NoArg
+          ( \_ -> do
+              execName <- getProgName
+              putStrLn (execName ++ " " ++ showVersion version)
+              exitSuccess
+          )
       )
-      "print the problem as a COMMUTATION problem in COPS"
+      "print version"
   ]
+
 
 usage :: Handle -> IO ()
 usage handle = do
