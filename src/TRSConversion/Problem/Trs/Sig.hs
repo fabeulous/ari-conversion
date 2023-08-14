@@ -26,7 +26,7 @@ data Sig f
       -- ^ The function symbol
       Int
       -- ^ The arity of the function symbol (a non-negative integer)
-  deriving (Eq, Show)
+  deriving (Eq, Ord, Show)
 
 -- | Checks that each function symbol appears at most once in a list of 'Sig's and returns the
 -- original signature wrapped in a @Right@ if this is the case.
