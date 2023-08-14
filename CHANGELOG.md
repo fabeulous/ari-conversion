@@ -10,6 +10,7 @@ and this project adheres to the
 - ARI format supports for multiple systems
 - new flag '--comm' for printing COMMUTATION problems in COPS
 - COPS format supports COMMUTATION problems
+- new '--version' flag
 
 ## 0.3.0.0 - 2023-05-26
 - restructure Parser modules to separate COPS and ARI parsers

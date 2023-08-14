@@ -1,10 +1,14 @@
 name: trs-conversion
 version: 0.3.0.0
-github: "j-f-ox/trs-conversion"
+git: "https://git.uibk.ac.at/informatik/cl/ari/task-a/trs-conversion"
 license: NONE
-author: "Jamie Fox"
-maintainer: "Jamie Fox <foxjamiek@gmail.com>"
-copyright: "2023 Jamie Fox"
+author:
+  - "Fabian Mitterwallner"
+  - "Jamie Fox"
+maintainer: "Fabian Mitterwallner <fabian.mittewallner@uibk.ac.at>"
+copyright:
+  - "2023 Jamie Fox"
+  - "2023 Fabian Mitterwallner"
 
 extra-source-files:
   - README.md
@@ -20,13 +24,15 @@ synopsis: TRS format converter
 description:
   Package to convert between the COPS and ARI rewriting problem formats.
 
-  See the README on GitHub at <https://github.com/j-f-ox/trs-conversion#readme> for more information.
+  See the README.md or at
+  <https://git.uibk.ac.at/informatik/cl/ari/task-a/trs-conversion/-/blob/main/README.md>
+  for more information.
 
 dependencies:
   - base >= 4.7 && < 5
   - prettyprinter >= 1.7.1 && < 1.8
   - megaparsec >=9.3.0 && < 9.4
-  - text >= 2.0.1 && < 2.1 # For Data.Text
+  - text >= 2.0.1 && < 2.1
   - containers >= 0.6.0.1 && < 0.7
 ghc-options:
   - -Wall
