@@ -35,32 +35,32 @@ unparse each part of the 'Trs'.
 See the tests for examples of expected output.
 -}
 unparseCopsCSCTrs :: (Ord v, Pretty f, Pretty v) => CSCTrs f v -> Either String (Doc ann)
-unparseCopsCSCTrs CSCTrs{ctrs = ctrs, replacementMap = repMap}
-  | numSystems ctrs /= 1 = error "COPS format doesn't support CSCTRSs with multiple systems"
+unparseCopsCSCTrs CSCTrs{ctrs = system, replacementMap = repMap}
+  | numSystems system /= 1 = error "COPS format doesn't support CSCTRSs with multiple systems"
   | otherwise = do
       pure $
         vsep
-          [ prettyBlock "CONDITIONTYPE" (prettyCondType $ conditionType ctrs)
+          [ prettyBlock "CONDITIONTYPE" (prettyCondType $ conditionType system)
           , prettyBlock "VAR" (hsep [pretty v | v <- vs])
           , prettyBlock "REPLACEMENT-MAP" (nest 2 (hardline <> copsReplacementMap repMap) <> hardline)
           , prettyBlock "RULES" (nest 2 (vsep $ mempty : [prettyCRule r | r <- rs]) <> hardline)
           ]
  where
-  rs = rules ctrs IntMap.! 1
-  vs = varsOfTrs (signature ctrs) rs
+  rs = rules system IntMap.! 1
+  vs = varsOfTrs (signature system) rs
 
   varsOfTrs (Vars vas) _ = vas
-  varsOfTrs _ rs = map head . group . sort $ concatMap varsOfRules rs
+  varsOfTrs _ rls = map head . group . sort $ concatMap varsOfRules rls
 
   varsOfRules r = vars (lhs r) ++ vars (rhs r)
 
 unparseAriCSCTrs :: (Pretty f, Pretty v, Ord f) =>CSCTrs f v -> Either String (Doc ann)
-unparseAriCSCTrs CSCTrs{ctrs = ctrs, replacementMap = repMap} = do
-  ariSig <- unparseAriCSCTrsSig (concat $ rules ctrs) (signature ctrs) repMap
+unparseAriCSCTrs CSCTrs{ctrs = system, replacementMap = repMap} = do
+  ariSig <- unparseAriCSCTrsSig (concat $ rules system) (signature system) repMap
   let trsElements =
-        [ parens $ "format CSCTRS" <+> prettyAriConditionType (conditionType ctrs)
+        [ parens $ "format CSCTRS" <+> prettyAriConditionType (conditionType system)
         , ariSig
-        , unparseAriCSystems (rules ctrs)
+        , unparseAriCSystems (rules system)
         ]
   return $ vsep (filterEmptyDocs trsElements)
 

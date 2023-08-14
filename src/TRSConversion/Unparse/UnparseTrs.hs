@@ -29,7 +29,7 @@ import Data.Foldable (toList)
 --
 -- See the tests for examples of expected output.
 unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
-unparseCopsTrs (Trs {rules = systemMap, signature = sig, numSystems = n}) = do
+unparseCopsTrs (Trs {rules = systemMap, signature = sig, numSystems = _}) = do
   prettySystems <- forM (toList systemMap) $ \rs -> do
     copsSig <- unparseCopsTrsSig rs sig
     return $ vsep (filterEmptyDocs [copsSig, unparseCopsRules rs])

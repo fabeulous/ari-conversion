@@ -17,12 +17,12 @@ import System.Exit (exitFailure, exitSuccess)
 import System.IO (Handle, IOMode (WriteMode), hClose, hPrint, hPutStrLn, openFile, stderr, stdout)
 import Text.Megaparsec (eof, errorBundlePretty, parse)
 
-import TRSConversion.Parse.Utils (Parser)
-import qualified TRSConversion.Parse.COPS.Utils as COPS
-import qualified TRSConversion.Parse.COPS.Problem as COPS
-import qualified TRSConversion.Parse.ARI.Utils as ARI
 import qualified TRSConversion.Parse.ARI.Problem as ARI
-import TRSConversion.Unparse.Problem (unparseCopsProblem, unparseAriProblem)
+import qualified TRSConversion.Parse.ARI.Utils as ARI
+import qualified TRSConversion.Parse.COPS.Problem as COPS
+import qualified TRSConversion.Parse.COPS.Utils as COPS
+import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Unparse.Problem (unparseAriProblem, unparseCopsProblem, unparseCopsCOMProblem)
 
 data Format
   = COPS
@@ -33,6 +33,7 @@ data Format
 data Config = Config
   { confTarget :: Maybe String
   , confSource :: Maybe String
+  , confCommutationFlag :: Bool
   , confOutputHandle :: Handle
   }
 
@@ -41,6 +42,7 @@ defaultConfig =
   Config
     { confSource = Nothing
     , confTarget = Nothing
+    , confCommutationFlag = False
     , confOutputHandle = stdout
     }
 
@@ -75,6 +77,12 @@ options =
           )
       )
       "print this message"
+  , Option
+      []
+      ["commutation", "comm"]
+      ( NoArg (\c -> pure $ c{confCommutationFlag = True})
+      )
+      "print the problem as a COMMUTATION problem in COPS"
   ]
 
 usage :: Handle -> IO ()
@@ -84,13 +92,13 @@ usage handle = do
  where
   header execName =
     unlines
-      [ "Usage: " ++ execName ++ " [OPTIONS] FILE"
+      [ "Usage: " ++ execName ++ " -f FORMAT -t FORMAT [OPTIONS] FILE"
       , "Convert problems involving term-rewrite systems between formats."
       , ""
       , "It is mandatory to give a source format (-f) and target format (-t)."
       , "Moreover the input FILE must contain a problem in the source format."
       , "The following FORMATs are supported: COPS, ARI. The problem type is"
-      , "inferred from the input and may be: TRS, MSTRS."
+      , "inferred from the input and may be: TRS, MSTRS, CTRS, CSTRS, CSCTRS."
       ]
 
 {- | @trs-conversion-exe@ entry point. Can be run by calling
@@ -126,6 +134,7 @@ main = do
 data Context = Context
   { target :: Format
   , source :: Format
+  , commutationFlag :: Bool
   , outputHandle :: Handle
   }
 
@@ -136,7 +145,13 @@ contextFromConfig conf = do
   src <- parseFormat srcName
   trg <- parseFormat trgName
   let outH = confOutputHandle conf
-  pure Context{target = trg, source = src, outputHandle = outH}
+  pure
+    Context
+      { target = trg
+      , source = src
+      , outputHandle = outH
+      , commutationFlag = confCommutationFlag conf
+      }
  where
   parseFormat s = case toUpper <$> s of
     "COPS" -> Right COPS
@@ -154,16 +169,21 @@ runApp config inputFile = do
 
   problem <- case source config of
     COPS -> parseIO (COPS.toParser COPS.parseProblem) inputFile fileContents
+      -- | commutationFlag config ->
+      --     parseIO (COPS.toParser COPS.parseCOMProblem) inputFile fileContents
+      -- | otherwise ->
+      --     parseIO (COPS.toParser COPS.parseProblem) inputFile fileContents
     ARI -> parseIO (ARI.toParser ARI.parseProblem) inputFile fileContents
 
   doc <- case target config of
-    COPS -> unparseIO unparseCopsProblem problem
+    COPS
+      | commutationFlag config -> unparseIO unparseCopsCOMProblem problem
+      | otherwise -> unparseIO unparseCopsProblem problem
     ARI -> unparseIO unparseAriProblem problem
 
   hPrint (outputHandle config) doc
 
   hClose (outputHandle config)
-
 
 parseIO :: Parser a -> String -> Text -> IO a
 parseIO p inpName inp =

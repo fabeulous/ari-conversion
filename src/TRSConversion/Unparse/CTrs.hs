@@ -55,7 +55,7 @@ unparseCopsCTrs ctrs
   vs = varsOfTrs (signature ctrs) rs
 
   varsOfTrs (Vars vas) _ = vas
-  varsOfTrs _ rs = map head . group . sort $ concatMap varsOfRules rs
+  varsOfTrs _ rls = map head . group . sort $ concatMap varsOfRules rls
 
   varsOfRules r = vars (lhs r) ++ vars (rhs r)
 

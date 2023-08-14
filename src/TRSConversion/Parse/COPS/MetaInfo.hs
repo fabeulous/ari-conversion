@@ -19,7 +19,7 @@ import Data.Char (isSpace)
 import Data.List.NonEmpty (NonEmpty ((:|)))
 import Data.Text (unpack)
 import Text.Megaparsec (
-  MonadParsec (lookAhead, notFollowedBy),
+  MonadParsec (notFollowedBy),
   between,
   choice,
   getOffset,
@@ -30,9 +30,7 @@ import Text.Megaparsec (
   region,
   sepBy1,
   sepEndBy,
-  setOffset,
   some,
-  takeP,
   takeWhile1P,
   takeWhileP,
   try,

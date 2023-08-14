@@ -4,19 +4,23 @@ Description : Type definition Problems
 -}
 module TRSConversion.Unparse.Problem (
     unparseCopsProblem,
+    unparseCopsCOMProblem,
     unparseAriProblem,
 )
 where
 
+import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, hardline, vsep)
+import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Problem.Problem (Problem (..), System (..))
+import TRSConversion.Unparse.COM (unparseCopsCOM)
+import TRSConversion.Unparse.CSCTrs (unparseAriCSCTrs, unparseCopsCSCTrs)
 import TRSConversion.Unparse.CSTrs (unparseAriCSTrs, unparseCopsCSTrs)
 import TRSConversion.Unparse.CTrs (unparseAriCTrs, unparseCopsCTrs)
 import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
 import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
 import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
-import TRSConversion.Unparse.CSCTrs (unparseAriCSCTrs, unparseCopsCSCTrs)
 
 unparseCopsProblem :: Problem -> Either String (Doc ann)
 unparseCopsProblem problem = do
@@ -31,6 +35,17 @@ unparseCopsProblem problem = do
             CSTrs trs -> unparseCopsCSTrs trs
             CSCTrs trs -> unparseCopsCSCTrs trs
     prettyMeta = unparseCopsMetaInfo (metaInfo problem)
+
+unparseCopsCOMProblem :: Problem -> Either String (Doc ann)
+unparseCopsCOMProblem problem =
+    case system problem of
+        Trs trs -> do
+            prettySystems <- unparseCopsCOM originComment trs
+            pure $ vsep [prettySystems, unparseCopsMetaInfo metaInfo']
+        _ -> Left "COPS only supports TRSs in commutation problems"
+  where
+    metaInfo' = (metaInfo problem){origin = Nothing}
+    originComment = fromMaybe "" (origin (metaInfo problem))
 
 unparseAriProblem :: Problem -> Either String (Doc ann)
 unparseAriProblem problem = do
