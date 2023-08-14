@@ -35,10 +35,10 @@ qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ 
 -}
 parseAriMsTrs :: ARIParser (MsTrs String String String)
 parseAriMsTrs = do
-  (_, numSys) <- pFormat "MSTRS"
+  numSys <- pFormat "MSTRS"
   sortsList <- pSorts
   msSigs <- pMSSig (Set.fromList sortsList)
-  rs <- parseSystems $ msSigToSigList msSigs
+  rs <- parseSystems numSys $ msSigToSigList msSigs
   return $
     MsTrs
       { rules = rs
@@ -50,11 +50,10 @@ parseAriMsTrs = do
   msSigToSigList :: [MsSig String String] -> [Sig String]
   msSigToSigList = map (\(MsSig fsym (inputSorts, _)) -> Sig fsym (length inputSorts))
 
-pFormat :: Text -> ARIParser (Text, Int)
+pFormat :: Text -> ARIParser Int
 pFormat name = sExpr "format" $ do
-  form <- keyword name
-  numSys <- option 1 (keyword ":number" >> naturalNumber)
-  pure (form, numSys)
+  _ <- keyword name
+  option 1 (keyword ":number" >> naturalNumber)
 
 pSorts :: ARIParser [String]
 pSorts = many (sExpr "sort" ident)

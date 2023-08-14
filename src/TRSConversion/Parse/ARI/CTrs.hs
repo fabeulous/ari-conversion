@@ -17,22 +17,25 @@ module TRSConversion.Parse.ARI.CTrs (
 )
 where
 
+import Control.Monad (forM, unless)
 import Data.Functor (($>))
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
-import Text.Megaparsec (many, option, (<|>))
+import qualified TRSConversion.Problem.Common.Index as Idx
+import Text.Megaparsec (getOffset, many, option, registerParseError, (<|>), parseError)
 
 import TRSConversion.Parse.ARI.Sig (parseAriSig)
 import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
-import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, naturalNumber, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, sExpr, index, nonPositiveNumberError)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
+import TRSConversion.Problem.Common.Index (Index)
 import TRSConversion.Problem.Trs.TrsSig (Sig, TrsSig (..))
 
 parseAriCTrs :: ARIParser (CTrs String String)
 parseAriCTrs = do
   (condType, numSys) <- pFormat
   sig <- pSignature
-  rs <- pCSystems sig
+  rs <- pCSystems numSys sig
   return $
     CTrs
       { conditionType = condType
@@ -45,7 +48,12 @@ pFormat :: ARIParser (CondType, Int)
 pFormat = sExpr "format" $ do
   _ <- keyword "CTRS"
   condType <- pCondType
-  numSys <- option 1 (keyword ":number" >> naturalNumber)
+  _ <- keyword ":number"
+  numSys <- option 1 $ do
+    o <- getOffset
+    n <- naturalNumber
+    unless (n > 0) $ parseError (nonPositiveNumberError n o)
+    pure n
   pure (condType, numSys)
 
 pCondType :: ARIParser CondType
@@ -57,20 +65,24 @@ pCondType =
 pSignature :: ARIParser [Sig String]
 pSignature = many parseAriSig
 
-pCSystems :: [Sig String] -> ARIParser (IntMap [CRule String String])
-pCSystems sig = do
+pCSystems :: Int -> [Sig String] -> ARIParser (IntMap [CRule String String])
+pCSystems n sig = do
   indexedRules <- pCRules sig
-  let m = IntMap.fromListWith (++) [(i, [r]) | (i, r) <- indexedRules]
+  rls <- forM indexedRules $ \(i,r) -> do
+    unless (Idx.index i <= n) $ registerParseError (indexOutOfRangeError n i)
+    pure (Idx.index i, r)
+  let m = IntMap.fromListWith (++) [(i, [r]) | (i, r) <- rls]
   pure $ fmap reverse m -- reverse to preserve original order
 
-pCRules :: [Sig String] -> ARIParser [(Int, CRule String String)]
+pCRules :: [Sig String] -> ARIParser [(Index, CRule String String)]
 pCRules funSig = many (sExpr "rule" (parseAriCRule funSig))
 
-parseAriCRule :: [Sig String] -> ARIParser (Int, CRule String String)
+parseAriCRule :: [Sig String] -> ARIParser (Index, CRule String String)
 parseAriCRule funSig = do
+  o <- getOffset
   rule <- CRule <$> term <*> term <*> pConds
-  index <- option 1 (keyword ":index" >> naturalNumber)
-  pure (index, rule)
+  idx <- option (Idx.Index 1 o) (keyword ":index" >> index)
+  pure (idx, rule)
  where
   term = parsePrefixTerm funSig
   pConds = many pCond

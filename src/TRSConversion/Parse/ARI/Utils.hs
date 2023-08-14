@@ -1,5 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 
 module TRSConversion.Parse.ARI.Utils (
   -- * Type
@@ -19,14 +21,27 @@ module TRSConversion.Parse.ARI.Utils (
   parens,
 
   -- * Predicates
-  isNewline
+  isNewline,
+  index,
+
+  -- * ParseErrors
+  indexOutOfRangeError,
+  nonPositiveNumberError,
 ) where
 
+import Control.Applicative (Alternative)
+import Control.Monad (MonadPlus)
+import Data.Functor (void)
+import Data.List.NonEmpty (NonEmpty ((:|)))
+import qualified Data.Set as Set
 import Data.Text (Text, unpack)
+import Data.Void (Void)
 import Text.Megaparsec (
   MonadParsec,
+  Token,
   between,
   empty,
+  getOffset,
   noneOf,
   notFollowedBy,
   takeWhile1P,
@@ -36,12 +51,10 @@ import Text.Megaparsec (
  )
 import Text.Megaparsec.Char (char, space1, string)
 import qualified Text.Megaparsec.Char.Lexer as L
+import qualified Text.Megaparsec.Error as E
 
-import Control.Applicative (Alternative)
-import Control.Monad (MonadPlus)
-import Data.Void (Void)
 import TRSConversion.Parse.Utils (Parser)
-import Data.Functor (void)
+import qualified TRSConversion.Problem.Common.Index as Idx
 
 -- | Type of the COPS parser.
 newtype ARIParser a = ARIParser {toParser :: Parser a}
@@ -85,7 +98,6 @@ symbol = L.symbol spaces
 that is any string of characters not containing a whitespace, any character in
 {(, ), ;}
 -}
-
 identChar :: [Char]
 identChar = " \t\n\r;:()"
 
@@ -124,6 +136,31 @@ It consumes trailing whitespace
 naturalNumber :: ARIParser Int
 naturalNumber = lexeme L.decimal
 
+index :: ARIParser Idx.Index
+index = do
+  o <- getOffset
+  n <- naturalNumber
+  pure $ Idx.Index{Idx.index = n, Idx.startOffset = o}
 
 isNewline :: Char -> Bool
 isNewline c = c == '\n' || c == '\r'
+
+nonPositiveNumberError :: (Token s ~ Char) => Int -> Int -> E.ParseError s e
+nonPositiveNumberError n offset =
+  E.TrivialError
+    offset
+    (Just . E.Tokens $ x :| xs)
+    (Set.singleton (E.Label errStr))
+ where
+  (x : xs) = show n
+  errStr = 'n' :| "umber greater than 0"
+
+indexOutOfRangeError :: (Token s ~ Char) => Int -> Idx.Index -> E.ParseError s e
+indexOutOfRangeError maxIndex i =
+  E.TrivialError
+    (Idx.startOffset i)
+    (Just . E.Tokens $ n :| ns)
+    (Set.singleton (E.Label errStr))
+ where
+  (n : ns) = show (Idx.index i)
+  errStr = 'i' :| "ndex in range " ++ show (1 :: Int, maxIndex)

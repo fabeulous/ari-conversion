@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeFamilies #-}
 
 {- |
 Module      : TRSConversion.Parse.ARI.Trs
@@ -13,14 +14,15 @@ module TRSConversion.Parse.ARI.Trs (
 )
 where
 
+import Control.Monad (forM, unless)
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
-import Data.Text (Text)
-import Text.Megaparsec (many, option)
+import Text.Megaparsec (getOffset, many, option, registerParseError, MonadParsec (parseError))
 
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Parse.ARI.Sig (parseAriSig)
-import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, naturalNumber, sExpr, spaces)
+import TRSConversion.Parse.ARI.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, nonPositiveNumberError, sExpr, spaces)
+import TRSConversion.Problem.Common.Index (Index (index))
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.Trs (Sig, Trs (..), TrsSig (..))
 
@@ -34,9 +36,9 @@ qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ 
 parseAriTrs :: ARIParser (Trs String String)
 parseAriTrs = do
   spaces
-  (_, n) <- pFormat
+  n <- pFormat
   funSig <- pSignature
-  rs <- parseSystems funSig
+  rs <- parseSystems n funSig
   return $
     Trs
       { rules = rs
@@ -44,19 +46,26 @@ parseAriTrs = do
       , numSystems = n
       }
 
-pFormat :: ARIParser (Text, Int)
-pFormat = sExpr "format"
-  ((,) <$> keyword "TRS" <*> option 1 (keyword ":number" >> naturalNumber))
+pFormat :: ARIParser Int
+pFormat = sExpr "format" $ do
+  _ <- keyword "TRS"
+  _ <- keyword ":number"
+  o <- getOffset
+  n <- option 1 naturalNumber
+  unless (n > 0) $ parseError (nonPositiveNumberError n o)
+  pure n
 
 pSignature :: ARIParser [Sig String]
 pSignature = many parseAriSig
 
-parseSystems :: [Sig String] -> ARIParser (IntMap [Rule String String])
-parseSystems funSig = do
+parseSystems :: Int -> [Sig String] -> ARIParser (IntMap [Rule String String])
+parseSystems numSys funSig = do
   indexedRules <- pRules funSig
-  let m = IntMap.fromListWith (++) [(i, [r]) | (i,r) <- indexedRules]
+  rls <- forM indexedRules $ \(i, r) -> do
+    unless (index i <= numSys) $ registerParseError (indexOutOfRangeError numSys i)
+    pure (index i, r)
+  let m = IntMap.fromListWith (++) [(i, [r]) | (i, r) <- rls]
   pure $ fmap reverse m -- reverse to preserve original order
 
-
-pRules :: [Sig String] -> ARIParser [(Int, Rule String String)]
+pRules :: [Sig String] -> ARIParser [(Index, Rule String String)]
 pRules funSig = many (parseAriRule funSig)

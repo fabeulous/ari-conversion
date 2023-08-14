@@ -22,7 +22,7 @@ parseAriCSTrs :: ARIParser (CSTrs String String)
 parseAriCSTrs = do
   n <- pFormat
   (sig, repMap) <- pSignatureReplacementMap
-  rs <- parseSystems sig
+  rs <- parseSystems n sig
   return $
     CSTrs
       { rules = rs

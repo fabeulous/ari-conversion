@@ -23,7 +23,7 @@ parseAriCSCTrs :: ARIParser (CSCTrs String String)
 parseAriCSCTrs = do
   (condType, n) <- pFormat
   (sig, repMap) <- pSignatureReplacementMap
-  rs <- pCSystems sig
+  rs <- pCSystems n sig
   return $
     CSCTrs
       { ctrs =
