@@ -9,6 +9,7 @@ This module defines functions to parse a many-sorted TRS in ARI format.
 module TRSConversion.Parse.ARI.MSTrs (
   -- ** ARI
   parseAriMsTrs,
+  parseAriMsTrs',
 )
 where
 
@@ -34,8 +35,10 @@ Rules are parsed using 'parseAriRule' as in the untyped TRS setting.
 qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @sort@ then @fun@ then @rule@.
 -}
 parseAriMsTrs :: ARIParser (MsTrs String String String)
-parseAriMsTrs = do
-  numSys <- pFormat "MSTRS"
+parseAriMsTrs = pFormat "MSTRS" >>= parseAriMsTrs'
+
+parseAriMsTrs' :: Int -> ARIParser (MsTrs String String String)
+parseAriMsTrs' numSys = do
   sortsList <- pSorts
   msSigs <- pMSSig (Set.fromList sortsList)
   rs <- parseSystems numSys $ msSigToSigList msSigs

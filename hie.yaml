@@ -4,7 +4,10 @@ cradle:
       component: "lib:trs-conversion"
 
     - path: "./app/"
-      component: "exe:trs-conversion-exe"
+      component: "exe:trs-conversion"
+
+    - path: "./format-app/"
+      component: "exe:ari-format"
 
     - path: "./test/"
       component: "test:trs-conversion-test"

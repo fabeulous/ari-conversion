@@ -1,3 +1,4 @@
+{-# LANGUAGE  OverloadedStrings #-}
 module Main (main) where
 
 import Control.Monad (unless)
@@ -86,7 +87,7 @@ options =
       "write output to FILE"
   , Option
       []
-      ["commutation", "comm"]
+      ["commutation"]
       ( NoArg (\c -> pure $ c{confCommutationFlag = True})
       )
       "print problem as a COMMUTATION\nproblem in the COPS format"
@@ -115,13 +116,15 @@ options =
 usage :: Handle -> IO ()
 usage handle = do
   execName <- getProgName
-  hPutStrLn handle (usageInfo (header execName) options)
+  hPutStrLn handle $ description execName
+  hPutStrLn handle (usageInfo "OPTIONS" options)
  where
-  header execName =
-    unlines
-      [ "Usage: " ++ execName ++ " -f FORMAT -t FORMAT [OPTIONS] FILE"
+  description execName =
+   unlines
+      [ "Usage: " <> execName <> " -f FORMAT -t FORMAT [OPTIONS] FILE"
+      , mempty
       , "Convert problems involving term-rewrite systems between formats."
-      , ""
+      , mempty
       , "It is mandatory to give a source format (-f) and target format (-t)."
       , "Moreover the input FILE must contain a problem in the source format."
       , "The following FORMATs are supported: COPS, ARI. The problem type is"
@@ -140,7 +143,7 @@ main = do
   args <- getArgs
   let (opts, nonOpts, errs) = getOpt Permute options args
   unless (null errs) $ do
-    hPutStrLn stderr $ "Error(s) parsing arguments:\n" ++ show errs
+    hPutStrLn stderr $ "Error(s) parsing arguments:\n" ++ concat errs
     usage stderr
     exitFailure
   conf <- foldl (>>=) (pure defaultConfig) opts

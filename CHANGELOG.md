@@ -7,6 +7,10 @@ and this project adheres to the
 [Haskell Package Versioning Policy](https://pvp.haskell.org/).
 
 ## Unreleased
+- `file-type` executable added. Given an ARI input file it prints the format
+  type to stdout.
+- dropped `--comm` as shorthand for the `--commutation` flag, since the parse
+  already uses flags when the prefix matches only a single option
 
 ## 0.4.0.0 - 2023-08-14
 - ARI format support for multiple systems

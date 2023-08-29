@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TupleSections #-}
 
 {- |
 Module      : Data.Conversion.Parse.ARI.CSTrs
@@ -7,6 +6,7 @@ Description : Parser for CSTRSs in ARI format
 -}
 module TRSConversion.Parse.ARI.CSCTrs (
   parseAriCSCTrs,
+  parseAriCSCTrs'
 )
 where
 
@@ -20,8 +20,10 @@ import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 
 parseAriCSCTrs :: ARIParser (CSCTrs String String)
-parseAriCSCTrs = do
-  (condType, n) <- pFormat
+parseAriCSCTrs = pFormat >>= uncurry parseAriCSCTrs'
+
+parseAriCSCTrs' :: CondType -> Int -> ARIParser (CSCTrs String String)
+parseAriCSCTrs' condType n = do
   (sig, repMap) <- pSignatureReplacementMap
   rs <- pCSystems n sig
   return $

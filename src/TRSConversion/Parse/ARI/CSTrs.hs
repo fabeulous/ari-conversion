@@ -7,6 +7,7 @@ Description : Parser for CSTRSs in ARI format
 -}
 module TRSConversion.Parse.ARI.CSTrs (
   parseAriCSTrs,
+  parseAriCSTrs',
   -- * Parsers
   pSignatureReplacementMap
 )
@@ -19,8 +20,10 @@ import Text.Megaparsec (many, option)
 import TRSConversion.Parse.ARI.Trs (parseSystems)
 
 parseAriCSTrs :: ARIParser (CSTrs String String)
-parseAriCSTrs = do
-  n <- pFormat
+parseAriCSTrs = pFormat >>= parseAriCSTrs'
+
+parseAriCSTrs' :: Int -> ARIParser (CSTrs String String)
+parseAriCSTrs' n = do
   (sig, repMap) <- pSignatureReplacementMap
   rs <- parseSystems n sig
   return $

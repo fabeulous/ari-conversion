@@ -10,6 +10,7 @@ This module defines functions to parse first-order (MS-)TRSs in ARI format.
 module TRSConversion.Parse.ARI.Trs (
   -- ** ARI
   parseAriTrs,
+  parseAriTrs',
   parseSystems,
 )
 where
@@ -17,11 +18,11 @@ where
 import Control.Monad (forM, unless)
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
-import Text.Megaparsec (getOffset, many, option, registerParseError, MonadParsec (parseError))
+import Text.Megaparsec (MonadParsec (parseError), getOffset, many, option, registerParseError)
 
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import TRSConversion.Parse.ARI.Sig (parseAriSig)
-import TRSConversion.Parse.ARI.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, nonPositiveNumberError, sExpr, spaces)
+import TRSConversion.Parse.ARI.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, nonPositiveNumberError, sExpr)
 import TRSConversion.Problem.Common.Index (Index (index))
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.Trs (Sig, Trs (..), TrsSig (..))
@@ -34,9 +35,10 @@ Note that the entire input will not necessarily be consumed: use `<* eof` if thi
 qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @fun@ then @rule@.
 -}
 parseAriTrs :: ARIParser (Trs String String)
-parseAriTrs = do
-  spaces
-  n <- pFormat
+parseAriTrs = pFormat >>= parseAriTrs'
+
+parseAriTrs' :: Int -> ARIParser (Trs String String)
+parseAriTrs' n = do
   funSig <- pSignature
   rs <- parseSystems n funSig
   return $
@@ -49,10 +51,12 @@ parseAriTrs = do
 pFormat :: ARIParser Int
 pFormat = sExpr "format" $ do
   _ <- keyword "TRS"
-  _ <- keyword ":number"
-  o <- getOffset
-  n <- option 1 naturalNumber
-  unless (n > 0) $ parseError (nonPositiveNumberError n o)
+  n <- option 1 $ do
+    _ <- keyword ":number"
+    o <- getOffset
+    n <- naturalNumber
+    unless (n > 0) $ parseError (nonPositiveNumberError n o)
+    pure n
   pure n
 
 pSignature :: ARIParser [Sig String]

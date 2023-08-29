@@ -1,18 +1,21 @@
 module TRSConversion.Parse.ARI.RuleSpec where
 
+import Control.Monad ((<=<))
 import Data.Text (pack)
 import Gen.Sig (genSig)
 import Gen.Term (genTerm, genVars)
 import qualified Hedgehog as H
+import Test.Hspec (Spec, describe, it)
+import Test.Hspec.Hedgehog (hedgehog)
+import Text.Megaparsec (parse)
+
 import TRSConversion.Parse.ARI.Rule (parseAriRule)
 import qualified TRSConversion.Parse.ARI.Utils as ARI
+import qualified TRSConversion.Problem.Common.Index as Idx
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
 import TRSConversion.Unparse.Problem.Rule (unparseAriRule)
-import Test.Hspec (Spec, describe, it)
-import Test.Hspec.Hedgehog (hedgehog)
-import Text.Megaparsec (parse)
 
 spec :: Spec
 spec = do
@@ -27,7 +30,7 @@ spec = do
         H.tripping
           rule
           (pack . show . uncurry unparseAriRule)
-          (parse (ARI.toParser (parseAriRule sig)) "testinput")
+          ((\(i, r) -> pure (Idx.index i, r)) <=< parse (ARI.toParser (parseAriRule sig)) "testinput")
 
 sigOfTerm :: Eq f => Term f v -> [Sig f]
 sigOfTerm t =

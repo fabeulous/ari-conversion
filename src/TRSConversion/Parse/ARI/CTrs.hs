@@ -9,6 +9,7 @@ This module defines functions to parse a first-order CTRS in ARI format.
 module TRSConversion.Parse.ARI.CTrs (
   -- * System
   parseAriCTrs,
+  parseAriCTrs',
 
   -- * Parsers
   pCSystems,
@@ -32,8 +33,11 @@ import TRSConversion.Problem.Common.Index (Index)
 import TRSConversion.Problem.Trs.TrsSig (Sig, TrsSig (..))
 
 parseAriCTrs :: ARIParser (CTrs String String)
-parseAriCTrs = do
-  (condType, numSys) <- pFormat
+parseAriCTrs = pFormat >>= uncurry parseAriCTrs'
+
+parseAriCTrs' :: CondType -> Int -> ARIParser (CTrs String String)
+parseAriCTrs' condType numSys = do
+  -- (condType, numSys) <- pFormat
   sig <- pSignature
   rs <- pCSystems numSys sig
   return $
@@ -48,8 +52,8 @@ pFormat :: ARIParser (CondType, Int)
 pFormat = sExpr "format" $ do
   _ <- keyword "CTRS"
   condType <- pCondType
-  _ <- keyword ":number"
   numSys <- option 1 $ do
+    _ <- keyword ":number"
     o <- getOffset
     n <- naturalNumber
     unless (n > 0) $ parseError (nonPositiveNumberError n o)
