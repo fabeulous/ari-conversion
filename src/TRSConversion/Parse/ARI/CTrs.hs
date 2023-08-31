@@ -74,6 +74,8 @@ pCSystems n sig = do
   indexedRules <- pCRules sig
   rls <- forM indexedRules $ \(i,r) -> do
     unless (Idx.index i <= n) $ registerParseError (indexOutOfRangeError n i)
+    unless (Idx.index i > 0) $
+      registerParseError (nonPositiveNumberError (Idx.index i) (Idx.startOffset i))
     pure (Idx.index i, r)
   let m = IntMap.fromListWith (++) [(i, [r]) | (i, r) <- rls]
   pure $ fmap reverse m -- reverse to preserve original order

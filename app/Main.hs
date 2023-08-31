@@ -27,7 +27,7 @@ import System.IO (
   stderr,
   stdout,
  )
-import Text.Megaparsec (eof, errorBundlePretty, parse)
+import Text.Megaparsec (eof, errorBundlePretty, parse, ShowErrorComponent)
 
 import qualified TRSConversion.Parse.ARI.Problem as ARI
 import qualified TRSConversion.Parse.ARI.Utils as ARI
@@ -215,7 +215,7 @@ runApp config inputFile = do
 
   hClose (outputHandle config)
 
-parseIO :: Parser a -> String -> Text -> IO a
+parseIO :: ShowErrorComponent e => Parser e a -> String -> Text -> IO a
 parseIO p inpName inp =
   case parse (p <* eof) inpName inp of
     Left err -> do

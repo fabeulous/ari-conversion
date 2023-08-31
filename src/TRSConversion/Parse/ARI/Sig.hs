@@ -14,7 +14,7 @@ where
 
 import Data.Char (isDigit)
 import Data.Text (unpack)
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, lexeme, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, lexeme, sExpr, restrictedIdent)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (takeWhile1P, (<?>))
 
@@ -30,7 +30,7 @@ Used for parsing TRSs in ARI format and the @SIG@ block of the COPS [extended TR
 Right (Sig "fun" 2)
 -}
 parseFsymArity :: ARIParser (Sig String)
-parseFsymArity = Sig <$> ident <*> naturalNumber
+parseFsymArity = Sig <$> restrictedIdent <*> naturalNumber
 
 naturalNumber :: ARIParser Int
 naturalNumber =

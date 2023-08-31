@@ -12,13 +12,13 @@ module TRSConversion.Parse.ARI.Term (
   parsePrefixTerm,
 
   -- * Functions and Variables
-  parseFunSymbol,
-  parseVariable,
+  -- parseFunSymbol,
+  -- parseVariable,
 )
 where
 
 import Data.Text (pack, unpack)
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr, restrictedIdent)
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (choice, count, (<?>), (<|>))
@@ -27,16 +27,16 @@ import Text.Megaparsec (choice, count, (<?>), (<|>))
 
 Does not consume trailing whitespace (needed for parsing terms in prefix notation).
 -}
-parseVariable :: ARIParser String
-parseVariable = ident <?> "variable"
+-- parseVariable :: ARIParser String
+-- parseVariable = ident <?> "variable"
 
 {- | Parses a function symbol either until the first '(' or as long as characters allowed by 'parseCopsSym' are present.
 Does not consume the final @'('@ and does not consume all input.
 
 This function doesn't consume trailing whitespace (needed for parsing terms in prefix notation).
 -}
-parseFunSymbol :: ARIParser String
-parseFunSymbol = ident <?> "function symbol"
+-- parseFunSymbol :: ARIParser String
+-- parseFunSymbol = ident <?> "function symbol"
 
 {- | Parses a term in prefix notation (see also [S-expressions](https://en.wikipedia.org/wiki/S-expression)).
 
@@ -54,7 +54,7 @@ parsePrefixTerm funSig = parseT
  where
    parseT =
      choice (map mkParser funSig)
-       <|> (Var <$> ident)
+       <|> (Var <$> restrictedIdent)
        -- <|> parens parseT -- how about redundant parenthesis?
    mkParser (Sig fSymb arity)
      | arity <= 0 = Fun <$> (unpack <$> keyword (pack fSymb)) <*> pure []

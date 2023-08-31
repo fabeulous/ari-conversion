@@ -11,6 +11,7 @@ and this project adheres to the
   type to stdout.
 - dropped `--comm` as shorthand for the `--commutation` flag, since the parse
   already uses flags when the prefix matches only a single option
+- ARI parser no longer allows most keywords as function symbols or variables
 
 ## 0.4.0.0 - 2023-08-14
 - ARI format support for multiple systems

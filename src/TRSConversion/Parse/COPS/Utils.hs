@@ -43,7 +43,7 @@ import Data.Void (Void)
 import TRSConversion.Parse.Utils (Parser)
 
 -- | Type of the COPS parser.
-newtype COPSParser a = COPSParser {toParser :: Parser a}
+newtype COPSParser a = COPSParser {toParser :: Parser Void a}
     deriving
         ( Functor
         , Applicative

@@ -19,7 +19,7 @@ import Text.Megaparsec (many, option)
 
 import TRSConversion.Parse.ARI.MsSig (parseAriMsSig)
 import TRSConversion.Parse.ARI.Trs (parseSystems)
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr, naturalNumber)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr, naturalNumber, restrictedIdent)
 import TRSConversion.Problem.MsTrs.MsTrs (MsSig (..), MsTrs (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 
@@ -59,7 +59,7 @@ pFormat name = sExpr "format" $ do
   option 1 (keyword ":number" >> naturalNumber)
 
 pSorts :: ARIParser [String]
-pSorts = many (sExpr "sort" ident)
+pSorts = many (sExpr "sort" restrictedIdent)
 
 pMSSig :: Set.Set String -> ARIParser [MsSig String String]
 pMSSig declaredSorts = many (parseAriMsSig declaredSorts)

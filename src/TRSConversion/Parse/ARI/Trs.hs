@@ -26,6 +26,7 @@ import TRSConversion.Parse.ARI.Utils (ARIParser, indexOutOfRangeError, keyword, 
 import TRSConversion.Problem.Common.Index (Index (index))
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.Trs (Sig, Trs (..), TrsSig (..))
+import qualified TRSConversion.Problem.Common.Index as Idx
 
 {- | Parse a first-order TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).
 
@@ -67,6 +68,7 @@ parseSystems numSys funSig = do
   indexedRules <- pRules funSig
   rls <- forM indexedRules $ \(i, r) -> do
     unless (index i <= numSys) $ registerParseError (indexOutOfRangeError numSys i)
+    unless (index i <= 0) $ registerParseError (nonPositiveNumberError (Idx.index i) (Idx.startOffset i))
     pure (index i, r)
   let m = IntMap.fromListWith (++) [(i, [r]) | (i, r) <- rls]
   pure $ fmap reverse m -- reverse to preserve original order

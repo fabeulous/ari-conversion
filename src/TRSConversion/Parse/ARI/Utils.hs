@@ -14,6 +14,7 @@ module TRSConversion.Parse.ARI.Utils (
   symbol,
   keyword,
   ident,
+  restrictedIdent,
   naturalNumber,
 
   -- * Combinators
@@ -30,14 +31,15 @@ module TRSConversion.Parse.ARI.Utils (
 ) where
 
 import Control.Applicative (Alternative)
-import Control.Monad (MonadPlus)
+import Control.Monad (MonadPlus, when)
 import Data.Functor (void)
 import Data.List.NonEmpty (NonEmpty ((:|)))
 import qualified Data.Set as Set
 import Data.Text (Text, unpack)
-import Data.Void (Void)
 import Text.Megaparsec (
-  MonadParsec,
+  ErrorFancy (..),
+  MonadParsec (parseError),
+  ShowErrorComponent,
   Token,
   between,
   empty,
@@ -55,9 +57,10 @@ import qualified Text.Megaparsec.Error as E
 
 import TRSConversion.Parse.Utils (Parser)
 import qualified TRSConversion.Problem.Common.Index as Idx
+import qualified Text.Megaparsec.Error.Builder as E
 
 -- | Type of the COPS parser.
-newtype ARIParser a = ARIParser {toParser :: Parser a}
+newtype ARIParser a = ARIParser {toParser :: Parser ARIParseError a}
   deriving
     ( Functor
     , Applicative
@@ -65,8 +68,38 @@ newtype ARIParser a = ARIParser {toParser :: Parser a}
     , Monad
     , MonadPlus
     , MonadFail
-    , MonadParsec Void Text
+    , MonadParsec ARIParseError Text
     )
+
+data ARIParseError
+  = InvalidIdentifier String String
+  | IndexOutOfRange Int Int
+  | NonPositiveNumber Int
+  deriving (Eq, Ord)
+
+isInvalidIdentifier :: String -> String -> ARIParseError
+isInvalidIdentifier = InvalidIdentifier
+
+mustBeBelow :: Int -> Int -> ARIParseError
+mustBeBelow = IndexOutOfRange
+
+instance ShowErrorComponent ARIParseError where
+  showErrorComponent (NonPositiveNumber n) =
+     "number " ++ show n ++ " must be greater than 0"
+  showErrorComponent (IndexOutOfRange n maxInd) =
+    "index " ++ show n ++ " out of range, it must be at most " ++ show maxInd
+  showErrorComponent (InvalidIdentifier name reason) =
+    "'"
+      ++ name
+      ++ "' is not a valid identifier"
+      ++ if null reason then "" else ",\n" ++ reason
+
+  errorComponentLen (InvalidIdentifier name _) = length name
+  errorComponentLen (IndexOutOfRange n _) = length (show n)
+  errorComponentLen (NonPositiveNumber n) = length (show n)
+
+customErr :: ARIParseError -> E.EF ARIParseError
+customErr = E.fancy . ErrorCustom
 
 {- | @'lineComment'@ consumes a line-comment, which starts with a @;@ character
 and continues until a newline character (the newline character is not consumed).
@@ -105,6 +138,21 @@ ident :: ARIParser String
 ident =
   lexeme (unpack <$> takeWhile1P Nothing (`notElem` identChar))
     <?> "identifier"
+
+keywords :: [String]
+keywords =
+  ["format", "fun", "sort", "rule", "theory", "define-fun"]
+    ++ ["oriented", "join", "semi-equational"]
+    ++ ["TRS", "MSTRS", "LCSTRS", "CTRS", "CSTRS", "CSCTRS"]
+
+restrictedIdent :: ARIParser String
+restrictedIdent = lexeme $ do
+  o <- getOffset
+  identifier <- unpack <$> takeWhile1P Nothing (`notElem` identChar)
+  when (identifier `elem` keywords) $
+    parseError $
+      E.errFancy o (customErr $ identifier `isInvalidIdentifier` "because it is a reserved keyword")
+  pure identifier
 
 keywordChar :: ARIParser Char
 keywordChar = noneOf identChar
@@ -145,22 +193,11 @@ index = do
 isNewline :: Char -> Bool
 isNewline c = c == '\n' || c == '\r'
 
-nonPositiveNumberError :: (Token s ~ Char) => Int -> Int -> E.ParseError s e
+nonPositiveNumberError :: Int -> Int -> E.ParseError s ARIParseError
 nonPositiveNumberError n offset =
-  E.TrivialError
-    offset
-    (Just . E.Tokens $ x :| xs)
-    (Set.singleton (E.Label errStr))
- where
-  (x : xs) = show n
-  errStr = 'n' :| "umber greater than 0"
+  E.errFancy offset $ customErr (NonPositiveNumber n)
 
-indexOutOfRangeError :: (Token s ~ Char) => Int -> Idx.Index -> E.ParseError s e
+indexOutOfRangeError :: Int -> Idx.Index -> E.ParseError s ARIParseError
 indexOutOfRangeError maxIndex i =
-  E.TrivialError
-    (Idx.startOffset i)
-    (Just . E.Tokens $ n :| ns)
-    (Set.singleton (E.Label errStr))
- where
-  (n : ns) = show (Idx.index i)
-  errStr = 'i' :| "ndex in range " ++ show (1 :: Int, maxIndex)
+  E.errFancy (Idx.startOffset i) $
+    customErr (Idx.index i `mustBeBelow` maxIndex)

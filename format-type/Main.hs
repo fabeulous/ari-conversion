@@ -1,21 +1,21 @@
 module Main where
 
+import Control.Applicative (empty)
 import Data.Text (Text)
 import qualified Data.Text.IO as Text
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Megaparsec (parse, takeWhileP)
-import Text.Megaparsec.Error (errorBundlePretty)
+import Text.Megaparsec.Char (char, space1)
+import qualified Text.Megaparsec.Char.Lexer as L
+import Text.Megaparsec.Error (ShowErrorComponent, errorBundlePretty)
 
 import TRSConversion.Parse.ARI.FormatType (parseFormatType)
 import TRSConversion.Parse.ARI.Utils (ARIParser)
 import qualified TRSConversion.Parse.ARI.Utils as ARI
 import TRSConversion.Parse.Utils (Parser)
 import TRSConversion.Problem.Problem (FormatType (..))
-import qualified Text.Megaparsec.Char.Lexer as L
-import Text.Megaparsec.Char (space1, char)
-import Control.Applicative (empty)
 
 usage :: String -> String
 usage name = "Usage: " ++ name ++ " FILE"
@@ -53,11 +53,11 @@ skipSpaces = L.space space1 lineComment empty
 
 lineComment :: ARIParser ()
 lineComment = do
-  _ <- char ';'
-  _ <- takeWhileP Nothing (\c -> c /= '\n' && c /= '\r')
-  pure ()
+    _ <- char ';'
+    _ <- takeWhileP Nothing (\c -> c /= '\n' && c /= '\r')
+    pure ()
 
-parseIO :: Parser a -> String -> Text -> IO a
+parseIO :: ShowErrorComponent e => Parser e a -> String -> Text -> IO a
 parseIO p inpName inp =
     case parse p inpName inp of
         Left err -> do
