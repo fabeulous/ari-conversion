@@ -6,8 +6,11 @@ cradle:
     - path: "./app/"
       component: "exe:trs-conversion"
 
-    - path: "./format-app/"
-      component: "exe:ari-format"
+    - path: "./format-type/"
+      component: "exe:format-type"
+
+    - path: "./ari-syntax-checker/"
+      component: "exe:ari-syntax-checker"
 
     - path: "./test/"
       component: "test:trs-conversion-test"

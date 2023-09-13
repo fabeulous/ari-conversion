@@ -64,6 +64,13 @@ executables:
       - -rtsopts
     dependencies:
       - trs-conversion
+  ari-syntax-checker:
+    main: Main.hs
+    source-dirs: ari-syntax-checker
+    ghc-options:
+      - -rtsopts
+    dependencies:
+      - trs-conversion
 
 tests:
   trs-conversion-test:

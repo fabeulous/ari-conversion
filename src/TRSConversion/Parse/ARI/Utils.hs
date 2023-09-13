@@ -1,7 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 
 module TRSConversion.Parse.ARI.Utils (
   -- * Type
@@ -33,14 +31,11 @@ module TRSConversion.Parse.ARI.Utils (
 import Control.Applicative (Alternative)
 import Control.Monad (MonadPlus, when)
 import Data.Functor (void)
-import Data.List.NonEmpty (NonEmpty ((:|)))
-import qualified Data.Set as Set
 import Data.Text (Text, unpack)
 import Text.Megaparsec (
   ErrorFancy (..),
   MonadParsec (parseError),
   ShowErrorComponent,
-  Token,
   between,
   empty,
   getOffset,

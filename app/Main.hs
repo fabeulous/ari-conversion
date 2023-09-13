@@ -3,7 +3,6 @@ module Main (main) where
 
 import Control.Monad (unless)
 import Data.Char (toUpper)
-import Data.Text (Text)
 import qualified Data.Text.IO as Text
 import Data.Version (showVersion)
 import Paths_trs_conversion (version)
@@ -27,13 +26,12 @@ import System.IO (
   stderr,
   stdout,
  )
-import Text.Megaparsec (eof, errorBundlePretty, parse, ShowErrorComponent)
 
 import qualified TRSConversion.Parse.ARI.Problem as ARI
 import qualified TRSConversion.Parse.ARI.Utils as ARI
 import qualified TRSConversion.Parse.COPS.Problem as COPS
 import qualified TRSConversion.Parse.COPS.Utils as COPS
-import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Parse.Utils (parseIO)
 import TRSConversion.Unparse.Problem (
   unparseAriProblem,
   unparseCopsCOMProblem,
@@ -50,7 +48,7 @@ data Config = Config
   { confTarget :: Maybe String
   , confSource :: Maybe String
   , confCommutationFlag :: Bool
-  , confOutputHandle :: Handle
+  , confOutputFile :: Maybe FilePath
   }
 
 defaultConfig :: Config
@@ -59,7 +57,7 @@ defaultConfig =
     { confSource = Nothing
     , confTarget = Nothing
     , confCommutationFlag = False
-    , confOutputHandle = stdout
+    , confOutputFile = Nothing
     }
 
 options :: [OptDescr (Config -> IO Config)]
@@ -78,9 +76,7 @@ options =
       ['o']
       ["output"]
       ( ReqArg
-          ( \s c -> do
-              fileHandle <- openFile s WriteMode
-              pure $ c{confOutputHandle = fileHandle}
+          ( \s c -> pure $ c{confOutputFile = Just s}
           )
           "FILE"
       )
@@ -165,7 +161,7 @@ data Context = Context
   { target :: Format
   , source :: Format
   , commutationFlag :: Bool
-  , outputHandle :: Handle
+  , outputFile :: Maybe FilePath
   }
 
 contextFromConfig :: Config -> Either String Context
@@ -174,12 +170,12 @@ contextFromConfig conf = do
   trgName <- maybe (Left "Error: missing target format (-t)") Right $ confTarget conf
   src <- parseFormat srcName
   trg <- parseFormat trgName
-  let outH = confOutputHandle conf
+  let outFile = confOutputFile conf
   pure
     Context
       { target = trg
       , source = src
-      , outputHandle = outH
+      , outputFile = outFile
       , commutationFlag = confCommutationFlag conf
       }
  where
@@ -211,18 +207,12 @@ runApp config inputFile = do
       | otherwise -> unparseIO unparseCopsProblem problem
     ARI -> unparseIO unparseAriProblem problem
 
-  hPrint (outputHandle config) doc
+  outputHandle <- case outputFile config of
+    Nothing -> pure stdout
+    Just fp -> openFile fp WriteMode
 
-  hClose (outputHandle config)
-
-parseIO :: ShowErrorComponent e => Parser e a -> String -> Text -> IO a
-parseIO p inpName inp =
-  case parse (p <* eof) inpName inp of
-    Left err -> do
-      putStrLn "Error: invalid input"
-      putStr $ errorBundlePretty err
-      exitFailure
-    Right trs -> return trs
+  hPrint outputHandle doc
+  hClose outputHandle
 
 -- | Takes an unparsing function @up@ as an argument and wraps the result in the IO monad
 unparseIO :: (a -> Either String (Doc ann)) -> a -> IO (Doc ann)
