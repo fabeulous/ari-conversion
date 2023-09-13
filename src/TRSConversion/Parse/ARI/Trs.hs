@@ -68,7 +68,7 @@ parseSystems numSys funSig = do
   indexedRules <- pRules funSig
   rls <- forM indexedRules $ \(i, r) -> do
     unless (index i <= numSys) $ registerParseError (indexOutOfRangeError numSys i)
-    unless (index i <= 0) $ registerParseError (nonPositiveNumberError (Idx.index i) (Idx.startOffset i))
+    unless (index i > 0) $ registerParseError (nonPositiveNumberError (Idx.index i) (Idx.startOffset i))
     pure (index i, r)
   let m = IntMap.fromListWith (++) [(i, [r]) | (i, r) <- rls]
   pure $ fmap reverse m -- reverse to preserve original order
