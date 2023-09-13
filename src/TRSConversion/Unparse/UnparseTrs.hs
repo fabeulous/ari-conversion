@@ -31,8 +31,9 @@ import TRSConversion.Unparse.Utils (filterEmptyDocs)
 -- See the tests for examples of expected output.
 unparseCopsTrs :: (Ord f, Ord v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
 unparseCopsTrs (Trs {rules = systemMap, signature = sig, numSystems = _}) = do
+  let trsUnion = concat systemMap
   prettySystems <- forM (toList systemMap) $ \rs -> do
-    copsSig <- unparseCopsTrsSig rs sig
+    copsSig <- unparseCopsTrsSig trsUnion sig
     return $ vsep (filterEmptyDocs [copsSig, unparseCopsRules rs])
   pure $ vsep prettySystems
 
