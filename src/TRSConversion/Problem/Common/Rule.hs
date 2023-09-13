@@ -12,6 +12,7 @@ module TRSConversion.Problem.Common.Rule (
   -- * Helper functions
   inferSigFromRules,
   ruleVars,
+  ruleFuns,
 )
 where
 
@@ -20,6 +21,7 @@ import Data.List (nub)
 import TRSConversion.Problem.Common.Term (Term (..), termFunArities)
 import qualified TRSConversion.Problem.Common.Term as Term
 import TRSConversion.Problem.Trs.Sig (Sig, checkDistinctSig)
+import Data.Containers.ListUtils (nubOrd)
 
 -- | Datatype representing a rewrite rule @lhs->rhs@.
 data Rule f v = Rule
@@ -74,9 +76,8 @@ Duplicates are removed with 'nub'. Not very efficient, but it works.
 >>> ruleVars [Rule {lhs = Fun "f" [Var "x", Var "y"], rhs = Var "x"}
 ["x", "y"]
 -}
-ruleVars :: Eq v => [Rule f v] -> [v]
-ruleVars rs = nub $ concatMap (\(Rule l r) -> termVars l ++ termVars r) rs
- where
-  termVars :: Term f v -> [v]
-  termVars (Var x) = [x]
-  termVars (Fun _ ts) = concatMap termVars ts
+ruleVars :: Ord v => [Rule f v] -> [v]
+ruleVars rs = nubOrd $ concatMap (\(Rule l r) -> Term.vars l ++ Term.vars r) rs
+
+ruleFuns :: Ord f => [Rule f v] -> [f]
+ruleFuns rs = nubOrd $ concatMap (\r -> Term.funs (lhs r) ++ Term.funs (rhs r)) rs

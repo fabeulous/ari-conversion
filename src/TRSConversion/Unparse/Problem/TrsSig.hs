@@ -23,6 +23,8 @@ import TRSConversion.Problem.Common.Rule (Rule, inferSigFromRules, ruleVars)
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import TRSConversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep, (<+>))
+import qualified Data.Set as Set
+import qualified TRSConversion.Problem.Common.Rule as Rule
 
 -- | Pretty print a 'TrsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php).
 -- @Right doc@ indicates a success, and @Left err@ indicates an error due to a variable being in
@@ -40,10 +42,13 @@ import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep, (<+>))
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 --   function symbols, consistency with rules, etc. This should be done separately.
-unparseCopsTrsSig :: (Eq v, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
+unparseCopsTrsSig :: (Ord f, Ord v, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
 unparseCopsTrsSig rs trsSig = case trsSig of
   Vars vs -> Right $ prettyVars vs
-  FullSig vs fs -> Right $ vsep [prettyNonEmptyVars vs, prettyCopsSig fs]
+  FullSig vs fs
+    | Set.fromList [f | Sig f _ <- fs] `Set.isSubsetOf` Set.fromList (Rule.ruleFuns rs)
+      -> Right $ prettyVars vs
+    | otherwise -> Right $ vsep [prettyNonEmptyVars vs, prettyCopsSig fs]
   FunSig fs -> unparseCopsTrsSig rs $ FullSig (ruleVars rs) fs
   where
     prettyVars, prettyNonEmptyVars :: Pretty v => [v] -> Doc ann

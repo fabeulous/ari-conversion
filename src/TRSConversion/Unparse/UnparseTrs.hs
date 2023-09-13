@@ -13,13 +13,14 @@ module TRSConversion.Unparse.UnparseTrs
   )
 where
 
-import TRSConversion.Problem.Trs.Trs (Trs (..))
-import TRSConversion.Unparse.Problem.Rule (unparseCopsRules, unparseAriSystems)
-import TRSConversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
-import TRSConversion.Unparse.Utils (filterEmptyDocs)
-import Prettyprinter (Doc, Pretty, pretty, vsep, (<+>), parens)
 import Control.Monad (forM)
 import Data.Foldable (toList)
+import Prettyprinter (Doc, Pretty, parens, pretty, vsep, (<+>))
+
+import TRSConversion.Problem.Trs.Trs (Trs (..))
+import TRSConversion.Unparse.Problem.Rule (unparseAriSystems, unparseCopsRules)
+import TRSConversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 -- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 -- [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).
@@ -28,7 +29,7 @@ import Data.Foldable (toList)
 -- unparse each part of the 'Trs'.
 --
 -- See the tests for examples of expected output.
-unparseCopsTrs :: (Eq v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
+unparseCopsTrs :: (Ord f, Ord v, Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
 unparseCopsTrs (Trs {rules = systemMap, signature = sig, numSystems = _}) = do
   prettySystems <- forM (toList systemMap) $ \rs -> do
     copsSig <- unparseCopsTrsSig rs sig

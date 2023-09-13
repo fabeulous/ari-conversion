@@ -8,9 +8,9 @@ module TRSConversion.Problem.Common.Term
     Term (..),
     map,
     vars,
+    funs,
     -- * Helper Functions
     termFunArities,
-
   )
 where
 
@@ -55,3 +55,7 @@ termFunArities t = checkDistinctSig $ nub arities
 vars :: Term f v -> [v]
 vars (Var v) = [v]
 vars (Fun _ ts) = concatMap vars ts
+
+funs :: Term f v -> [f]
+funs (Var _) = []
+funs (Fun f ts) = f : concatMap funs ts
