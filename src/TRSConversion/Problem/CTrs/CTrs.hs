@@ -4,14 +4,18 @@ module TRSConversion.Problem.CTrs.CTrs (
     Condition (..),
     CondType (..),
     inferSigFromRules,
+    vars,
+    varsCondition,
 ) where
 
+import Data.Foldable (foldl')
+import Data.IntMap (IntMap)
 import qualified Data.Map.Strict as M
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig)
-import Data.Foldable (foldl')
-import Data.IntMap (IntMap)
+import qualified TRSConversion.Problem.Common.Term as Term
+import Data.Containers.ListUtils (nubOrd)
 
 data CondType = Oriented | Join | SemiEquational
     deriving (Eq, Show)
@@ -64,3 +68,12 @@ inferSigFromRules ctrs = M.foldrWithKey (\f a acc -> Sig f a : acc) [] <$> resM
 termFunArity :: Term f v -> [(f, Int)]
 termFunArity (Fun f ts) = (f, length ts) : concatMap termFunArity ts
 termFunArity (Var _) = []
+
+vars :: Ord v => [CRule f v] -> [v]
+vars rs = nubOrd $ concatMap ruleVars rs
+ where
+   ruleVars rl =
+     Term.vars (lhs rl) ++ Term.vars (rhs rl) ++ concatMap varsCondition (conditions rl)
+
+varsCondition :: Condition f a -> [a]
+varsCondition (l :== r) = Term.vars l ++ Term.vars r

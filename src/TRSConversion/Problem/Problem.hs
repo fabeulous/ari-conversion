@@ -14,6 +14,7 @@ import TRSConversion.Problem.MsTrs.MsTrs (MsTrs)
 import TRSConversion.Problem.Trs.Trs (Trs)
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs)
 import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs)
+import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility)
 
 data FormatType
   = TrsFormat Int
@@ -22,6 +23,7 @@ data FormatType
   | CSTrsFormat Int
   | CSCTrsFormat CondType Int
   | LCTrsFormat Int
+  | InfeasibilityFormat CondType
   deriving (Eq, Show)
 
 data System
@@ -30,6 +32,7 @@ data System
     | CTrs (CTrs String String)
     | CSTrs (CSTrs String String)
     | CSCTrs (CSCTrs String String)
+    | Infeasibility (Infeasibility String String)
     deriving (Eq, Show)
 
 data Problem = Problem

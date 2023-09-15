@@ -8,7 +8,7 @@ where
 
 import Control.Monad (unless)
 import Data.Text (Text, pack)
-import Text.Megaparsec (ParseError, Stream, Tokens, getOffset, option, parseError)
+import Text.Megaparsec (ParseError, Stream, Tokens, getOffset, option, parseError, try, (<|>))
 import qualified Text.Megaparsec.Error.Builder as E
 
 import TRSConversion.Parse.ARI.CTrs (pCondType)
@@ -31,7 +31,7 @@ parseFormatType =
             "TRS" -> trsFormat
             "MSTRS" -> msTrsFormat
             "LCTRS" -> lcTrsFormat
-            "CTRS" -> cTrsFormat
+            "CTRS" -> try infeasibilityFormat <|> cTrsFormat
             "CSTRS" -> csTrsFormat
             "CSCTRS" -> cscTrsFormat
             _ -> parseError $ unknownFormatType (pack name) o
@@ -52,6 +52,9 @@ csTrsFormat = CSTrsFormat <$> optNumber
 
 cTrsFormat :: ARIParser FormatType
 cTrsFormat = CTrsFormat <$> pCondType <*> optNumber
+
+infeasibilityFormat :: ARIParser FormatType
+infeasibilityFormat = InfeasibilityFormat <$> pCondType <* keyword ":problem" <* keyword "infeasibility"
 
 msTrsFormat :: ARIParser FormatType
 msTrsFormat = MSTrsFormat <$> optNumber

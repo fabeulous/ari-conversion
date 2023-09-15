@@ -11,6 +11,7 @@ module TRSConversion.Parse.COPS.CTrs (
   parseCopsCTrs,
   -- * parsers
   pCondTypeBlock,
+  parseCopsCondition,
   pCRulesBlock
 )
 where
@@ -22,11 +23,12 @@ import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Co
 import TRSConversion.Problem.Trs.TrsSig (TrsSig(Vars))
 import Text.Megaparsec (many, option, sepBy1, (<|>))
 import qualified Data.IntMap as IntMap
+import TRSConversion.Parse.COPS.Trs (parseCopsVarBlock)
 
 parseCopsCTrs :: COPSParser (CTrs String String)
 parseCopsCTrs = do
   condType <- pCondTypeBlock
-  vars <- option [] pVarsBlock
+  vars <- parseCopsVarBlock
   rs <- pCRulesBlock vars
   return $
     CTrs
@@ -45,11 +47,6 @@ pCondType =
 pCondTypeBlock :: COPSParser CondType
 pCondTypeBlock = block "CONDITIONTYPE" pCondType
 
-pVarsBlock :: COPSParser [String]
-pVarsBlock = block "VAR" pVars
- where
-  pVars = many ident
-
 pCRulesBlock :: [String] -> COPSParser [CRule String String]
 pCRulesBlock vars = block "RULES" pRules
  where
@@ -59,6 +56,7 @@ pCRule :: [String] -> COPSParser (CRule String String)
 pCRule vars = CRule <$> parseTermVars vars <*> (symbol "->" *> parseTermVars vars) <*> pConditions
  where
   pConditions =
-    option [] $ symbol "|" *> sepBy1 pCondition (symbol ",")
+    option [] $ symbol "|" *> sepBy1 (parseCopsCondition vars) (symbol ",")
 
-  pCondition = (:==) <$> parseTermVars vars <*> (symbol "==" *> parseTermVars vars)
+parseCopsCondition :: [String] -> COPSParser (Condition String String)
+parseCopsCondition vars = (:==) <$> parseTermVars vars <*> (symbol "==" *> parseTermVars vars)

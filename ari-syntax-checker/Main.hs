@@ -32,6 +32,7 @@ runApp fp = do
         (Prob.CTrs _) -> "ctrs"
         (Prob.CSTrs _) -> "cstrs"
         (Prob.CSCTrs _) -> "csctrs"
+        (Prob.Infeasibility _) -> "infeasibility"
     putStrLn " successfully parsed"
 
     exitSuccess

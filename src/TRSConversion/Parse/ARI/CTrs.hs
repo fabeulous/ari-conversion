@@ -14,6 +14,7 @@ module TRSConversion.Parse.ARI.CTrs (
   -- * Parsers
   pCSystems,
   pCRules,
+  parseCondition,
   pCondType,
 )
 where
@@ -91,5 +92,9 @@ parseAriCRule funSig = do
   pure (idx, rule)
  where
   term = parsePrefixTerm funSig
-  pConds = many pCond
-  pCond = sExpr "=" ((:==) <$> term <*> term)
+  pConds = many (parseCondition funSig)
+
+parseCondition :: [Sig String] -> ARIParser (Condition String String)
+parseCondition funSig = sExpr "=" ((:==) <$> term <*> term)
+  where
+    term = parsePrefixTerm funSig

@@ -34,12 +34,28 @@ runApp filename = do
     fileContents <- Text.readFile filename
     formatType <- parseIO (ARI.toParser parseHead) filename fileContents
     putStrLn $ case formatType of
-        TrsFormat _ -> "trs"
-        MSTrsFormat _ -> "mstrs"
-        CTrsFormat _ _ -> "ctrs"
+        TrsFormat n
+            | n == 1 -> "trs"
+            | n == 2 -> "two-trs"
+            | otherwise -> "multi-trs"
+        MSTrsFormat n
+            | n == 1 -> "mstrs"
+            | n == 2 -> "two-mstrs"
+            | otherwise -> "multi-mstrs"
+        CTrsFormat _ n
+            | n == 1 -> "ctrs"
+            | n == 2 -> "two-ctrs"
+            | otherwise -> "multi-ctrs"
         CSTrsFormat _ -> "cstrs"
-        CSCTrsFormat _ _ -> "csctrs"
-        LCTrsFormat _ -> "lctrs"
+        CSCTrsFormat _ n
+            | n == 1 -> "csctrs"
+            | n == 2 -> "two-csctrs"
+            | otherwise -> "multi-csctrs"
+        LCTrsFormat n
+            | n == 1 -> "lctrs"
+            | n == 2 -> "two-lctrs"
+            | otherwise -> "multi-lctrs"
+        InfeasibilityFormat _ -> "infeasibility"
 
 parseHead :: ARIParser FormatType
 parseHead = do

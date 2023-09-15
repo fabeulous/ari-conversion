@@ -7,7 +7,7 @@ import qualified Data.IntMap as IntMap
 import Data.Text (unpack)
 import TRSConversion.Parse.COPS.Utils (COPSParser, block, keyword)
 import TRSConversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
-import Text.Megaparsec (MonadParsec (takeWhileP), option)
+import Text.Megaparsec (MonadParsec (takeWhileP), option, try)
 import TRSConversion.Parse.COPS.Trs (parseCopsTrs)
 import Data.Containers.ListUtils (nubOrd)
 import TRSConversion.Problem.Common.Rule (inferSigFromRules)
@@ -16,7 +16,7 @@ import Data.Either (fromRight)
 
 parseCopsCom :: COPSParser (Maybe String, Trs String String)
 parseCopsCom = do
-    _ <- block "PROBLEM" (keyword "COMMUTATION")
+    _ <- try $ block "PROBLEM" (keyword "COMMUTATION")
     origin <- option Nothing (fmap (Just . unpack) $ block "COMMENT" $ takeWhileP (Just "comment") (/= ')'))
     trs1 <- parseCopsTrs
     trs2 <- parseCopsTrs

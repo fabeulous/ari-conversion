@@ -137,7 +137,7 @@ ident =
 keywords :: [String]
 keywords =
   ["format", "fun", "sort", "rule", "theory", "define-fun"]
-    ++ ["oriented", "join", "semi-equational"]
+    -- ++ ["oriented", "join", "semi-equational"]
     ++ ["TRS", "MSTRS", "LCSTRS", "CTRS", "CSTRS", "CSCTRS"]
 
 restrictedIdent :: ARIParser String

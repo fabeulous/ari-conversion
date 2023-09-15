@@ -8,6 +8,7 @@
 module TRSConversion.Parse.COPS.Trs
   ( -- ** COPS
     parseCopsTrs,
+    parseCopsVarBlock
   )
 where
 
@@ -25,7 +26,7 @@ import qualified Data.IntMap as IntMap
 -- Note that the entire input will not necessarily be consumed: : use `<* eof` if this is needed.
 parseCopsTrs :: COPSParser (Trs String String)
 parseCopsTrs = do
-  vs <- option [] $ block "VAR" (many ident)
+  vs <- parseCopsVarBlock
   funSig <- optional (block "SIG" parseCopsSig)
   let trsSig = case funSig of
         Nothing -> Vars vs -- If no SIG block is given
@@ -37,3 +38,6 @@ parseCopsTrs = do
         signature = trsSig,
         numSystems = 1
       }
+
+parseCopsVarBlock :: COPSParser [String]
+parseCopsVarBlock = option [] $ block "VAR" (many ident)

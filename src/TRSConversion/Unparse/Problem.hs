@@ -17,6 +17,7 @@ import TRSConversion.Unparse.COM (unparseCopsCOM)
 import TRSConversion.Unparse.CSCTrs (unparseAriCSCTrs, unparseCopsCSCTrs)
 import TRSConversion.Unparse.CSTrs (unparseAriCSTrs, unparseCopsCSTrs)
 import TRSConversion.Unparse.CTrs (unparseAriCTrs, unparseCopsCTrs)
+import TRSConversion.Unparse.Infeasibility (unparseAriInfeasibility, unparseCopsInfeasibility)
 import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
 import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
 import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
@@ -34,7 +35,13 @@ unparseCopsProblem problem = do
             CTrs trs -> unparseCopsCTrs trs
             CSTrs trs -> unparseCopsCSTrs trs
             CSCTrs trs -> unparseCopsCSCTrs trs
-    prettyMeta = unparseCopsMetaInfo (metaInfo problem)
+            Infeasibility inf -> unparseCopsInfeasibility originComment inf
+
+    prettyMeta = unparseCopsMetaInfo metaInfo'
+    metaInfo' = case system problem of
+        Infeasibility _ -> (metaInfo problem){origin = Nothing}
+        _ -> metaInfo problem
+    originComment = fromMaybe "" (origin (metaInfo problem))
 
 unparseCopsCOMProblem :: Problem -> Either String (Doc ann)
 unparseCopsCOMProblem problem =
@@ -59,4 +66,5 @@ unparseAriProblem problem = do
             CTrs trs -> unparseAriCTrs trs
             CSTrs trs -> unparseAriCSTrs trs
             CSCTrs trs -> unparseAriCSCTrs trs
+            Infeasibility inf -> unparseAriInfeasibility inf
     prettyMeta = unparseAriMetaInfo (metaInfo problem)

@@ -13,12 +13,15 @@ module TRSConversion.Unparse.CTrs (
   -- ** Helpers
   prettyCondType,
   prettyCRule,
+  unparseCondition,
 
   -- * ARI
   unparseAriCTrs,
   unparseAriCSystems,
   unparseAriCRules,
   prettyAriConditionType,
+  unparseAriCTrsSig,
+  unparseAriCondition,
 )
 where
 
@@ -104,14 +107,14 @@ unparseCRule index (CRule{lhs = l, rhs = r, conditions = cnds}) =
     <> conds cnds <> optIndex
  where
   conds [] = mempty
-  conds cs = space <> hsep (map unparseCond cs)
+  conds cs = space <> hsep (map unparseAriCondition cs)
 
   optIndex
     | index == 1 = mempty
     | otherwise = mempty <+> ":index" <+> pretty index
 
-unparseCond :: (Pretty f, Pretty v) => Condition f v -> Doc ann
-unparseCond (t1 :== t2) = parens $ "=" <+> unparsePrefixTerm t1 <+> unparsePrefixTerm t2
+unparseAriCondition :: (Pretty f, Pretty v) => Condition f v -> Doc ann
+unparseAriCondition (t1 :== t2) = parens $ "=" <+> unparsePrefixTerm t1 <+> unparsePrefixTerm t2
 
 prettyAriFormat :: CondType -> Doc ann
 prettyAriFormat condType = parens $ "format CTRS" <+> prettyAriConditionType condType
