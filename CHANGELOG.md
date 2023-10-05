@@ -9,9 +9,10 @@ and this project adheres to the
 ## Unreleased
 - `file-type` executable added. Given an ARI input file it prints the format
   type to stdout.
-- dropped `--comm` as shorthand for the `--commutation` flag, since the parse
+- dropped `--comm` as shorthand for the `--commutation` flag, since the parser
   already uses flags when the prefix matches only a single option
 - ARI parser no longer allows most keywords as function symbols or variables
+- added INFEASIBILITY format for both COPS and ARI
 
 ## 0.4.0.0 - 2023-08-14
 - ARI format support for multiple systems

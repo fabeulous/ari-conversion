@@ -3,6 +3,8 @@
 
 module TRSConversion.Parse.ARI.FormatType (
     parseFormatType,
+    -- * Individual Format types
+    infeasibilityFormat,
 )
 where
 

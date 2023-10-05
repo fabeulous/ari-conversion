@@ -44,7 +44,7 @@ import Text.Megaparsec (
   takeWhile1P,
   takeWhileP,
   try,
-  (<?>),
+  (<?>), showErrorComponent,
  )
 import Text.Megaparsec.Char (char, space1, string)
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -71,6 +71,10 @@ data ARIParseError
   | IndexOutOfRange Int Int
   | NonPositiveNumber Int
   deriving (Eq, Ord)
+
+
+instance Show ARIParseError where
+  show = showErrorComponent
 
 isInvalidIdentifier :: String -> String -> ARIParseError
 isInvalidIdentifier = InvalidIdentifier

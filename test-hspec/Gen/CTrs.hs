@@ -15,10 +15,13 @@ genCRule sig genVars = do
   l <- gTerm
   r <- gTerm
   nConds <- Gen.integral (Range.constantFrom 0 0 2)
-  conds <- replicateM nConds ((:==) <$> gTerm <*> gTerm)
+  conds <- replicateM nConds (genCondition sig genVars)
   pure $ CRule l r conds
  where
   gTerm = genTerm sig genVars
+
+genCondition :: [Sig f] -> Gen v -> Gen (Condition f v)
+genCondition sig genVars = (:==) <$> genTerm sig genVars <*> genTerm sig genVars
 
 genCTrs :: [Sig f] -> Gen v -> Gen (CTrs f v)
 genCTrs sig varGen = do
