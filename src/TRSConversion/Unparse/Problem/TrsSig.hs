@@ -43,14 +43,13 @@ import qualified TRSConversion.Problem.Common.Rule as Rule
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 --   function symbols, consistency with rules, etc. This should be done separately.
 unparseCopsTrsSig :: (Ord f, Ord v, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
-unparseCopsTrsSig rs trsSig = case trsSig of
-  Vars vs -> Right $ prettyVars vs
-  FullSig vs fs
+unparseCopsTrsSig rs (FunSig fs)
     | Set.fromList [f | Sig f _ <- fs] `Set.isSubsetOf` Set.fromList (Rule.ruleFuns rs)
-      -> Right $ prettyVars vs
-    | otherwise -> Right $ vsep [prettyNonEmptyVars vs, prettyCopsSig fs]
-  FunSig fs -> unparseCopsTrsSig rs $ FullSig (ruleVars rs) fs
+      = Right $ prettyVars variables
+    | otherwise = Right $ vsep [prettyNonEmptyVars variables, prettyCopsSig fs]
   where
+    variables = ruleVars rs
+
     prettyVars, prettyNonEmptyVars :: Pretty v => [v] -> Doc ann
     prettyVars vs = if null vs then emptyDoc else prettyNonEmptyVars vs
     prettyNonEmptyVars vs = prettyBlock "VAR" (hsep $ map pretty vs)
@@ -73,12 +72,8 @@ unparseCopsTrsSig rs trsSig = case trsSig of
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 -- function symbols, consistency with rules, etc. This should be done separately.
-unparseAriTrsSig :: (Eq v, Eq f, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
+unparseAriTrsSig :: (Pretty f) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
 unparseAriTrsSig _ (FunSig fs) = Right (unparseAriSigs fs)
-unparseAriTrsSig rs (FullSig _ fs) = unparseAriTrsSig rs (FunSig fs)
-unparseAriTrsSig rs (Vars _) = case inferSigFromRules rs of -- Extract signature from TRS rules
-  Right fs -> unparseAriTrsSig rs (FunSig fs)
-  Left err -> Left err
 
 
 unparseAriSigs :: Pretty f => [Sig f] -> Doc ann

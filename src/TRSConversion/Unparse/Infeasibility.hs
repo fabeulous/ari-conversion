@@ -6,7 +6,7 @@ module TRSConversion.Unparse.Infeasibility (
 ) where
 
 import Prettyprinter (Doc, Pretty, hsep, parens, pretty, vsep, (<+>), concatWith)
-import TRSConversion.Problem.CTrs.CTrs (CondType, Condition (..), conditionType, rules, signature, CRule (CRule), varsCondition)
+import TRSConversion.Problem.CTrs.CTrs (CondType, Condition (..), conditionType, rules, signature, varsCondition)
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (query))
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
 import TRSConversion.Unparse.CTrs (prettyAriConditionType, unparseAriCSystems, unparseAriCTrsSig, unparseAriCondition, unparseCopsCTrs, unparseCondition)
@@ -25,10 +25,10 @@ unparseCopsInfeasibility comment inf = do
             , parens $ "CONDITION" <+> concatWith (\l r -> l <> "," <+> r) [unparseCondition c | c <- query inf]
             ]
 
-unparseAriInfeasibility :: (Ord v, Pretty f, Pretty v, Ord f) => Infeasibility f v -> Either String (Doc ann)
+unparseAriInfeasibility :: (Pretty f, Pretty v) =>Infeasibility f v -> Either String (Doc ann)
 unparseAriInfeasibility infProb = do
     let ctrs = Inf.ctrs infProb
-    ariSig <- unparseAriCTrsSig (map queryToRule (query infProb) ++ concat (rules ctrs)) (signature ctrs)
+    ariSig <- unparseAriCTrsSig (signature ctrs)
     let trsElements =
             [ prettyAriInfFormat (conditionType ctrs)
             , ariSig
@@ -36,8 +36,6 @@ unparseAriInfeasibility infProb = do
             , unparseAriQuery (Inf.query infProb)
             ]
     return $ vsep (filterEmptyDocs trsElements)
-  where
-    queryToRule (l :== r) = CRule l r []
 
 unparseAriQuery :: (Pretty f, Pretty v) => [Condition f v] -> Doc ann
 unparseAriQuery conds = parens $ "infeasible?" <+> hsep (map unparseAriCondition conds)

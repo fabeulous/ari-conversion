@@ -8,7 +8,7 @@ import TRSConversion.Parse.ARI.Utils (ARIParser, sExpr, keyword)
 import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType, Condition, inferSigFromRules)
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import TRSConversion.Problem.Trs.Sig (Sig)
-import qualified TRSConversion.Problem.Trs.TrsSig as Sig
+import TRSConversion.Problem.Trs.TrsSig (TrsSig(FunSig))
 
 parseAriInfeasibility :: ARIParser (Infeasibility String String)
 parseAriInfeasibility = do
@@ -19,12 +19,7 @@ parseAriInfeasibility = do
 parseAriInfeasibility' :: CondType -> ARIParser (Infeasibility String String)
 parseAriInfeasibility' condType = do
     sys <- parseAriCTrs' condType 1
-    let funSig = case signature sys of
-            (Sig.Vars _) -> case inferSigFromRules (concat (rules sys)) of
-                Left e -> fail e
-                Right sig -> sig
-            (Sig.FunSig fs) -> fs
-            (Sig.FullSig _ fs) -> fs
+    let FunSig funSig = signature sys
     q <- parseInfQuery funSig
     pure $ Infeasibility{ctrs = sys, query = q}
 

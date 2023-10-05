@@ -17,26 +17,29 @@ module TRSConversion.Parse.COPS.CTrs (
 where
 
 import Data.Functor (($>))
-import TRSConversion.Parse.COPS.Term (parseTermVars)
-import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident, keyword, symbol)
-import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
-import TRSConversion.Problem.Trs.TrsSig (TrsSig(Vars))
-import Text.Megaparsec (many, option, sepBy1, (<|>))
 import qualified Data.IntMap as IntMap
+import TRSConversion.Parse.COPS.Term (parseTermVars)
 import TRSConversion.Parse.COPS.Trs (parseCopsVarBlock)
+import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident, keyword, symbol)
+import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..), inferSigFromRules)
+import TRSConversion.Problem.Trs.TrsSig (TrsSig (FunSig))
+import Text.Megaparsec (many, option, sepBy1, (<|>))
 
 parseCopsCTrs :: COPSParser (CTrs String String)
 parseCopsCTrs = do
   condType <- pCondTypeBlock
   vars <- parseCopsVarBlock
   rs <- pCRulesBlock vars
-  return $
-    CTrs
-      { conditionType = condType
-      , rules = IntMap.singleton 1 rs
-      , signature = Vars vars
-      , numSystems = 1
-      }
+  case inferSigFromRules rs of
+    Left err -> fail err
+    Right fs ->
+      return
+        $ CTrs
+          { conditionType = condType
+          , rules = IntMap.singleton 1 rs
+          , signature = FunSig fs
+          , numSystems = 1
+          }
 
 pCondType :: COPSParser CondType
 pCondType =

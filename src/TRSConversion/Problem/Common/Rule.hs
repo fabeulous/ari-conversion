@@ -17,7 +17,7 @@ module TRSConversion.Problem.Common.Rule (
 where
 
 import Prelude hiding (map)
-import Data.List (nub)
+import Data.List (nub, sort)
 import TRSConversion.Problem.Common.Term (Term (..), termFunArities)
 import qualified TRSConversion.Problem.Common.Term as Term
 import TRSConversion.Problem.Trs.Sig (Sig, checkDistinctSig)
@@ -63,11 +63,11 @@ Right [Sig "f" 1,Sig "g" 1]
 >>> inferSigFromRules [Rule {lhs = Fun "a" [Var "x"], rhs = Var "x"}, Rule {lhs = Fun "a" [], rhs = Fun "b" []}]
 Left "A function symbol appears multiple times in signature...
 -}
-inferSigFromRules :: (Eq f) => [Rule f v] -> Either String [Sig f]
+inferSigFromRules :: (Ord f) => [Rule f v] -> Either String [Sig f]
 inferSigFromRules rs = do
   case mapM ruleFunArities rs of
     -- Each individual signature might be consistent but we need to check their union
-    Right sigLists -> checkDistinctSig $ nub (concat sigLists)
+    Right sigLists -> checkDistinctSig . sort $ nubOrd (concat sigLists)
     Left err -> Left err
 
 {- | Extract a list of variables appearing in both sides of a list of rules.

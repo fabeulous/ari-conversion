@@ -48,10 +48,9 @@ unparseCopsCSTrs cstrs
           ]
  where
   rs = rules cstrs IntMap.! 1
-  vs = varsOfTrs (signature cstrs) rs
+  vs = varsOfTrs rs
 
-  varsOfTrs (Vars vas) _ = vas
-  varsOfTrs _ rls = map head . group . sort $ concatMap varsOfRules rls
+  varsOfTrs rls = map head . group . sort $ concatMap varsOfRules rls
 
   varsOfRules r = vars (R.lhs r) ++ vars (R.rhs r)
 
@@ -85,13 +84,9 @@ unparseAriCSTrs cstrs = do
     if n > 1 then mempty <+> ":number" <+> pretty n else mempty
 
 unparseAriReplacementSig :: (Ord f, Pretty f) => [R.Rule f v] -> TrsSig f v -> ReplacementMap f -> Either String (Doc ann)
-unparseAriReplacementSig rs sig repMap = go sig
+unparseAriReplacementSig rs (FunSig fs) repMap = Right (vsep $ map prettySigLine fs)
  where
   repMapM = M.fromList repMap
   prettyM = M.map (\ints -> mempty <+> ":replacement-map" <+> (parens . hsep $ map pretty ints)) repMapM
-
-  go (FunSig fs) = Right (vsep $ map prettySigLine fs)
-  go (FullSig _ fs) = Right (vsep $ map prettySigLine fs)
-  go (Vars _) = go . FunSig =<< inferSigFromRules rs
 
   prettySigLine (Sig f a) = parens $ "fun" <+> pretty f <+> pretty a <> M.findWithDefault mempty f prettyM

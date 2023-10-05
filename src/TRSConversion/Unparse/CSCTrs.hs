@@ -47,16 +47,15 @@ unparseCopsCSCTrs CSCTrs{ctrs = system, replacementMap = repMap}
           ]
  where
   rs = rules system IntMap.! 1
-  vs = varsOfTrs (signature system) rs
+  vs = varsOfTrs rs
 
-  varsOfTrs (Vars vas) _ = vas
-  varsOfTrs _ rls = map head . group . sort $ concatMap varsOfRules rls
+  varsOfTrs rls = map head . group . sort $ concatMap varsOfRules rls
 
   varsOfRules r = vars (lhs r) ++ vars (rhs r)
 
-unparseAriCSCTrs :: (Pretty f, Pretty v, Ord f) =>CSCTrs f v -> Either String (Doc ann)
+unparseAriCSCTrs :: (Pretty f, Pretty v, Ord f) => CSCTrs f v -> Either String (Doc ann)
 unparseAriCSCTrs CSCTrs{ctrs = system, replacementMap = repMap} = do
-  ariSig <- unparseAriCSCTrsSig (concat $ rules system) (signature system) repMap
+  ariSig <- unparseAriCSCTrsSig (signature system) repMap
   let trsElements =
         [ parens $ "format CSCTRS" <+> prettyAriConditionType (conditionType system)
         , ariSig
@@ -64,15 +63,11 @@ unparseAriCSCTrs CSCTrs{ctrs = system, replacementMap = repMap} = do
         ]
   return $ vsep (filterEmptyDocs trsElements)
 
-unparseAriCSCTrsSig :: (Ord f, Pretty f) => [CRule f v] -> TrsSig f v -> ReplacementMap f -> Either String (Doc ann)
-unparseAriCSCTrsSig rs sig repMap = go sig
+unparseAriCSCTrsSig :: (Ord f, Pretty f) => TrsSig f v -> ReplacementMap f -> Either String (Doc ann)
+unparseAriCSCTrsSig (FunSig fs) repMap = Right (vsep $ map prettySigLine fs)
  where
   repMapM = M.fromList repMap
   prettyM = M.map (\ints -> mempty <+> ":replacement-map" <+> (parens . hsep $ map pretty ints)) repMapM
-
-  go (FunSig fs) = Right (vsep $ map prettySigLine fs)
-  go (FullSig _ fs) = Right (vsep $ map prettySigLine fs)
-  go (Vars _) = go . FunSig =<< inferSigFromRules rs
 
   prettySigLine (Sig f a) = parens $ "fun" <+> pretty f <+> pretty a <> M.findWithDefault mempty f prettyM
 

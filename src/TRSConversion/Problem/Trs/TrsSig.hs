@@ -24,11 +24,5 @@ import TRSConversion.Problem.Trs.Sig (Sig (..))
 -- should specify all symbols in the system)
 --
 -- * Only function symbols with arity (ARI format)
-data TrsSig f v
-  = -- | A list of all variables in the TRS
-    Vars [v]
-  | -- | A list of all function symbols (with arities) in the TRS
-    FunSig [Sig f]
-  | -- | A list @[v]@ of all variables and @[Sig f]@ function symbols (with arities) in the TRS
-    FullSig [v] [Sig f]
+newtype TrsSig f v = FunSig [Sig f]
   deriving (Eq, Show)

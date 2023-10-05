@@ -25,15 +25,15 @@ module TRSConversion.Unparse.CTrs (
 )
 where
 
-import Data.List (group, sort)
+import Data.Containers.ListUtils (nubOrd)
+import Data.IntMap (IntMap)
+import qualified Data.IntMap as IntMap
 import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, nest, parens, pretty, space, vsep, (<+>))
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..), inferSigFromRules)
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import TRSConversion.Unparse.Problem.Term (unparsePrefixTerm, unparseTerm)
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import Data.IntMap (IntMap)
-import qualified Data.IntMap as IntMap
 
 {- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).
@@ -50,15 +50,14 @@ unparseCopsCTrs ctrs
     pure $
       vsep
         [ prettyBlock "CONDITIONTYPE" (prettyCondType $ conditionType ctrs)
-        , prettyBlock "VAR" (hsep [pretty v | v <- vs])
+        , prettyBlock "VAR" (hsep [pretty v | v <- variables])
         , prettyBlock "RULES" (nest 2 (vsep $ mempty : [prettyCRule r | r <- rs]) <> hardline)
         ]
  where
   rs = rules ctrs IntMap.! 1
-  vs = varsOfTrs (signature ctrs) rs
+  variables = varsOfTrs rs
 
-  varsOfTrs (Vars vas) _ = vas
-  varsOfTrs _ rls = map head . group . sort $ concatMap varsOfRules rls
+  varsOfTrs rls = nubOrd $ concatMap varsOfRules rls
 
   varsOfRules r = vars (lhs r) ++ vars (rhs r)
 
@@ -78,9 +77,9 @@ prettyCondType SemiEquational = "SEMI-EQUATIONAL"
 prettyCondType Join = "JOIN"
 prettyCondType Oriented = "ORIENTED"
 
-unparseAriCTrs :: (Ord v, Pretty f, Pretty v, Ord f) => CTrs f v -> Either String (Doc ann)
+unparseAriCTrs :: (Pretty f, Pretty v) =>CTrs f v -> Either String (Doc ann)
 unparseAriCTrs ctrs = do
-  ariSig <- unparseAriCTrsSig (concat $ rules ctrs) (signature ctrs)
+  ariSig <- unparseAriCTrsSig (signature ctrs)
   let trsElements =
         [ prettyAriFormat (conditionType ctrs)
         , ariSig
@@ -88,12 +87,8 @@ unparseAriCTrs ctrs = do
         ]
   return $ vsep (filterEmptyDocs trsElements)
 
-unparseAriCTrsSig :: (Eq v, Ord f, Pretty f, Pretty v) => [CRule f v] -> TrsSig f v -> Either String (Doc ann)
-unparseAriCTrsSig _ (FunSig fs) = Right (vsep $ map (prettyBlock "fun" . pretty) fs)
-unparseAriCTrsSig rs (FullSig _ fs) = unparseAriCTrsSig rs (FunSig fs)
-unparseAriCTrsSig rs (Vars _) = case inferSigFromRules rs of -- Extract signature from TRS rules
-  Right fs -> unparseAriCTrsSig rs (FunSig fs)
-  Left err -> Left err
+unparseAriCTrsSig :: (Pretty f) => TrsSig f v -> Either String (Doc ann)
+unparseAriCTrsSig (FunSig fs) = Right (vsep $ map (prettyBlock "fun" . pretty) fs)
 
 unparseAriCSystems :: (Pretty f, Pretty v) => IntMap [CRule f v] -> Doc ann
 unparseAriCSystems systems = vsep $ fmap (uncurry unparseAriCRules) (IntMap.toList systems)

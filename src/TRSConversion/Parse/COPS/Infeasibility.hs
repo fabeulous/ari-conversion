@@ -7,15 +7,14 @@ import Data.Text (unpack)
 import TRSConversion.Parse.COPS.CTrs (pCRulesBlock, pCondTypeBlock, parseCopsCondition)
 import TRSConversion.Parse.COPS.Trs (parseCopsVarBlock)
 import TRSConversion.Parse.COPS.Utils (COPSParser, block, keyword, symbol)
-import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType (Oriented))
+import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType (Oriented), inferSigFromRules, Condition ((:==)), CRule (CRule))
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
-import qualified TRSConversion.Problem.Trs.TrsSig as Sig
 import Text.Megaparsec (
     MonadParsec (takeWhileP, try),
     option,
     sepBy1,
  )
-import Data.Containers.ListUtils (nubOrd)
+import TRSConversion.Problem.Trs.TrsSig (TrsSig(FunSig))
 
 parseCopsInfeasibility :: COPSParser (Maybe String, Infeasibility String String)
 parseCopsInfeasibility = do
@@ -28,11 +27,16 @@ parseCopsInfeasibility = do
     rs <- pCRulesBlock vars
     vars2 <- parseCopsVarBlock
     q <- block "CONDITION" $ sepBy1 (parseCopsCondition (vars ++ vars2)) (symbol ",")
+    -- small hack: turn query conditions into rules to infer signature
+    sig <- case inferSigFromRules (rs ++ [CRule l r [] | l :== r <- q]) of
+      Left err -> fail err
+      Right fs -> pure $ FunSig fs
+
     let system =
             CTrs
                 { conditionType = condType
                 , rules = IntMap.singleton 1 rs
-                , signature = Sig.Vars (nubOrd $ vars ++ vars2)
+                , signature = sig
                 , numSystems = 1
                 }
     return
