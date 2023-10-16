@@ -12,6 +12,8 @@ import TRSConversion.Unparse.Problem.Term (unparsePrefixTerm)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)
+import qualified TRSConversion.Problem.Common.Term as Term
+import TRSConversion.Parse.Utils (unToken, mkToken)
 
 spec :: Spec
 spec = do
@@ -19,11 +21,16 @@ spec = do
     it "roundtrip" $
       hedgehog $ do
         sig <- H.forAll genSig
+        let sig' = fmap dummyToken <$> sig
         term <- H.forAll (genTerm sig genVars)
         H.tripping
           term
           (pack . show . unparsePrefixTerm)
-          (parse (ARI.toParser (parsePrefixTerm sig)) "testinput")
+          (parse (ARI.toParser (parseTerm sig')) "testinput")
+
+parseTerm sig = Term.map unToken unToken <$> parsePrefixTerm sig
+
+dummyToken s = mkToken s 0 (length s) (pack s)
 
 sigOfTerm :: Eq f => Term f v -> [Sig f]
 sigOfTerm t =

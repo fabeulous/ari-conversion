@@ -8,6 +8,7 @@ module TRSConversion.Problem.Common.Rule (
   -- * Types
   Rule (..),
   map,
+  mapRule,
 
   -- * Helper functions
   inferSigFromRules,
@@ -32,6 +33,12 @@ data Rule f v = Rule
   }
   deriving (Eq, Show)
 
+-- | see @map@
+mapRule :: (f -> f') -> (v -> v') -> Rule f v -> Rule f' v'
+mapRule = map
+
+-- | @map f v@ maps the function @f@ over all function symbols and the
+-- function @v@ over all variables in the rule
 map :: (f -> f') -> (v -> v') -> Rule f v -> Rule f' v'
 map f v (Rule{lhs = l, rhs = r}) =
   Rule

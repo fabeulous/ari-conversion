@@ -14,6 +14,8 @@ import TRSConversion.Unparse.UnparseTrs (unparseAriTrs)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)
+import TRSConversion.Problem.Trs.Trs (mapTrs)
+import TRSConversion.Parse.Utils (unToken)
 
 spec :: Spec
 spec = do
@@ -25,7 +27,9 @@ spec = do
         H.tripping
           trs
           (pack . show . fromRight (error "invalid unparse") . unparseAriTrs)
-          (parse (ARI.toParser parseAriTrs) "testinput")
+          (parse (ARI.toParser parseAriTrsString) "testinput")
+
+parseAriTrsString = mapTrs unToken unToken <$> parseAriTrs
 
 sigOfTerm :: Eq f => Term f v -> [Sig f]
 sigOfTerm t =

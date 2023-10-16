@@ -42,7 +42,7 @@ import qualified TRSConversion.Problem.Common.Rule as Rule
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 --   function symbols, consistency with rules, etc. This should be done separately.
-unparseCopsTrsSig :: (Ord f, Ord v, Pretty f, Pretty v) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
+unparseCopsTrsSig :: (Ord f, Ord v, Pretty f, Pretty v) => [Rule f v] -> TrsSig f -> Either String (Doc ann)
 unparseCopsTrsSig rs (FunSig fs)
     | Set.fromList [f | Sig f _ <- fs] `Set.isSubsetOf` Set.fromList (Rule.ruleFuns rs)
       = Right $ prettyVars variables
@@ -72,7 +72,7 @@ unparseCopsTrsSig rs (FunSig fs)
 --
 -- __Important:__ does not check that the signature for duplicates, overlaps between variables and
 -- function symbols, consistency with rules, etc. This should be done separately.
-unparseAriTrsSig :: (Pretty f) => [Rule f v] -> TrsSig f v -> Either String (Doc ann)
+unparseAriTrsSig :: (Pretty f) => [Rule f v] -> TrsSig f -> Either String (Doc ann)
 unparseAriTrsSig _ (FunSig fs) = Right (unparseAriSigs fs)
 
 

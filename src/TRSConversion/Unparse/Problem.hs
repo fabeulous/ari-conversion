@@ -12,7 +12,7 @@ where
 import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, hardline, vsep)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
-import TRSConversion.Problem.Problem (Problem (..), System (..))
+import TRSConversion.Problem.Problem (Problem (..), ParsedSystem (..))
 import TRSConversion.Unparse.COM (unparseCopsCOM)
 import TRSConversion.Unparse.CSCTrs (unparseAriCSCTrs, unparseCopsCSCTrs)
 import TRSConversion.Unparse.CSTrs (unparseAriCSTrs, unparseCopsCSTrs)

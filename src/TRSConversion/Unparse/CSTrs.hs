@@ -83,7 +83,7 @@ unparseAriCSTrs cstrs = do
   formatString = parens $ "format" <+> "CSTRS" <>
     if n > 1 then mempty <+> ":number" <+> pretty n else mempty
 
-unparseAriReplacementSig :: (Ord f, Pretty f) => [R.Rule f v] -> TrsSig f v -> ReplacementMap f -> Either String (Doc ann)
+unparseAriReplacementSig :: (Ord f, Pretty f) => [R.Rule f v] -> TrsSig f -> ReplacementMap f -> Either String (Doc ann)
 unparseAriReplacementSig rs (FunSig fs) repMap = Right (vsep $ map prettySigLine fs)
  where
   repMapM = M.fromList repMap

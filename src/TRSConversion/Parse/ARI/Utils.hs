@@ -5,12 +5,17 @@ module TRSConversion.Parse.ARI.Utils (
   -- * Type
   ARIParser,
   toParser,
+  -- ** Helper types
+  VarSymb,
+  FunSymb,
+  SortSymb,
 
   -- * Lexing
   lexeme,
   spaces,
   symbol,
   keyword,
+  keywordToken,
   ident,
   restrictedIdent,
   naturalNumber,
@@ -26,6 +31,7 @@ module TRSConversion.Parse.ARI.Utils (
   -- * ParseErrors
   indexOutOfRangeError,
   nonPositiveNumberError,
+  duplicateIndex,
 ) where
 
 import Control.Applicative (Alternative)
@@ -50,9 +56,13 @@ import Text.Megaparsec.Char (char, space1, string)
 import qualified Text.Megaparsec.Char.Lexer as L
 import qualified Text.Megaparsec.Error as E
 
-import TRSConversion.Parse.Utils (Parser)
+import TRSConversion.Parse.Utils (Parser, Token (..), mkToken)
 import qualified TRSConversion.Problem.Common.Index as Idx
 import qualified Text.Megaparsec.Error.Builder as E
+
+type FunSymb = Token String
+type VarSymb = Token String
+type SortSymb = Token String
 
 -- | Type of the COPS parser.
 newtype ARIParser a = ARIParser {toParser :: Parser ARIParseError a}
@@ -70,6 +80,7 @@ data ARIParseError
   = InvalidIdentifier String String
   | IndexOutOfRange Int Int
   | NonPositiveNumber Int
+  | DuplicateIndex Int
   deriving (Eq, Ord)
 
 
@@ -82,7 +93,12 @@ isInvalidIdentifier = InvalidIdentifier
 mustBeBelow :: Int -> Int -> ARIParseError
 mustBeBelow = IndexOutOfRange
 
+mustBeUnique :: Int -> ARIParseError
+mustBeUnique = DuplicateIndex
+
 instance ShowErrorComponent ARIParseError where
+  showErrorComponent (DuplicateIndex n) =
+     "index " ++ show n ++ " must appear at most once"
   showErrorComponent (NonPositiveNumber n) =
      "number " ++ show n ++ " must be greater than 0"
   showErrorComponent (IndexOutOfRange n maxInd) =
@@ -96,6 +112,7 @@ instance ShowErrorComponent ARIParseError where
   errorComponentLen (InvalidIdentifier name _) = length name
   errorComponentLen (IndexOutOfRange n _) = length (show n)
   errorComponentLen (NonPositiveNumber n) = length (show n)
+  errorComponentLen (DuplicateIndex n) = length (show n)
 
 customErr :: ARIParseError -> E.EF ARIParseError
 customErr = E.fancy . ErrorCustom
@@ -133,10 +150,10 @@ that is any string of characters not containing a whitespace, any character in
 identChar :: [Char]
 identChar = " \t\n\r;:()"
 
-ident :: ARIParser String
-ident =
-  lexeme (unpack <$> takeWhile1P Nothing (`notElem` identChar))
-    <?> "identifier"
+ident :: ARIParser (Token String)
+ident = lexeme $ do
+  txt <- tokenOfText (takeWhile1P Nothing (`notElem` identChar)) <?> "identifier"
+  pure $ fmap unpack txt
 
 keywords :: [String]
 keywords =
@@ -144,13 +161,14 @@ keywords =
     -- ++ ["oriented", "join", "semi-equational"]
     ++ ["TRS", "MSTRS", "LCSTRS", "CTRS", "CSTRS", "CSCTRS"]
 
-restrictedIdent :: ARIParser String
+restrictedIdent :: ARIParser (Token String)
 restrictedIdent = lexeme $ do
   o <- getOffset
-  identifier <- unpack <$> takeWhile1P Nothing (`notElem` identChar)
-  when (identifier `elem` keywords) $
+  identifier' <- tokenOfText $ takeWhile1P Nothing (`notElem` identChar)
+  let identifier = unpack <$> identifier'
+  when (tokenValue identifier `elem` keywords) $
     parseError $
-      E.errFancy o (customErr $ identifier `isInvalidIdentifier` "because it is a reserved keyword")
+      E.errFancy o (customErr (unpack (tokenText identifier) `isInvalidIdentifier` "because it is a reserved keyword"))
   pure identifier
 
 keywordChar :: ARIParser Char
@@ -164,6 +182,9 @@ not only a prefix.
 -}
 keyword :: Text -> ARIParser Text
 keyword word = lexeme (try (string word <* notFollowedBy keywordChar))
+
+keywordToken :: Text -> ARIParser (Token Text)
+keywordToken word = lexeme . tokenOfText $ try (string word <* notFollowedBy keywordChar)
 
 -- | @'block' p@ parses as s-expression with the head @name@ and content @p@.
 sExpr :: Text -> ARIParser a -> ARIParser a
@@ -200,3 +221,15 @@ indexOutOfRangeError :: Int -> Idx.Index -> E.ParseError s ARIParseError
 indexOutOfRangeError maxIndex i =
   E.errFancy (Idx.startOffset i) $
     customErr (Idx.index i `mustBeBelow` maxIndex)
+
+duplicateIndex :: Idx.Index -> E.ParseError s ARIParseError
+duplicateIndex i =
+  E.errFancy (Idx.startOffset i) $ customErr (mustBeUnique (Idx.index i))
+
+
+tokenOfText :: ARIParser Text -> ARIParser (Token Text)
+tokenOfText p = do
+  start <- getOffset
+  value <- p
+  end <- getOffset
+  pure $ mkToken value start (end - start) value

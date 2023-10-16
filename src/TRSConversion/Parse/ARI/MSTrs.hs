@@ -19,7 +19,7 @@ import Text.Megaparsec (many, option)
 
 import TRSConversion.Parse.ARI.MsSig (parseAriMsSig)
 import TRSConversion.Parse.ARI.Trs (parseSystems)
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr, naturalNumber, restrictedIdent)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr, naturalNumber, restrictedIdent, FunSymb, VarSymb, SortSymb)
 import TRSConversion.Problem.MsTrs.MsTrs (MsSig (..), MsTrs (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 
@@ -34,10 +34,10 @@ Rules are parsed using 'parseAriRule' as in the untyped TRS setting.
 
 qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @sort@ then @fun@ then @rule@.
 -}
-parseAriMsTrs :: ARIParser (MsTrs String String String)
+parseAriMsTrs :: ARIParser (MsTrs FunSymb VarSymb SortSymb)
 parseAriMsTrs = pFormat "MSTRS" >>= parseAriMsTrs'
 
-parseAriMsTrs' :: Int -> ARIParser (MsTrs String String String)
+parseAriMsTrs' :: Int -> ARIParser (MsTrs FunSymb VarSymb SortSymb)
 parseAriMsTrs' numSys = do
   sortsList <- pSorts
   msSigs <- pMSSig (Set.fromList sortsList)
@@ -50,7 +50,7 @@ parseAriMsTrs' numSys = do
       , numSystems = numSys
       }
  where
-  msSigToSigList :: [MsSig String String] -> [Sig String]
+  msSigToSigList :: [MsSig FunSymb SortSymb] -> [Sig FunSymb]
   msSigToSigList = map (\(MsSig fsym (inputSorts, _)) -> Sig fsym (length inputSorts))
 
 pFormat :: Text -> ARIParser Int
@@ -58,8 +58,8 @@ pFormat name = sExpr "format" $ do
   _ <- keyword name
   option 1 (keyword ":number" >> naturalNumber)
 
-pSorts :: ARIParser [String]
+pSorts :: ARIParser [SortSymb]
 pSorts = many (sExpr "sort" restrictedIdent)
 
-pMSSig :: Set.Set String -> ARIParser [MsSig String String]
+pMSSig :: Set.Set SortSymb -> ARIParser [MsSig FunSymb SortSymb]
 pMSSig declaredSorts = many (parseAriMsSig declaredSorts)

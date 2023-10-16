@@ -12,6 +12,8 @@ import TRSConversion.Unparse.CSTrs (unparseAriCSTrs)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)
+import TRSConversion.Problem.CSTrs.CSTrs (mapCSTrs)
+import TRSConversion.Parse.Utils (unToken)
 
 spec :: Spec
 spec = do
@@ -23,4 +25,6 @@ spec = do
         H.tripping
           trs
           (pack . show . fromRight (error "invalid unparse") . unparseAriCSTrs)
-          (parse (ARI.toParser parseAriCSTrs) "testinput")
+          (parse (ARI.toParser parseAriCSTrsString) "testinput")
+
+parseAriCSTrsString = mapCSTrs unToken unToken <$> parseAriCSTrs

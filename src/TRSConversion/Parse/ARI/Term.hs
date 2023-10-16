@@ -18,10 +18,11 @@ module TRSConversion.Parse.ARI.Term (
 where
 
 import Data.Text (pack, unpack)
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr, restrictedIdent)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr, restrictedIdent, FunSymb, VarSymb, keywordToken)
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (choice, count, (<?>), (<|>))
+import TRSConversion.Parse.Utils (Token(tokenText))
 
 {- | Parses a single variable name using 'parseCopsSym' and returns a string.
 
@@ -49,7 +50,7 @@ Consumes trailing white space only after the term has been recursively parsed as
 >>> parseTest (parseTerm [Sig "f" 2, Sig "g" 1]) "f x (g c)"
 Fun "f" [Var "x", Fun "g" [Fun "x" []]]
 -}
-parsePrefixTerm :: [Sig String] -> ARIParser (Term String String)
+parsePrefixTerm :: [Sig FunSymb] -> ARIParser (Term FunSymb VarSymb)
 parsePrefixTerm funSig = parseT
  where
    parseT =
@@ -57,6 +58,5 @@ parsePrefixTerm funSig = parseT
        <|> (Var <$> restrictedIdent)
        -- <|> parens parseT -- how about redundant parenthesis?
    mkParser (Sig fSymb arity)
-     | arity <= 0 = Fun <$> (unpack <$> keyword (pack fSymb)) <*> pure []
-     | otherwise = Fun fSymb <$> sExpr (pack fSymb) (count arity parseT)
-
+     | arity <= 0 = Fun <$> (fmap unpack <$> keywordToken (tokenText fSymb)) <*> pure []
+     | otherwise = Fun fSymb <$> sExpr (tokenText fSymb) (count arity parseT)

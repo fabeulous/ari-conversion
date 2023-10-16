@@ -18,7 +18,7 @@ import qualified TRSConversion.Problem.CTrs.CTrs as CTrs
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
 import TRSConversion.Problem.Common.Term (Term (..), vars)
 import qualified TRSConversion.Problem.MsTrs.MsTrs as MsTrs
-import TRSConversion.Problem.Problem (System (..), system)
+import TRSConversion.Problem.Problem (System, ParsedSystem (..), system)
 import qualified TRSConversion.Problem.Problem as Prob
 import qualified TRSConversion.Problem.Trs.Trs as Trs
 import TRSConversion.Unparse.CTrs (unparseAriCRules)

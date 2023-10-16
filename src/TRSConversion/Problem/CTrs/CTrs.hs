@@ -3,6 +3,9 @@ module TRSConversion.Problem.CTrs.CTrs (
     CRule (..),
     Condition (..),
     CondType (..),
+    mapCondition,
+    mapCRule,
+    mapCTrs,
     inferSigFromRules,
     vars,
     varsCondition,
@@ -27,6 +30,9 @@ data CondType = Oriented | Join | SemiEquational
 data Condition f v = (Term f v) :== (Term f v)
     deriving (Eq, Show)
 
+mapCondition :: (f -> f') -> (v -> v') -> Condition f v -> Condition f' v'
+mapCondition f v (t1 :== t2) = Term.map f v t1 :== Term.map f v t2
+
 data CRule f v = CRule
     { lhs :: Term f v
     -- ^ The left-hand side of the rule
@@ -36,6 +42,13 @@ data CRule f v = CRule
     -- ^ Conditions
     }
     deriving (Eq, Show)
+
+
+mapCRule :: (f -> f') -> (v -> v') -> CRule f v -> CRule f' v'
+mapCRule f v crule = CRule { lhs = Term.map f v (lhs crule)
+                           , rhs = Term.map f v (rhs crule)
+                           , conditions = mapCondition f v <$> conditions crule
+                           }
 
 ruleToCRule :: Trs.Rule f v -> CRule f v
 ruleToCRule Trs.Rule{Trs.lhs = l, Trs.rhs = r} = CRule {lhs = l, rhs = r, conditions = []}
@@ -48,12 +61,17 @@ data CTrs f v = CTrs
     { conditionType :: CondType
     , rules :: IntMap [CRule f v]
     -- ^ Mapping index to CTrs
-    , signature :: TrsSig f v
+    , signature :: TrsSig f
     -- ^ The signature (function symbols and corresponding sorts) for the MSTRS
     , numSystems :: Int
     -- ^ number of rewrite systems
     }
     deriving (Show, Eq)
+
+mapCTrs :: (f -> f') -> (v -> v') -> CTrs f v -> CTrs f' v'
+mapCTrs f v ctrs = ctrs { rules = fmap (mapCRule f v) <$> rules ctrs
+                        ,  signature = fmap f (signature ctrs)
+                        }
 
 trsToOrientedCTrs :: Trs.Trs f v -> CTrs f v
 trsToOrientedCTrs Trs.Trs {Trs.rules = rs, Trs.signature = sig, Trs.numSystems = n} =

@@ -13,6 +13,7 @@ module TRSConversion.Problem.MsTrs.MsTrs (
   Rule (..),
   Term (..),
   MsSig (..),
+  mapMsTrs,
 )
 where
 
@@ -42,6 +43,11 @@ data MsTrs f v s = MsTrs
   }
   deriving (Show, Eq)
 
+-- | see @map@
+mapMsTrs :: (f -> f') -> (v -> v') -> (s -> s') -> MsTrs f v s -> MsTrs f' v' s'
+mapMsTrs = map
+
+-- | map functions over the function symbols, vairable symbols and sorts
 map :: (f -> f') -> (v -> v') -> (s -> s') -> MsTrs f v s -> MsTrs f' v' s'
 map f v s MsTrs{rules = rs, signature = sig, sorts = srts, numSystems = n} =
   MsTrs

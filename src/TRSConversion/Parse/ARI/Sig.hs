@@ -14,11 +14,11 @@ where
 
 import Data.Char (isDigit)
 import Data.Text (unpack)
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, lexeme, sExpr, restrictedIdent)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, lexeme, sExpr, restrictedIdent, FunSymb)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (takeWhile1P, (<?>))
 
-parseAriSig :: ARIParser (Sig String)
+parseAriSig :: ARIParser (Sig FunSymb)
 parseAriSig = sExpr "fun" parseFsymArity
 
 {- | Parser to extract the function symbol and arity from a string @fsym int@ where int is
@@ -29,7 +29,7 @@ Used for parsing TRSs in ARI format and the @SIG@ block of the COPS [extended TR
 >>> parseTest parseCopsSig "fun 2"
 Right (Sig "fun" 2)
 -}
-parseFsymArity :: ARIParser (Sig String)
+parseFsymArity :: ARIParser (Sig FunSymb)
 parseFsymArity = Sig <$> restrictedIdent <*> naturalNumber
 
 naturalNumber :: ARIParser Int

@@ -28,15 +28,15 @@ import Text.Megaparsec (getOffset, many, option, registerParseError, (<|>), pars
 
 import TRSConversion.Parse.ARI.Sig (parseAriSig)
 import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
-import TRSConversion.Parse.ARI.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, sExpr, index, nonPositiveNumberError)
+import TRSConversion.Parse.ARI.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, sExpr, index, nonPositiveNumberError, FunSymb, VarSymb)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Common.Index (Index)
 import TRSConversion.Problem.Trs.TrsSig (Sig, TrsSig (..))
 
-parseAriCTrs :: ARIParser (CTrs String String)
+parseAriCTrs :: ARIParser (CTrs FunSymb VarSymb)
 parseAriCTrs = pFormat >>= uncurry parseAriCTrs'
 
-parseAriCTrs' :: CondType -> Int -> ARIParser (CTrs String String)
+parseAriCTrs' :: CondType -> Int -> ARIParser (CTrs FunSymb VarSymb)
 parseAriCTrs' condType numSys = do
   -- (condType, numSys) <- pFormat
   sig <- pSignature
@@ -67,10 +67,10 @@ pCondType =
     <|> (keyword "join" $> Join)
     <|> (keyword "semi-equational" $> SemiEquational)
 
-pSignature :: ARIParser [Sig String]
+pSignature :: ARIParser [Sig FunSymb]
 pSignature = many parseAriSig
 
-pCSystems :: Int -> [Sig String] -> ARIParser (IntMap [CRule String String])
+pCSystems :: Int -> [Sig FunSymb] -> ARIParser (IntMap [CRule FunSymb VarSymb])
 pCSystems n sig = do
   indexedRules <- pCRules sig
   rls <- forM indexedRules $ \(i,r) -> do
@@ -81,10 +81,10 @@ pCSystems n sig = do
   let m = IntMap.fromListWith (++) [(i, [r]) | (i, r) <- rls]
   pure $ fmap reverse m -- reverse to preserve original order
 
-pCRules :: [Sig String] -> ARIParser [(Index, CRule String String)]
+pCRules :: [Sig FunSymb] -> ARIParser [(Index, CRule FunSymb VarSymb)]
 pCRules funSig = many (sExpr "rule" (parseAriCRule funSig))
 
-parseAriCRule :: [Sig String] -> ARIParser (Index, CRule String String)
+parseAriCRule :: [Sig FunSymb] -> ARIParser (Index, CRule FunSymb VarSymb)
 parseAriCRule funSig = do
   o <- getOffset
   rule <- CRule <$> term <*> term <*> pConds
@@ -94,7 +94,7 @@ parseAriCRule funSig = do
   term = parsePrefixTerm funSig
   pConds = many (parseCondition funSig)
 
-parseCondition :: [Sig String] -> ARIParser (Condition String String)
+parseCondition :: [Sig FunSymb] -> ARIParser (Condition FunSymb VarSymb)
 parseCondition funSig = sExpr "=" ((:==) <$> term <*> term)
   where
     term = parsePrefixTerm funSig

@@ -1,3 +1,4 @@
+{-# LANGUAGE DeriveFunctor #-}
 -- |
 -- Module      : TRSConversion.Problem.Trs.TrsSig
 -- Description : General TRS signature type definition
@@ -24,5 +25,5 @@ import TRSConversion.Problem.Trs.Sig (Sig (..))
 -- should specify all symbols in the system)
 --
 -- * Only function symbols with arity (ARI format)
-newtype TrsSig f v = FunSig [Sig f]
-  deriving (Eq, Show)
+newtype TrsSig f = FunSig [Sig f]
+  deriving (Eq, Show, Functor)

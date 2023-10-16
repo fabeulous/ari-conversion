@@ -13,6 +13,8 @@ import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)
+import TRSConversion.Problem.MsTrs.MsTrs (mapMsTrs)
+import TRSConversion.Parse.Utils (unToken)
 
 spec :: Spec
 spec = do
@@ -24,7 +26,9 @@ spec = do
         H.tripping
           trs
           (pack . show . unparseAriMsTrs)
-          (parse (ARI.toParser parseAriMsTrs) "testinput")
+          (parse (ARI.toParser parseAriMsTrsString) "testinput")
+
+parseAriMsTrsString = mapMsTrs unToken unToken unToken <$> parseAriMsTrs
 
 sigOfTerm :: Eq f => Term f v -> [Sig f]
 sigOfTerm t =

@@ -87,7 +87,7 @@ unparseAriCTrs ctrs = do
         ]
   return $ vsep (filterEmptyDocs trsElements)
 
-unparseAriCTrsSig :: (Pretty f) => TrsSig f v -> Either String (Doc ann)
+unparseAriCTrsSig :: (Pretty f) => TrsSig f -> Either String (Doc ann)
 unparseAriCTrsSig (FunSig fs) = Right (vsep $ map (prettyBlock "fun" . pretty) fs)
 
 unparseAriCSystems :: (Pretty f, Pretty v) => IntMap [CRule f v] -> Doc ann

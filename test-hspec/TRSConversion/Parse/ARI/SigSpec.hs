@@ -11,6 +11,7 @@ import TRSConversion.Unparse.Problem.TrsSig (unparseAriSigs)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (many, parse)
+import TRSConversion.Parse.Utils (unToken)
 
 spec :: Spec
 spec = do
@@ -21,7 +22,9 @@ spec = do
         H.tripping
           sig
           (pack . show . unparseAriSigs)
-          (parse (ARI.toParser (many parseAriSig)) "testinput")
+          (parse (ARI.toParser (many parseAriSigString)) "testinput")
+
+parseAriSigString = fmap unToken <$> parseAriSig
 
 sigOfTerm :: Eq f => Term f v -> [Sig f]
 sigOfTerm t =

@@ -16,6 +16,9 @@ import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
 import TRSConversion.Unparse.Problem.Rule (unparseAriRule)
+import TRSConversion.Parse.ARI.TermSpec (dummyToken)
+import TRSConversion.Problem.Common.Rule (mapRule)
+import TRSConversion.Parse.Utils (unToken)
 
 spec :: Spec
 spec = do
@@ -23,6 +26,7 @@ spec = do
     it "roundtrip" $
       hedgehog $ do
         sig <- H.forAll genSig
+        let sig' = fmap dummyToken <$> sig
         term1 <- H.forAll (genTerm sig genVars)
         term2 <- H.forAll (genTerm sig genVars)
         let index = 1
@@ -30,7 +34,9 @@ spec = do
         H.tripping
           rule
           (pack . show . uncurry unparseAriRule)
-          ((\(i, r) -> pure (Idx.index i, r)) <=< parse (ARI.toParser (parseAriRule sig)) "testinput")
+          ((\(i, r) -> pure (Idx.index i, r)) <=< parse (ARI.toParser (parseAriRuleString sig')) "testinput")
+
+parseAriRuleString sig = (\(i,r) -> (i, mapRule unToken unToken r)) <$> parseAriRule sig
 
 sigOfTerm :: Eq f => Term f v -> [Sig f]
 sigOfTerm t =

@@ -63,7 +63,7 @@ unparseAriCSCTrs CSCTrs{ctrs = system, replacementMap = repMap} = do
         ]
   return $ vsep (filterEmptyDocs trsElements)
 
-unparseAriCSCTrsSig :: (Ord f, Pretty f) => TrsSig f v -> ReplacementMap f -> Either String (Doc ann)
+unparseAriCSCTrsSig :: (Ord f, Pretty f) => TrsSig f -> ReplacementMap f -> Either String (Doc ann)
 unparseAriCSCTrsSig (FunSig fs) repMap = Right (vsep $ map prettySigLine fs)
  where
   repMapM = M.fromList repMap

@@ -21,20 +21,21 @@ import TRSConversion.Parse.ARI.Utils (
     sExpr,
  )
 import TRSConversion.Problem.Problem (FormatType (..))
+import TRSConversion.Parse.Utils (tokenValue, tokenText)
 
 parseFormatType :: ARIParser (Int, FormatType)
 parseFormatType =
     sExpr "format" $ do
         o <- getOffset
         name <- ident
-        ftype <- case name of
+        ftype <- case tokenValue name of
             "TRS" -> try infeasibilityTrsFormat <|> trsFormat
             "MSTRS" -> msTrsFormat
             "LCTRS" -> lcTrsFormat
             "CTRS" -> try infeasibilityCTrsFormat <|> cTrsFormat
             "CSTRS" -> csTrsFormat
             "CSCTRS" -> cscTrsFormat
-            _ -> parseError $ unknownFormatType (pack name) o
+            _ -> parseError $ unknownFormatType (tokenText name) o
         pure (o, ftype)
 
 unknownFormatType :: (Stream s, Tokens s ~ Text) => Text -> Int -> ParseError s e

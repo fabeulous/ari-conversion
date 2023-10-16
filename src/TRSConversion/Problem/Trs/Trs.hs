@@ -13,12 +13,13 @@ module TRSConversion.Problem.Trs.Trs
     Term (..),
     TrsSig (..),
     Sig (..),
+    mapTrs,
   )
 where
 
 import Data.IntMap (IntMap)
 
-import TRSConversion.Problem.Common.Rule (Rule (..))
+import TRSConversion.Problem.Common.Rule (Rule (..), mapRule)
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 
@@ -30,8 +31,14 @@ data Trs f v = Trs
     rules :: IntMap [Rule f v],
     -- | The signature (function symbols and arities) of the TRS.
     -- It is possible to specify only variables, only function symbols, or both (see 'TrsSig') in order to support more TRS formats.
-    signature :: TrsSig f v,
+    signature :: TrsSig f,
     -- | Number of rewrite systems
     numSystems :: Int
   }
   deriving (Show, Eq)
+
+mapTrs :: (f -> f') -> (v -> v') -> Trs f v -> Trs f' v'
+mapTrs f v trs = Trs { rules = map (mapRule f v) <$> rules trs
+                     , signature = fmap f (signature trs)
+                     , numSystems = numSystems trs
+                     }

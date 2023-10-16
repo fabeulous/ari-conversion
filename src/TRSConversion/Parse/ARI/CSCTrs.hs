@@ -14,15 +14,15 @@ import Text.Megaparsec (option)
 
 import TRSConversion.Parse.ARI.CSTrs (pSignatureReplacementMap)
 import TRSConversion.Parse.ARI.CTrs (pCSystems, pCondType)
-import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, naturalNumber, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, naturalNumber, sExpr, FunSymb, VarSymb)
 import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs (..))
 import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 
-parseAriCSCTrs :: ARIParser (CSCTrs String String)
+parseAriCSCTrs :: ARIParser (CSCTrs FunSymb VarSymb)
 parseAriCSCTrs = pFormat >>= uncurry parseAriCSCTrs'
 
-parseAriCSCTrs' :: CondType -> Int -> ARIParser (CSCTrs String String)
+parseAriCSCTrs' :: CondType -> Int -> ARIParser (CSCTrs FunSymb VarSymb)
 parseAriCSCTrs' condType n = do
   (sig, repMap) <- pSignatureReplacementMap
   rs <- pCSystems n sig

@@ -12,6 +12,8 @@ import Gen.Term (genVars)
 import Data.Text (pack)
 import Data.Either (fromRight)
 import Text.Megaparsec (parse)
+import TRSConversion.Problem.CTrs.Infeasibility (mapInfeasibility)
+import TRSConversion.Parse.Utils (unToken)
 
 spec :: Spec
 spec = do
@@ -23,4 +25,6 @@ spec = do
         H.tripping
            infSys
            (pack . show . fromRight (error "invalid unparse") . unparseAriInfeasibility)
-           (parse (ARI.toParser parseAriInfeasibility) "testinput")
+           (parse (ARI.toParser parseAriInfeasibilityString) "testinput")
+
+parseAriInfeasibilityString = mapInfeasibility unToken unToken <$> parseAriInfeasibility

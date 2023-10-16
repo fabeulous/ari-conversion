@@ -27,6 +27,7 @@ import TRSConversion.Problem.Common.Index (Index (index))
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.Trs (Sig, Trs (..), TrsSig (..))
 import qualified TRSConversion.Problem.Common.Index as Idx
+import TRSConversion.Parse.Utils (Token)
 
 {- | Parse a first-order TRS in the provisional [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).
 
@@ -35,10 +36,10 @@ Note that the entire input will not necessarily be consumed: use `<* eof` if thi
 
 qqjf I assumed that there is a fixed order of blocks: @meta-info@ then @format@ then @fun@ then @rule@.
 -}
-parseAriTrs :: ARIParser (Trs String String)
+parseAriTrs :: ARIParser (Trs (Token String) (Token String))
 parseAriTrs = pFormat >>= parseAriTrs'
 
-parseAriTrs' :: Int -> ARIParser (Trs String String)
+parseAriTrs' :: Int -> ARIParser (Trs (Token String) (Token String))
 parseAriTrs' n = do
   funSig <- pSignature
   rs <- parseSystems n funSig
@@ -60,10 +61,10 @@ pFormat = sExpr "format" $ do
     pure n
   pure n
 
-pSignature :: ARIParser [Sig String]
+pSignature :: ARIParser [Sig (Token String)]
 pSignature = many parseAriSig
 
-parseSystems :: Int -> [Sig String] -> ARIParser (IntMap [Rule String String])
+parseSystems :: Int -> [Sig (Token String)] -> ARIParser (IntMap [Rule (Token String) (Token String)])
 parseSystems numSys funSig = do
   indexedRules <- pRules funSig
   rls <- forM indexedRules $ \(i, r) -> do
@@ -73,5 +74,5 @@ parseSystems numSys funSig = do
   let m = IntMap.fromListWith (++) [(i, [r]) | (i, r) <- rls]
   pure $ fmap reverse m -- reverse to preserve original order
 
-pRules :: [Sig String] -> ARIParser [(Index, Rule String String)]
+pRules :: [Sig (Token String)] -> ARIParser [(Index, Rule (Token String) (Token String))]
 pRules funSig = many (parseAriRule funSig)

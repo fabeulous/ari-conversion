@@ -14,12 +14,13 @@ import TRSConversion.Parse.ARI.MSTrs (parseAriMsTrs')
 import TRSConversion.Parse.ARI.MetaInfo (parseAriMetaInfo)
 import TRSConversion.Parse.ARI.Trs (parseAriTrs')
 import TRSConversion.Parse.ARI.Utils (ARIParser, spaces)
-import TRSConversion.Problem.Problem (Problem (Problem), FormatType (..))
+import TRSConversion.Problem.Problem (Problem (Problem), FormatType (..), mapSystem)
 import qualified TRSConversion.Problem.Problem as Prob
 import TRSConversion.Parse.ARI.FormatType (parseFormatType)
 import qualified Text.Megaparsec.Error.Builder as E
 import Text.Megaparsec (MonadParsec(parseError))
 import TRSConversion.Parse.ARI.Infeasibility (parseAriTRSInfeasibility', parseAriCTRSInfeasibility')
+import TRSConversion.Parse.Utils (unToken)
 
 parseProblem :: ARIParser Problem
 parseProblem = do
@@ -46,5 +47,5 @@ parseProblem = do
   pure $
     Problem
       { Prob.metaInfo = metaInfo
-      , Prob.system = system
+      , Prob.system = mapSystem unToken unToken unToken system
       }

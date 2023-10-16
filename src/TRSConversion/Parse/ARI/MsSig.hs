@@ -16,10 +16,12 @@ import Control.Monad (unless)
 import Data.List.NonEmpty (NonEmpty ((:|)))
 import Data.Set (Set)
 import qualified Data.Set as Set
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, sExpr)
+import TRSConversion.Parse.ARI.Utils (ARIParser, ident, sExpr, FunSymb, SortSymb)
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import Text.Megaparsec (getOffset, registerParseError, some, (<|>))
 import qualified Text.Megaparsec.Error as E
+import Data.Text (unpack)
+import TRSConversion.Parse.Utils (tokenText)
 
 {- | Parser to extract the signature from a single @fun@ block of the ARI [MSTRS format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
 Expects a block like @fsym :sort (t1 ... tn t0)@ where the @t1@, ..., @tn@ are the input sorts of
@@ -33,22 +35,22 @@ MsSig "add" (["Nat","List"], "Nat")
 >>> parseTest parseAriMsSig "0 :sort (Nat)"
 MsSig "0" ([], "Nat")
 -}
-parseAriMsSig :: Set String -> ARIParser (MsSig String String)
+parseAriMsSig :: Set SortSymb -> ARIParser (MsSig FunSymb SortSymb)
 parseAriMsSig declaredSorts = sExpr "fun" $ do
   fsym <- ident
   sorts <- sortP declaredSorts
   return $ MsSig fsym (init sorts, last sorts)
 
-sortP :: Set String -> ARIParser [String]
+sortP :: Set SortSymb -> ARIParser [SortSymb]
 sortP declaredSorts =
   (: []) <$> sortIdent <|> sExpr "->" ((:) <$> sortIdent <*> some sortIdent)
  where
-  sortIdent :: ARIParser String
+  sortIdent :: ARIParser SortSymb
   sortIdent = do
     o <- getOffset
     name <- ident
     unless (name `Set.member` declaredSorts) $
-      registerParseError (undeclaredSortError name o)
+      registerParseError (undeclaredSortError (unpack $ tokenText name) o)
     pure name
 
   undeclaredSortError name offset =
