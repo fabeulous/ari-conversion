@@ -20,7 +20,7 @@ After building you can run the respective tool with:
 
     stack exec format-type -- FILE
 
-    stack exec ari-syntac-checker -- FILE
+    stack exec ari-syntax-checker -- FILE
 
 where FORMAT can be "COPS" or "ARI".
 
