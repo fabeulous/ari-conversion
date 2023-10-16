@@ -6,6 +6,9 @@ module TRSConversion.Problem.CTrs.CTrs (
     inferSigFromRules,
     vars,
     varsCondition,
+    ruleToCRule,
+    trsToOrientedCTrs,
+    orientedCTrsToTrs,
 ) where
 
 import Data.Foldable (foldl')
@@ -16,6 +19,7 @@ import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig)
 import qualified TRSConversion.Problem.Common.Term as Term
 import Data.Containers.ListUtils (nubOrd)
+import qualified TRSConversion.Problem.Trs.Trs as Trs
 
 data CondType = Oriented | Join | SemiEquational
     deriving (Eq, Show)
@@ -33,6 +37,13 @@ data CRule f v = CRule
     }
     deriving (Eq, Show)
 
+ruleToCRule :: Trs.Rule f v -> CRule f v
+ruleToCRule Trs.Rule{Trs.lhs = l, Trs.rhs = r} = CRule {lhs = l, rhs = r, conditions = []}
+
+cRuleToRule :: CRule f v -> Maybe (Trs.Rule f v)
+cRuleToRule CRule{lhs = l, rhs = r, conditions = []} = Just $ Trs.Rule {Trs.lhs = l, Trs.rhs = r}
+cRuleToRule _ = Nothing
+
 data CTrs f v = CTrs
     { conditionType :: CondType
     , rules :: IntMap [CRule f v]
@@ -43,6 +54,24 @@ data CTrs f v = CTrs
     -- ^ number of rewrite systems
     }
     deriving (Show, Eq)
+
+trsToOrientedCTrs :: Trs.Trs f v -> CTrs f v
+trsToOrientedCTrs Trs.Trs {Trs.rules = rs, Trs.signature = sig, Trs.numSystems = n} =
+  CTrs { rules = map ruleToCRule <$> rs
+       , conditionType = Oriented
+       , signature = sig
+       , numSystems = n
+       }
+
+orientedCTrsToTrs :: CTrs f v -> Maybe (Trs.Trs f v)
+orientedCTrsToTrs CTrs {rules = rs, signature = sig, numSystems = n, conditionType = condType}
+  | condType /= Oriented = Nothing
+  | otherwise = do
+      rs' <- traverse (traverse cRuleToRule) rs
+      pure $ Trs.Trs { Trs.rules = rs'
+                     , Trs.signature = sig
+                     , Trs.numSystems = n
+                     }
 
 inferSigFromRules :: Ord f => [CRule f v] -> Either String [Sig f]
 inferSigFromRules ctrs = M.foldrWithKey (\f a acc -> Sig f a : acc) [] <$> resM

@@ -55,7 +55,8 @@ runApp filename = do
             | n == 1 -> "lctrs"
             | n == 2 -> "two-lctrs"
             | otherwise -> "multi-lctrs"
-        InfeasibilityFormat _ -> "infeasibility"
+        InfeasibilityTrsFormat -> "infeasibility-trs"
+        InfeasibilityCTrsFormat _ -> "infeasibility-ctrs"
 
 parseHead :: ARIParser FormatType
 parseHead = do

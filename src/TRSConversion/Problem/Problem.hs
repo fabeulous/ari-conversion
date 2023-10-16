@@ -23,7 +23,8 @@ data FormatType
   | CSTrsFormat Int
   | CSCTrsFormat CondType Int
   | LCTrsFormat Int
-  | InfeasibilityFormat CondType
+  | InfeasibilityCTrsFormat CondType
+  | InfeasibilityTrsFormat
   deriving (Eq, Show)
 
 data System

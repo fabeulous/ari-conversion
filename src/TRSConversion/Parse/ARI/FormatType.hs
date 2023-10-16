@@ -3,8 +3,6 @@
 
 module TRSConversion.Parse.ARI.FormatType (
     parseFormatType,
-    -- * Individual Format types
-    infeasibilityFormat,
 )
 where
 
@@ -30,10 +28,10 @@ parseFormatType =
         o <- getOffset
         name <- ident
         ftype <- case name of
-            "TRS" -> trsFormat
+            "TRS" -> try infeasibilityTrsFormat <|> trsFormat
             "MSTRS" -> msTrsFormat
             "LCTRS" -> lcTrsFormat
-            "CTRS" -> try infeasibilityFormat <|> cTrsFormat
+            "CTRS" -> try infeasibilityCTrsFormat <|> cTrsFormat
             "CSTRS" -> csTrsFormat
             "CSCTRS" -> cscTrsFormat
             _ -> parseError $ unknownFormatType (pack name) o
@@ -55,8 +53,11 @@ csTrsFormat = CSTrsFormat <$> optNumber
 cTrsFormat :: ARIParser FormatType
 cTrsFormat = CTrsFormat <$> pCondType <*> optNumber
 
-infeasibilityFormat :: ARIParser FormatType
-infeasibilityFormat = InfeasibilityFormat <$> pCondType <* keyword ":problem" <* keyword "infeasibility"
+infeasibilityCTrsFormat :: ARIParser FormatType
+infeasibilityCTrsFormat = InfeasibilityCTrsFormat <$> pCondType <* keyword ":problem" <* keyword "infeasibility"
+
+infeasibilityTrsFormat :: ARIParser FormatType
+infeasibilityTrsFormat = pure InfeasibilityTrsFormat <* keyword ":problem" <* keyword "infeasibility"
 
 msTrsFormat :: ARIParser FormatType
 msTrsFormat = MSTrsFormat <$> optNumber

@@ -19,7 +19,7 @@ import qualified TRSConversion.Problem.Problem as Prob
 import TRSConversion.Parse.ARI.FormatType (parseFormatType)
 import qualified Text.Megaparsec.Error.Builder as E
 import Text.Megaparsec (MonadParsec(parseError))
-import TRSConversion.Parse.ARI.Infeasibility (parseAriInfeasibility')
+import TRSConversion.Parse.ARI.Infeasibility (parseAriTRSInfeasibility', parseAriCTRSInfeasibility')
 
 parseProblem :: ARIParser Problem
 parseProblem = do
@@ -32,7 +32,8 @@ parseProblem = do
     CTrsFormat condType n -> Prob.CTrs <$> parseAriCTrs' condType n
     CSTrsFormat n -> Prob.CSTrs <$> parseAriCSTrs' n
     CSCTrsFormat condType n -> Prob.CSCTrs <$> parseAriCSCTrs' condType n
-    InfeasibilityFormat condType -> Prob.Infeasibility <$> parseAriInfeasibility' condType
+    InfeasibilityCTrsFormat condType -> Prob.Infeasibility <$> parseAriCTRSInfeasibility' condType
+    InfeasibilityTrsFormat -> Prob.Infeasibility <$> parseAriTRSInfeasibility'
     LCTrsFormat _ -> parseError $ E.err o $ E.ulabel "LCTRS (not supported)"
   -- system <-
   --   choice
