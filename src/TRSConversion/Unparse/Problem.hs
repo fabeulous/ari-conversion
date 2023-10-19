@@ -10,9 +10,9 @@ module TRSConversion.Unparse.Problem (
 where
 
 import Data.Maybe (fromMaybe)
-import Prettyprinter (Doc, hardline, vsep)
+import Prettyprinter (Doc, hardline, vsep, Pretty)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
-import TRSConversion.Problem.Problem (Problem (..), ParsedSystem (..))
+import TRSConversion.Problem.Problem (Problem (..), System (..))
 import TRSConversion.Unparse.COM (unparseCopsCOM)
 import TRSConversion.Unparse.CSCTrs (unparseAriCSCTrs, unparseCopsCSCTrs)
 import TRSConversion.Unparse.CSTrs (unparseAriCSTrs, unparseCopsCSTrs)
@@ -23,7 +23,8 @@ import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
 import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
-unparseCopsProblem :: Problem -> Either String (Doc ann)
+unparseCopsProblem :: (Pretty f, Pretty v, Pretty s, Ord f, Ord v) =>
+  Problem f v s -> Either String (Doc ann)
 unparseCopsProblem problem = do
     prettySystem <- prettySystemErr
     pure (prettySystem <> hardline <> prettyMeta)
@@ -43,7 +44,8 @@ unparseCopsProblem problem = do
         _ -> metaInfo problem
     originComment = fromMaybe "" (origin (metaInfo problem))
 
-unparseCopsCOMProblem :: Problem -> Either String (Doc ann)
+unparseCopsCOMProblem :: (Ord f, Ord v, Pretty f, Pretty v) =>
+  Problem f v s -> Either String (Doc ann)
 unparseCopsCOMProblem problem =
     case system problem of
         Trs trs -> do
@@ -54,7 +56,8 @@ unparseCopsCOMProblem problem =
     metaInfo' = (metaInfo problem){origin = Nothing}
     originComment = fromMaybe "" (origin (metaInfo problem))
 
-unparseAriProblem :: Problem -> Either String (Doc ann)
+unparseAriProblem :: (Ord f, Eq v, Pretty f, Pretty v, Eq s, Pretty s) =>
+  Problem f v s -> Either String (Doc ann)
 unparseAriProblem problem = do
     prettySystem <- prettySystemErr
     pure (vsep $ filterEmptyDocs [prettyMeta, prettySystem])

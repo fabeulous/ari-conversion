@@ -4,6 +4,7 @@ Description : Parse a Problem in COPS format
 -}
 module TRSConversion.Parse.ARI.Problem (
   parseProblem,
+  parseProblem',
 )
 where
 
@@ -13,7 +14,7 @@ import TRSConversion.Parse.ARI.CTrs (parseAriCTrs')
 import TRSConversion.Parse.ARI.MSTrs (parseAriMsTrs')
 import TRSConversion.Parse.ARI.MetaInfo (parseAriMetaInfo)
 import TRSConversion.Parse.ARI.Trs (parseAriTrs')
-import TRSConversion.Parse.ARI.Utils (ARIParser, spaces)
+import TRSConversion.Parse.ARI.Utils (ARIParser, spaces, FunSymb, VarSymb, SortSymb)
 import TRSConversion.Problem.Problem (Problem (Problem), FormatType (..), mapSystem)
 import qualified TRSConversion.Problem.Problem as Prob
 import TRSConversion.Parse.ARI.FormatType (parseFormatType)
@@ -22,8 +23,13 @@ import Text.Megaparsec (MonadParsec(parseError))
 import TRSConversion.Parse.ARI.Infeasibility (parseAriTRSInfeasibility', parseAriCTRSInfeasibility')
 import TRSConversion.Parse.Utils (unToken)
 
-parseProblem :: ARIParser Problem
+parseProblem :: ARIParser (Problem String String String)
 parseProblem = do
+  prob@(Problem {Prob.system = system}) <- parseProblem'
+  pure $ prob { Prob.system = mapSystem unToken unToken unToken system }
+
+parseProblem' :: ARIParser (Problem FunSymb VarSymb SortSymb)
+parseProblem' = do
   metaInfo <- parseAriMetaInfo
   spaces
   (o, ft) <- parseFormatType
@@ -47,5 +53,5 @@ parseProblem = do
   pure $
     Problem
       { Prob.metaInfo = metaInfo
-      , Prob.system = mapSystem unToken unToken unToken system
+      , Prob.system = system
       }
