@@ -7,11 +7,13 @@ import Data.List.NonEmpty as NonEmpty
 import qualified Data.Set as Set
 import Data.Text (Text)
 import qualified Data.Text.IO as Text
-import Data.Void (Void)
-import Prettyprinter (Pretty, indent, vsep)
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure, exitSuccess)
 import System.IO (hPutStr, hPutStrLn, stderr)
+import Text.Megaparsec (PosState (..), defaultTabWidth, initialPos)
+import Text.Megaparsec.Error
+import qualified Text.Megaparsec.Error.Builder as PE
+
 import qualified TRSConversion.Parse.ARI.Problem as ARI
 import TRSConversion.Parse.ARI.Utils (FunSymb, SortSymb, VarSymb)
 import qualified TRSConversion.Parse.ARI.Utils as ARI
@@ -25,13 +27,6 @@ import qualified TRSConversion.Problem.MsTrs.MsTrs as MsTrs
 import TRSConversion.Problem.Problem (System (..), system)
 import qualified TRSConversion.Problem.Problem as Prob
 import qualified TRSConversion.Problem.Trs.Trs as Trs
-import TRSConversion.Unparse.CTrs (unparseAriCRules)
-import TRSConversion.Unparse.Problem.MsSig (unparseAriMsSig)
-import TRSConversion.Unparse.Problem.Rule (unparseAriRule)
-import TRSConversion.Unparse.Problem.TrsSig (unparseAriSigs)
-import Text.Megaparsec (PosState (..), defaultTabWidth, initialPos)
-import Text.Megaparsec.Error
-import qualified Text.Megaparsec.Error.Builder as PE
 
 main :: IO ()
 main = do
@@ -53,15 +48,21 @@ data ErrInfo = ErrInfo
     { start :: Int
     , len :: Int
     , errToken :: Text
+    , errorMsg :: String
     }
-    deriving (Show)
+    deriving (Show, Eq, Ord)
 
-errInfoFromToken :: Token a -> ErrInfo
-errInfoFromToken tok =
+instance ShowErrorComponent ErrInfo where
+    showErrorComponent = errorMsg
+    errorComponentLen = len
+
+errInfoFromToken :: Token a -> String -> ErrInfo
+errInfoFromToken tok errMsg =
     ErrInfo
         { start = tokenOffset tok
         , len = tokenLength tok
         , errToken = tokenText tok
+        , errorMsg = errMsg
         }
 
 instance Semigroup (Result a) where
@@ -84,8 +85,8 @@ runApp fp = do
         Fail errInfo err -> do
             hPutStrLn stderr "ERROR:"
             case errInfo of
-                Nothing -> pure ()
-                Just (ErrInfo{start = offSet, len = l, errToken = errToken}) -> do
+                Nothing -> hPutStrLn stderr err
+                Just errInf@ErrInfo{start = offSet} -> do
                     let errBundle =
                             ParseErrorBundle
                                 { bundlePosState =
@@ -96,10 +97,9 @@ runApp fp = do
                                         , pstateTabWidth = defaultTabWidth
                                         , pstateLinePrefix = ""
                                         }
-                                , bundleErrors = NonEmpty.fromList [PE.err offSet (PE.utoks errToken)]
+                                , bundleErrors = NonEmpty.fromList [PE.errFancy offSet (PE.fancy $ ErrorCustom errInf)]
                                 }
-                    hPutStr stderr $ errorBundlePretty (errBundle :: ParseErrorBundle Text Void)
-            hPutStrLn stderr err
+                    hPutStr stderr $ errorBundlePretty errBundle
             exitFailure
         Succeed -> do
             putStr $ case Prob.system problem of
@@ -139,17 +139,20 @@ uniqueSymbols = go Set.empty
     go _ [] = Succeed
     go st (Trs.Sig f _ : xs)
         | f `Set.member` st =
-            Fail (Just (errInfoFromToken f)) "the function symbol is declared multiple times"
+            let errMsg = "the function symbol is declared multiple times"
+             in Fail (Just (errInfoFromToken f errMsg)) errMsg
         | otherwise = go (Set.insert f st) xs
 
 checkRule :: Trs.Rule FunSymb VarSymb -> Result String
 checkRule Trs.Rule{Trs.lhs = l, Trs.rhs = r} =
     case l of
         Var v ->
-            Fail (Just (errInfoFromToken v)) "rules may not have a variable left-hand side"
+            let errMsg = "rules may not have a variable left-hand side"
+             in Fail (Just (errInfoFromToken v errMsg)) errMsg
         _
             | (v : _) <- Set.toList $ rVars `Set.difference` lVars ->
-                Fail (Just (errInfoFromToken v)) "all variables on the right of a rule must appear on the left (variable condition)"
+                let errMsg = "all variables on the right of a rule must appear on the left (variable condition)"
+                 in Fail (Just (errInfoFromToken v errMsg)) errMsg
         _ -> Succeed
   where
     lVars = Set.fromList (vars l)
@@ -169,7 +172,8 @@ checkCRule :: CTrs.CRule FunSymb VarSymb -> Result String
 checkCRule CTrs.CRule{CTrs.lhs = l} =
     case l of
         Var v ->
-            Fail (Just (errInfoFromToken v)) "rules may not have a variable left-hand side"
+            let errMsg = "rules may not have a variable left-hand side"
+             in Fail (Just (errInfoFromToken v errMsg)) errMsg
         _ -> Succeed
 
 --------------------------------------------------------------------------------
@@ -188,7 +192,8 @@ checkMSSignature = go Set.empty
     go _ [] = Succeed
     go st (MsTrs.MsSig f _ : xs)
         | f `Set.member` st =
-            Fail (Just (errInfoFromToken f)) "function symbol is declared multiple times"
+            let errMsg = "function symbol is declared multiple times"
+             in Fail (Just (errInfoFromToken f errMsg)) errMsg
         | otherwise = go (Set.insert f st) xs
 
 --------------------------------------------------------------------------------
