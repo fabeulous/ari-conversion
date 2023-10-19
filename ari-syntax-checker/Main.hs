@@ -1,10 +1,11 @@
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main (main) where
 
 import qualified Data.Set as Set
 import qualified Data.Text.IO as Text
-import Prettyprinter (Pretty, vsep)
+import Prettyprinter (Pretty, indent, vsep)
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure, exitSuccess)
 import System.IO (hPutStrLn, stderr)
@@ -15,14 +16,15 @@ import qualified TRSConversion.Problem.CSCTrs.CSCTrs as CSCTrs
 import qualified TRSConversion.Problem.CSTrs.CSTrs as CSTrs
 import qualified TRSConversion.Problem.CTrs.CTrs as CTrs
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
-import TRSConversion.Problem.Common.Term (vars)
+import TRSConversion.Problem.Common.Term (Term (..), vars)
 import qualified TRSConversion.Problem.MsTrs.MsTrs as MsTrs
 import TRSConversion.Problem.Problem (System (..), system)
 import qualified TRSConversion.Problem.Problem as Prob
-import TRSConversion.Problem.Trs.Trs (Term (..))
 import qualified TRSConversion.Problem.Trs.Trs as Trs
 import TRSConversion.Unparse.CTrs (unparseAriCRules)
+import TRSConversion.Unparse.Problem.MsSig (unparseAriMsSig)
 import TRSConversion.Unparse.Problem.Rule (unparseAriRule)
+import TRSConversion.Unparse.Problem.TrsSig (unparseAriSigs)
 
 main :: IO ()
 main = do
@@ -41,11 +43,15 @@ data Result a = Fail a | Succeed
     deriving (Eq, Ord, Show)
 
 instance Semigroup (Result a) where
+    (<>) :: Result a -> Result a -> Result a
     Fail a <> _ = Fail a
     Succeed <> b = b
 
 instance Monoid (Result a) where
+    mappend :: Result a -> Result a -> Result a
     mappend = (<>)
+
+    mempty :: Result a
     mempty = Succeed
 
 runApp :: FilePath -> IO ()
@@ -79,8 +85,30 @@ checkSem (Infeasibility sys) = checkInfeasibility sys
 --------------------------------------------------------------------------------
 ------ TRSs
 
-checkTrs :: (Ord v, Pretty f, Pretty v) => Trs.Trs f v -> Result String
-checkTrs Trs.Trs{Trs.rules = rs} = foldMap (foldMap checkRule) rs
+checkTrs :: (Ord v, Pretty f, Pretty v, Ord f) => Trs.Trs f v -> Result String
+checkTrs Trs.Trs{Trs.rules = rs, Trs.signature = sig} =
+    mconcat
+        [ checkSignature sig
+        , foldMap (foldMap checkRule) rs
+        ]
+
+checkSignature :: (Ord f, Pretty f) => Trs.TrsSig f v -> Result String
+checkSignature (Trs.FunSig sig) = uniqueSymbols sig
+
+uniqueSymbols :: (Ord f, Pretty f) => [Trs.Sig f] -> Result String
+uniqueSymbols = go Set.empty
+  where
+    go _ [] = Succeed
+    go st (sigLine@(Trs.Sig f _) : xs)
+        | f `Set.member` st =
+            Fail
+                . show
+                $ vsep
+                    [ "the function symbol"
+                    , indent 4 $ unparseAriSigs [sigLine]
+                    , "is declared multiple times"
+                    ]
+        | otherwise = go (Set.insert f st) xs
 
 checkRule :: (Ord v, Pretty f, Pretty v) => Trs.Rule f v -> Result String
 checkRule rule@Trs.Rule{Trs.lhs = l, Trs.rhs = r} =
@@ -90,7 +118,7 @@ checkRule rule@Trs.Rule{Trs.lhs = l, Trs.rhs = r} =
                 . show
                 $ vsep
                     [ "the rule"
-                    , unparseAriRule 1 rule
+                    , indent 4 $ unparseAriRule 1 rule
                     , "may not have a variable left-hand side"
                     ]
         _
@@ -99,7 +127,7 @@ checkRule rule@Trs.Rule{Trs.lhs = l, Trs.rhs = r} =
                     . show
                     $ vsep
                         [ "the rule"
-                        , unparseAriRule 1 rule
+                        , indent 4 $ unparseAriRule 1 rule
                         , "violates the variable condition"
                         ]
         _ -> Succeed
@@ -110,8 +138,12 @@ checkRule rule@Trs.Rule{Trs.lhs = l, Trs.rhs = r} =
 --------------------------------------------------------------------------------
 ------ CTRSs
 
-checkCTrs :: (Pretty f, Pretty v) => CTrs.CTrs f v -> Result String
-checkCTrs CTrs.CTrs{CTrs.rules = rs} = foldMap (foldMap checkCRule) rs
+checkCTrs :: (Pretty f, Pretty v, Ord f) => CTrs.CTrs f v -> Result String
+checkCTrs CTrs.CTrs{CTrs.rules = rs, CTrs.signature = sig} =
+    mconcat
+        [ checkSignature sig
+        , foldMap (foldMap checkCRule) rs
+        ]
 
 checkCRule :: (Pretty f, Pretty v) => CTrs.CRule f v -> Result String
 checkCRule rule@CTrs.CRule{CTrs.lhs = l} =
@@ -121,7 +153,7 @@ checkCRule rule@CTrs.CRule{CTrs.lhs = l} =
                 . show
                 $ vsep
                     [ "the rule"
-                    , unparseAriCRules 1 [rule]
+                    , indent 4 $ unparseAriCRules 1 [rule]
                     , "may not have a variable left-hand side"
                     ]
         _ -> Succeed
@@ -130,12 +162,35 @@ checkCRule rule@CTrs.CRule{CTrs.lhs = l} =
 ------ MSTrs
 
 checkMSTrs :: MsTrs.MsTrs String String String -> Result String
-checkMSTrs MsTrs.MsTrs{MsTrs.rules = rs} = foldMap (foldMap checkRule) rs
+checkMSTrs MsTrs.MsTrs{MsTrs.rules = rs, MsTrs.signature = sig} =
+    mconcat
+        [ checkMSSignature sig
+        , foldMap (foldMap checkRule) rs
+        ]
+
+checkMSSignature :: [MsTrs.MsSig String String] -> Result String
+checkMSSignature = go Set.empty
+  where
+    go _ [] = Succeed
+    go st (sigLine@(MsTrs.MsSig f _) : xs)
+        | f `Set.member` st =
+            Fail
+                . show
+                $ vsep
+                    [ "the function symbol"
+                    , indent 4 $ unparseAriMsSig [sigLine]
+                    , "is declared multiple times"
+                    ]
+        | otherwise = go (Set.insert f st) xs
 
 --------------------------------------------------------------------------------
 ------ CSTrs
 checkCSTrs :: CSTrs.CSTrs String String -> Result String
-checkCSTrs CSTrs.CSTrs{CSTrs.rules = rs} = foldMap (foldMap checkRule) rs
+checkCSTrs CSTrs.CSTrs{CSTrs.rules = rs, CSTrs.signature = sig} =
+    mconcat
+        [ checkSignature sig
+        , foldMap (foldMap checkRule) rs
+        ]
 
 --------------------------------------------------------------------------------
 ------ CSCTrs
