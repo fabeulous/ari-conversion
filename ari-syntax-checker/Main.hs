@@ -20,6 +20,7 @@ import qualified TRSConversion.Parse.ARI.Utils as ARI
 import TRSConversion.Parse.Utils (Token (..), parseIO)
 import qualified TRSConversion.Problem.CSCTrs.CSCTrs as CSCTrs
 import qualified TRSConversion.Problem.CSTrs.CSTrs as CSTrs
+import TRSConversion.Problem.CTrs.CTrs (orientedCTrsToTrs)
 import qualified TRSConversion.Problem.CTrs.CTrs as CTrs
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
 import TRSConversion.Problem.Common.Term (Term (..), vars)
@@ -221,4 +222,8 @@ checkCSCTrs CSCTrs.CSCTrs{CSCTrs.ctrs = ctrs} = checkCTrs ctrs
 ------ Infeasibility
 
 checkInfeasibility :: Inf.Infeasibility FunSymb VarSymb -> Result String
-checkInfeasibility Inf.Infeasibility{Inf.ctrs = ctrs} = checkCTrs ctrs
+checkInfeasibility Inf.Infeasibility{Inf.ctrs = ctrs, Inf.isTrs = isTrs}
+    | isTrs = case orientedCTrsToTrs ctrs of
+        Nothing -> Fail Nothing "the system is not a TRS"
+        Just trs -> checkTrs trs
+    | otherwise = checkCTrs ctrs

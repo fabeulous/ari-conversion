@@ -15,6 +15,7 @@ import Text.Megaparsec (
     sepBy1,
  )
 import TRSConversion.Problem.Trs.TrsSig (TrsSig(FunSig))
+import Data.Maybe (fromMaybe, isNothing)
 
 parseCopsInfeasibility :: COPSParser (Maybe String, Infeasibility String String)
 parseCopsInfeasibility = do
@@ -22,7 +23,7 @@ parseCopsInfeasibility = do
     origin <-
         option Nothing (fmap (Just . unpack) $ block "COMMENT" $ takeWhileP (Just "comment") (/= ')'))
     -- system <- parseCopsCTrs
-    condType <- option Oriented pCondTypeBlock
+    condType <- option Nothing (Just <$> pCondTypeBlock)
     vars <- parseCopsVarBlock
     rs <- pCRulesBlock vars
     vars2 <- parseCopsVarBlock
@@ -34,7 +35,7 @@ parseCopsInfeasibility = do
 
     let system =
             CTrs
-                { conditionType = condType
+                { conditionType = fromMaybe Oriented condType
                 , rules = IntMap.singleton 1 rs
                 , signature = sig
                 , numSystems = 1
@@ -44,5 +45,6 @@ parseCopsInfeasibility = do
         , Infeasibility
             { ctrs = system
             , query = q
+            , isTrs = isNothing condType
             }
         )

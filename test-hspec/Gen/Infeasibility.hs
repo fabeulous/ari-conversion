@@ -17,4 +17,5 @@ genInfeasibility sig varGen = do
   conds <- replicateM nConditions (genCondition sig varGen)
   pure $ Infeasibility { ctrs = system
                        , query = conds
+                       , isTrs = False
                        }

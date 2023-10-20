@@ -28,7 +28,7 @@ parseAriCTRSInfeasibility' condType = do
     sys <- parseAriCTrs' condType 1
     let FunSig funSig = signature sys
     q <- parseInfQuery funSig
-    pure $ Infeasibility{ctrs = sys, query = q}
+    pure $ Infeasibility{ctrs = sys, query = q, isTrs = False}
 
 parseAriTRSInfeasibility' :: ARIParser (Infeasibility FunSymb VarSymb)
 parseAriTRSInfeasibility' = do
@@ -36,7 +36,7 @@ parseAriTRSInfeasibility' = do
     let ctrsSys = trsToOrientedCTrs trsSys
     let FunSig funSig = signature ctrsSys
     q <- parseInfQuery funSig
-    pure $ Infeasibility{ctrs = ctrsSys, query = q}
+    pure $ Infeasibility{ctrs = ctrsSys, query = q, isTrs = True}
 
 parseInfQuery :: [Sig FunSymb] -> ARIParser [Condition FunSymb VarSymb]
 parseInfQuery funSig =
