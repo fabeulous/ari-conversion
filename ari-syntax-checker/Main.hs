@@ -53,8 +53,26 @@ data ErrInfo = ErrInfo
     deriving (Show, Eq, Ord)
 
 instance ShowErrorComponent ErrInfo where
+    showErrorComponent :: ErrInfo -> String
     showErrorComponent = errorMsg
+
+    errorComponentLen :: ErrInfo -> Int
     errorComponentLen = len
+
+errorBundleFromErrInfo :: ErrInfo -> FilePath -> s -> ParseErrorBundle s ErrInfo
+errorBundleFromErrInfo errInf filename fileContent =
+    ParseErrorBundle
+        { bundlePosState =
+            PosState
+                { pstateInput = fileContent
+                , pstateOffset = 0
+                , pstateSourcePos = initialPos filename
+                , pstateTabWidth = defaultTabWidth
+                , pstateLinePrefix = ""
+                }
+        , bundleErrors =
+            NonEmpty.fromList [PE.errFancy (start errInf) (PE.fancy $ ErrorCustom errInf)]
+        }
 
 errInfoFromToken :: Token a -> String -> ErrInfo
 errInfoFromToken tok errMsg =
@@ -86,20 +104,9 @@ runApp fp = do
             hPutStrLn stderr "ERROR:"
             case errInfo of
                 Nothing -> hPutStrLn stderr err
-                Just errInf@ErrInfo{start = offSet} -> do
-                    let errBundle =
-                            ParseErrorBundle
-                                { bundlePosState =
-                                    PosState
-                                        { pstateInput = fileContent
-                                        , pstateOffset = 0
-                                        , pstateSourcePos = initialPos fp
-                                        , pstateTabWidth = defaultTabWidth
-                                        , pstateLinePrefix = ""
-                                        }
-                                , bundleErrors = NonEmpty.fromList [PE.errFancy offSet (PE.fancy $ ErrorCustom errInf)]
-                                }
-                    hPutStr stderr $ errorBundlePretty errBundle
+                Just errInf ->
+                    let errBundle = errorBundleFromErrInfo errInf fp fileContent
+                     in hPutStr stderr $ errorBundlePretty errBundle
             exitFailure
         Succeed -> do
             putStr $ case Prob.system problem of
@@ -151,7 +158,7 @@ checkRule Trs.Rule{Trs.lhs = l, Trs.rhs = r} =
              in Fail (Just (errInfoFromToken v errMsg)) errMsg
         _
             | (v : _) <- Set.toList $ rVars `Set.difference` lVars ->
-                let errMsg = "all variables on the right of a rule must appear on the left (variable condition)"
+                let errMsg = "all variables on the right of a rule must appear on the left"
                  in Fail (Just (errInfoFromToken v errMsg)) errMsg
         _ -> Succeed
   where
