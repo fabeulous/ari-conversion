@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Unparse.CSTrs
+Module      : TRSConversion.Unparse.ARI.CSTrs
 Description : Unparser for CSTRSs
 -}
-module TRSConversion.Unparse.CSTrs (
+module TRSConversion.Unparse.ARI.CSTrs (
   -- * ARI
   unparseAriCSTrs,
   -- ** Helpers
@@ -21,8 +21,8 @@ import qualified TRSConversion.Problem.Common.Rule as R
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
-import TRSConversion.Unparse.Problem.Rule (unparseCopsRule, unparseAriSystems)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.ARI.Problem.Rule (unparseAriSystems)
+import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs, prettyBlock)
 import qualified Data.IntMap as IntMap
 
 unparseAriCSTrs :: (Pretty f, Pretty v, Ord f) => CSTrs f v -> Either String (Doc ann)

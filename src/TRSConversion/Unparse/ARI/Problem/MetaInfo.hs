@@ -1,19 +1,20 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.Problem.MetaInfo
+-- Module      : TRSConversion.Unparse.ARI.Problem.MetaInfo
 -- Description : Unparser for MetaInfo
 --
 -- This module defines functions to unparse 'MetaInfo' into the formats expected for
 -- COPS and ARI rewrite systems.
-module TRSConversion.Unparse.Problem.MetaInfo
+module TRSConversion.Unparse.ARI.Problem.MetaInfo
   ( -- * ARI
     unparseAriMetaInfo,
   )
 where
 
-import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Prettyprinter (Doc, comma, emptyDoc, hsep, pretty, punctuate, vsep, (<+>), semi, hardline)
+
+import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
+import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs)
 
 -- | Unparse 'MetaInfo' into ARI format: see the tests for more examples.
 --

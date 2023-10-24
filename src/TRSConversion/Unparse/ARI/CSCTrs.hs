@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Unparse.CSCTrs
+Module      : TRSConversion.Unparse.ARI.CSCTrs
 Description : Unparser for CSCTRSs
 -}
-module TRSConversion.Unparse.CSCTrs (
+module TRSConversion.Unparse.ARI.CSCTrs (
   -- * ARI
   unparseAriCSCTrs,
 )
@@ -16,9 +16,8 @@ import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs (..))
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), inferSigFromRules)
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..), Sig (..))
-import TRSConversion.Unparse.CSTrs (copsReplacementMap)
-import TRSConversion.Unparse.CTrs (prettyCRule, prettyCondType, prettyAriConditionType, unparseAriCSystems)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.ARI.CTrs (prettyAriConditionType, unparseAriCSystems)
+import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs)
 import TRSConversion.Problem.CSTrs.CSTrs (ReplacementMap)
 import qualified Data.Map.Strict as M
 import qualified Data.IntMap as IntMap

@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Unparse.CSTrs
+Module      : TRSConversion.Unparse.COPS.CSTrs
 Description : Unparser for CSTRSs
 -}
-module TRSConversion.Unparse.CSTrs (
+module TRSConversion.Unparse.COPS.CSTrs (
   -- * COPS
   unparseCopsCSTrs,
   -- ** Helpers
@@ -22,8 +22,8 @@ import qualified TRSConversion.Problem.Common.Rule as R
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
-import TRSConversion.Unparse.Problem.Rule (unparseCopsRule, unparseAriSystems)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRule)
+import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs, prettyBlock)
 import qualified Data.IntMap as IntMap
 
 {- | Unparse a CSTRS from the Haskell 'CSTrs' representation into

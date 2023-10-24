@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.UnparseMsTrs
+-- Module      : TRSConversion.Unparse.ARI.UnparseMsTrs
 -- Description : Unparser for MSTRSs
 --
 -- This module defines functions to output an 'MsTrs' in COPS and ARI format.
-module TRSConversion.Unparse.UnparseMsTrs
+module TRSConversion.Unparse.ARI.UnparseMsTrs
   ( -- * ARI
     unparseAriMsTrs,
   )
@@ -12,9 +12,9 @@ where
 
 import TRSConversion.Problem.MsTrs.MsSig (inferSorts)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
-import TRSConversion.Unparse.Problem.MsSig (unparseAriMsSig, unparseCopsMsSig)
-import TRSConversion.Unparse.Problem.Rule (unparseCopsRules, unparseAriSystems)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.ARI.Problem.MsSig (unparseAriMsSig)
+import TRSConversion.Unparse.ARI.Problem.Rule (unparseAriSystems)
+import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs, prettyBlock)
 import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, Pretty, pretty, vcat, vsep, parens, (<+>))
 import qualified Data.IntMap as IntMap

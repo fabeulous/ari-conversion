@@ -1,17 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.Problem.MsSig
+-- Module      : TRSConversion.Unparse.COPS.Problem.MsSig
 -- Description : Unparser for MsSig
 --
 -- This module defines functions to unparse an MSTRS signature 'MsSig' into COPS and ARI format.
-module TRSConversion.Unparse.Problem.MsSig
+module TRSConversion.Unparse.COPS.Problem.MsSig
   ( -- *  COPS
     unparseCopsMsSig,
   )
 where
 
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs, prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep, (<+>))
 
 -- | Pretty print an 'MsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php).

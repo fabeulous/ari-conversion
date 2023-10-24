@@ -1,18 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.Problem.MsSig
+-- Module      : TRSConversion.Unparse.ARI.Problem.MsSig
 -- Description : Unparser for MsSig
 --
 -- This module defines functions to unparse an MSTRS signature 'MsSig' into COPS and ARI format.
-module TRSConversion.Unparse.Problem.MsSig
+module TRSConversion.Unparse.ARI.Problem.MsSig
   ( -- *  ARI
     unparseAriMsSig,
   )
 where
+import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep, (<+>))
 
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep, (<+>))
+import TRSConversion.Unparse.ARI.Utils (prettyBlock)
 
 -- | Pretty print a an 'MsSig' in [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
 --

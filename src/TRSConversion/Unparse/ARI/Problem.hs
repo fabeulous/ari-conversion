@@ -1,8 +1,8 @@
 {- |
-Module      : TRSConversion.Unparse.Problem
+Module      : TRSConversion.Unparse.ARI.Problem
 Description : Type definition Problems
 -}
-module TRSConversion.Unparse.Problem (
+module TRSConversion.Unparse.ARI.Problem (
     unparseAriProblem,
 )
 where
@@ -11,15 +11,14 @@ import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, hardline, vsep, Pretty)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Problem.Problem (Problem (..), System (..))
-import TRSConversion.Unparse.COM (unparseCopsCOM)
-import TRSConversion.Unparse.CSCTrs (unparseAriCSCTrs, unparseCopsCSCTrs)
-import TRSConversion.Unparse.CSTrs (unparseAriCSTrs, unparseCopsCSTrs)
-import TRSConversion.Unparse.CTrs (unparseAriCTrs, unparseCopsCTrs)
-import TRSConversion.Unparse.Infeasibility (unparseAriInfeasibility, unparseCopsInfeasibility)
-import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
-import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
-import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
-import TRSConversion.Unparse.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.ARI.CSCTrs (unparseAriCSCTrs)
+import TRSConversion.Unparse.ARI.CSTrs (unparseAriCSTrs)
+import TRSConversion.Unparse.ARI.CTrs (unparseAriCTrs)
+import TRSConversion.Unparse.ARI.Infeasibility (unparseAriInfeasibility)
+import TRSConversion.Unparse.ARI.Problem.MetaInfo (unparseAriMetaInfo)
+import TRSConversion.Unparse.ARI.UnparseMsTrs (unparseAriMsTrs)
+import TRSConversion.Unparse.ARI.UnparseTrs (unparseAriTrs)
+import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs)
 
 unparseAriProblem :: (Ord f, Eq v, Pretty f, Pretty v, Eq s, Pretty s) =>
   Problem f v s -> Either String (Doc ann)

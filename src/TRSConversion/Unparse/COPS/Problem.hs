@@ -1,8 +1,8 @@
 {- |
-Module      : TRSConversion.Unparse.Problem
+Module      : TRSConversion.Unparse.COPS.Problem
 Description : Type definition Problems
 -}
-module TRSConversion.Unparse.Problem (
+module TRSConversion.Unparse.COPS.Problem (
     unparseCopsProblem,
     unparseCopsCOMProblem,
 )
@@ -12,15 +12,15 @@ import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, hardline, vsep, Pretty)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Problem.Problem (Problem (..), System (..))
-import TRSConversion.Unparse.COM (unparseCopsCOM)
-import TRSConversion.Unparse.CSCTrs (unparseAriCSCTrs, unparseCopsCSCTrs)
-import TRSConversion.Unparse.CSTrs (unparseAriCSTrs, unparseCopsCSTrs)
-import TRSConversion.Unparse.CTrs (unparseAriCTrs, unparseCopsCTrs)
-import TRSConversion.Unparse.Infeasibility (unparseAriInfeasibility, unparseCopsInfeasibility)
-import TRSConversion.Unparse.Problem.MetaInfo (unparseAriMetaInfo, unparseCopsMetaInfo)
-import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs, unparseCopsMsTrs)
-import TRSConversion.Unparse.UnparseTrs (unparseAriTrs, unparseCopsTrs)
-import TRSConversion.Unparse.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.COPS.COM (unparseCopsCOM)
+import TRSConversion.Unparse.COPS.CSCTrs (unparseCopsCSCTrs)
+import TRSConversion.Unparse.COPS.CSTrs (unparseCopsCSTrs)
+import TRSConversion.Unparse.COPS.CTrs (unparseCopsCTrs)
+import TRSConversion.Unparse.COPS.Infeasibility (unparseCopsInfeasibility)
+import TRSConversion.Unparse.COPS.Problem.MetaInfo (unparseCopsMetaInfo)
+import TRSConversion.Unparse.COPS.UnparseMsTrs (unparseCopsMsTrs)
+import TRSConversion.Unparse.COPS.UnparseTrs (unparseCopsTrs)
+import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs)
 
 unparseCopsProblem :: (Pretty f, Pretty v, Pretty s, Ord f, Ord v) =>
   Problem f v s -> Either String (Doc ann)

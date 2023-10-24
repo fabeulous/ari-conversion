@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module TRSConversion.Unparse.Infeasibility (
+module TRSConversion.Unparse.ARI.Infeasibility (
     unparseAriInfeasibility,
 ) where
 
@@ -10,9 +10,8 @@ import Prettyprinter (Doc, Pretty, concatWith, hsep, parens, pretty, vsep, (<+>)
 import TRSConversion.Problem.CTrs.CTrs (CTrs (..), Condition (..), conditionType, orientedCTrsToTrs, rules, signature, varsCondition)
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
-import TRSConversion.Unparse.CTrs (prettyAriConditionType, unparseAriCSystems, unparseAriCTrsSig, unparseAriCondition, unparseCondition, unparseCopsCTrs)
-import TRSConversion.Unparse.UnparseTrs (unparseCopsTrs)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.ARI.CTrs (prettyAriConditionType, unparseAriCSystems, unparseAriCTrsSig, unparseAriCondition)
+import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs)
 
 unparseAriInfeasibility :: (Pretty f, Pretty v) => Infeasibility f v -> Either String (Doc ann)
 unparseAriInfeasibility infProb = do

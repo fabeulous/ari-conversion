@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.UnparseTrs
+-- Module      : TRSConversion.Unparse.COPS.UnparseTrs
 -- Description : Unparser for TRSs
 --
 -- This module defines functions to output a 'Trs' in COPS and ARI format.
-module TRSConversion.Unparse.UnparseTrs
+module TRSConversion.Unparse.COPS.UnparseTrs
   ( -- * COPS
     unparseCopsTrs,
   )
@@ -15,9 +15,9 @@ import Data.Foldable (toList)
 import Prettyprinter (Doc, Pretty, parens, pretty, vsep, (<+>))
 
 import TRSConversion.Problem.Trs.Trs (Trs (..))
-import TRSConversion.Unparse.Problem.Rule (unparseAriSystems, unparseCopsRules)
-import TRSConversion.Unparse.Problem.TrsSig (unparseAriTrsSig, unparseCopsTrsSig)
-import TRSConversion.Unparse.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRules)
+import TRSConversion.Unparse.COPS.Problem.TrsSig (unparseCopsTrsSig)
+import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs)
 
 -- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 -- [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).

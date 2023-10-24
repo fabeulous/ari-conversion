@@ -1,9 +1,9 @@
 -- |
--- Module      : TRSConversion.Unparse.Problem.Term
+-- Module      : TRSConversion.Unparse.ARI.Problem.Term
 -- Description : Unparser for terms
 --
 -- This module defines functions to unparse terms into prefix and applicative formats.
-module TRSConversion.Unparse.Problem.Term
+module TRSConversion.Unparse.ARI.Problem.Term
   ( -- * ARI
     unparsePrefixTerm,
   )

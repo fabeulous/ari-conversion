@@ -32,11 +32,8 @@ import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import qualified TRSConversion.Formats.COPS.Parse.Problem as COPS
 import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
 import TRSConversion.Parse.Utils (parseIO)
-import TRSConversion.Unparse.Problem (
-  unparseAriProblem,
-  unparseCopsCOMProblem,
-  unparseCopsProblem,
- )
+import TRSConversion.Unparse.ARI.Problem (unparseAriProblem)
+import TRSConversion.Unparse.COPS.Problem (unparseCopsCOMProblem, unparseCopsProblem)
 
 data Format
   = COPS
