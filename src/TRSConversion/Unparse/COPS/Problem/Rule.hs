@@ -14,7 +14,7 @@ where
 
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Unparse.COPS.Problem.Term (unparseTerm)
-import TRSConversion.Unparse.COPS.Utils (prettyBlock)
+import TRSConversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, indent, parens, pretty, vsep, (<+>))
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap

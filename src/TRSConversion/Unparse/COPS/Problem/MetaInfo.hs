@@ -12,7 +12,7 @@ module TRSConversion.Unparse.COPS.Problem.MetaInfo
 where
 
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
-import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Prettyprinter (Doc, comma, emptyDoc, hsep, pretty, punctuate, vsep, (<+>), semi, hardline)
 
 -- | Unparse TRS 'MetaInfo' to fit into a single COPS @COMMENT@ block.

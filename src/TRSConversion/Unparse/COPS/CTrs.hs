@@ -25,7 +25,7 @@ import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Co
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import TRSConversion.Unparse.COPS.Problem.Term (unparseTerm)
-import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 
 {- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).

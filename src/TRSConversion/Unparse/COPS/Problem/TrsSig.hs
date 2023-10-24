@@ -17,7 +17,7 @@ where
 
 import TRSConversion.Problem.Common.Rule (Rule, inferSigFromRules, ruleVars)
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
-import TRSConversion.Unparse.COPS.Utils (prettyBlock)
+import TRSConversion.Unparse.Utils (prettyBlock)
 import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep, (<+>))
 import qualified Data.Set as Set
 import qualified TRSConversion.Problem.Common.Rule as Rule

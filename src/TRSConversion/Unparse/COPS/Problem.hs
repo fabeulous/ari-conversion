@@ -20,7 +20,7 @@ import TRSConversion.Unparse.COPS.Infeasibility (unparseCopsInfeasibility)
 import TRSConversion.Unparse.COPS.Problem.MetaInfo (unparseCopsMetaInfo)
 import TRSConversion.Unparse.COPS.UnparseMsTrs (unparseCopsMsTrs)
 import TRSConversion.Unparse.COPS.UnparseTrs (unparseCopsTrs)
-import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseCopsProblem :: (Pretty f, Pretty v, Pretty s, Ord f, Ord v) =>
   Problem f v s -> Either String (Doc ann)

@@ -17,7 +17,7 @@ import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), inferSigFromRules
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..), Sig (..))
 import TRSConversion.Unparse.ARI.CTrs (prettyAriConditionType, unparseAriCSystems)
-import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 import TRSConversion.Problem.CSTrs.CSTrs (ReplacementMap)
 import qualified Data.Map.Strict as M
 import qualified Data.IntMap as IntMap

@@ -11,7 +11,7 @@ import TRSConversion.Problem.CTrs.CTrs (CTrs (..), Condition (..), conditionType
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
 import TRSConversion.Unparse.ARI.CTrs (prettyAriConditionType, unparseAriCSystems, unparseAriCTrsSig, unparseAriCondition)
-import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseAriInfeasibility :: (Pretty f, Pretty v) => Infeasibility f v -> Either String (Doc ann)
 unparseAriInfeasibility infProb = do

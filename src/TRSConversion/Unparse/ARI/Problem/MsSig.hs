@@ -12,7 +12,7 @@ where
 import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep, (<+>))
 
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
-import TRSConversion.Unparse.ARI.Utils (prettyBlock)
+import TRSConversion.Unparse.Utils (prettyBlock)
 
 -- | Pretty print a an 'MsSig' in [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/mstrs.txt).
 --

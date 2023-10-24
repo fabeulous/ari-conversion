@@ -25,7 +25,7 @@ import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Co
 import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import TRSConversion.Unparse.ARI.Problem.Term (unparsePrefixTerm)
-import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 
 unparseAriCTrs :: (Pretty f, Pretty v) =>CTrs f v -> Either String (Doc ann)
 unparseAriCTrs ctrs = do

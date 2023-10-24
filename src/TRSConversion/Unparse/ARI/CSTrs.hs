@@ -22,7 +22,7 @@ import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import TRSConversion.Unparse.ARI.Problem.Rule (unparseAriSystems)
-import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import qualified Data.IntMap as IntMap
 
 unparseAriCSTrs :: (Pretty f, Pretty v, Ord f) => CSTrs f v -> Either String (Doc ann)

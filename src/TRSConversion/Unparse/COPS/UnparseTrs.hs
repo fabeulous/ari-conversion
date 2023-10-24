@@ -17,7 +17,7 @@ import Prettyprinter (Doc, Pretty, parens, pretty, vsep, (<+>))
 import TRSConversion.Problem.Trs.Trs (Trs (..))
 import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRules)
 import TRSConversion.Unparse.COPS.Problem.TrsSig (unparseCopsTrsSig)
-import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 -- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 -- [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).

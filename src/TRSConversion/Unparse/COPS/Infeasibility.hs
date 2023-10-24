@@ -12,7 +12,7 @@ import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
 import TRSConversion.Unparse.COPS.CTrs (unparseCondition, unparseCopsCTrs)
 import TRSConversion.Unparse.COPS.UnparseTrs (unparseCopsTrs)
-import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 
 unparseCopsInfeasibility :: (Ord v, Pretty f, Pretty v, Ord f) => String -> Infeasibility f v -> Either String (Doc ann)
 unparseCopsInfeasibility comment inf = do

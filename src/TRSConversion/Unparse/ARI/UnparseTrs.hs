@@ -17,7 +17,7 @@ import Prettyprinter (Doc, Pretty, parens, pretty, vsep, (<+>))
 import TRSConversion.Problem.Trs.Trs (Trs (..))
 import TRSConversion.Unparse.ARI.Problem.Rule (unparseAriSystems)
 import TRSConversion.Unparse.ARI.Problem.TrsSig (unparseAriTrsSig)
-import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 -- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 -- [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).

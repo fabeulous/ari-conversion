@@ -14,7 +14,7 @@ where
 import Prettyprinter (Doc, comma, emptyDoc, hsep, pretty, punctuate, vsep, (<+>), semi, hardline)
 
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
-import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 -- | Unparse 'MetaInfo' into ARI format: see the tests for more examples.
 --

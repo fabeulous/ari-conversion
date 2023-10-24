@@ -1,9 +1,9 @@
 -- |
--- Module      : TRSConversion.Unparse.COPS.Utils
+-- Module      : TRSConversion.Unparse.Utils
 -- Description : Utils for unparsing
 --
 -- This module defines helper functions to help with unparsing using Prettyprinter.
-module TRSConversion.Unparse.ARI.Utils
+module TRSConversion.Unparse.Utils
   ( isEmptyDoc,
     filterEmptyDocs,
     prettyBlock,

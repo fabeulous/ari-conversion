@@ -14,7 +14,7 @@ import TRSConversion.Problem.MsTrs.MsSig (inferSorts)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
 import TRSConversion.Unparse.COPS.Problem.MsSig (unparseCopsMsSig)
 import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRules)
-import TRSConversion.Unparse.COPS.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, Pretty, pretty, vcat, vsep, parens, (<+>))
 import qualified Data.IntMap as IntMap

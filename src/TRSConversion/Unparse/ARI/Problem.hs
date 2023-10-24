@@ -18,7 +18,7 @@ import TRSConversion.Unparse.ARI.Infeasibility (unparseAriInfeasibility)
 import TRSConversion.Unparse.ARI.Problem.MetaInfo (unparseAriMetaInfo)
 import TRSConversion.Unparse.ARI.UnparseMsTrs (unparseAriMsTrs)
 import TRSConversion.Unparse.ARI.UnparseTrs (unparseAriTrs)
-import TRSConversion.Unparse.ARI.Utils (filterEmptyDocs)
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseAriProblem :: (Ord f, Eq v, Pretty f, Pretty v, Eq s, Pretty s) =>
   Problem f v s -> Either String (Doc ann)
