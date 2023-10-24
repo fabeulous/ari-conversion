@@ -4,9 +4,12 @@ module Main (main) where
 import Control.Monad (unless)
 import Data.Char (toUpper)
 import qualified Data.Text.IO as Text
+import qualified Data.Text.Lazy as LazyText
+import qualified Data.Text.Lazy.IO as LazyText
 import Data.Version (showVersion)
 import Paths_trs_conversion (version)
-import Prettyprinter (Doc)
+import Prettyprinter (Doc, layoutPretty, defaultLayoutOptions)
+import Prettyprinter.Render.Text (renderLazy)
 import System.Console.GetOpt (
   ArgDescr (NoArg, ReqArg),
   ArgOrder (Permute),
@@ -20,12 +23,12 @@ import System.IO (
   Handle,
   IOMode (WriteMode),
   hClose,
-  hPrint,
   hPutStrLn,
   openFile,
   stderr,
   stdout,
  )
+import Text.XML (renderText, def)
 
 import qualified TRSConversion.Formats.ARI.Parse.Problem as ARI
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
@@ -34,10 +37,12 @@ import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
 import TRSConversion.Parse.Utils (parseIO)
 import TRSConversion.Formats.ARI.Unparse.Problem (unparseAriProblem)
 import TRSConversion.Formats.COPS.Unparse.Problem (unparseCopsCOMProblem, unparseCopsProblem)
+import TRSConversion.Formats.CPF3.Unparse.Problem (problemToXML)
 
 data Format
   = COPS
   | ARI
+  | CPF3
   deriving (Eq, Ord, Enum, Bounded, Show)
 
 -- | @Config@ holds the information parsed from the options given on the command line.
@@ -179,6 +184,7 @@ contextFromConfig conf = do
   parseFormat s = case toUpper <$> s of
     "COPS" -> Right COPS
     "ARI" -> Right ARI
+    "CPF3" -> Right CPF3
     _ ->
       Left $
         unlines
@@ -197,19 +203,26 @@ runApp config inputFile = do
       -- | otherwise ->
       --     parseIO (COPS.toParser COPS.parseProblem) inputFile fileContents
     ARI -> parseIO (ARI.toParser ARI.parseProblem) inputFile fileContents
+    CPF3 -> do
+      hPutStrLn stderr $ "ERROR: CPF3 is currently only supported as a target (not a source)"
+      exitFailure
 
   doc <- case target config of
     COPS
-      | commutationFlag config -> unparseIO unparseCopsCOMProblem problem
-      | otherwise -> unparseIO unparseCopsProblem problem
-    ARI -> unparseIO unparseAriProblem problem
-
+      | commutationFlag config -> fmap renderPretty $ unparseIO unparseCopsCOMProblem problem
+      | otherwise -> fmap renderPretty $ unparseIO unparseCopsProblem problem
+    ARI -> fmap renderPretty $ unparseIO unparseAriProblem problem
+    CPF3 -> pure $ renderText def (problemToXML problem)
   outputHandle <- case outputFile config of
     Nothing -> pure stdout
     Just fp -> openFile fp WriteMode
 
-  hPrint outputHandle doc
+  LazyText.hPutStrLn outputHandle doc
   hClose outputHandle
+
+
+renderPretty :: Doc ann -> LazyText.Text
+renderPretty = renderLazy . layoutPretty defaultLayoutOptions
 
 -- | Takes an unparsing function @up@ as an argument and wraps the result in the IO monad
 unparseIO :: (a -> Either String (Doc ann)) -> a -> IO (Doc ann)
