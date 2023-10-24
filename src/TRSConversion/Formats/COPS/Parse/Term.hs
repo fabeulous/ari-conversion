@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Parse.COPS.Term
+Module      : TRSConversion.Formats.COPS.Parse.Term
 Description : Term, function symbol, and variable parser
 
 This module defines functions to parse terms from a @String@ input.
 Also specifies the allowed tokens for function symbols and variables.
 -}
-module TRSConversion.Parse.COPS.Term (
+module TRSConversion.Formats.COPS.Parse.Term (
   -- * COPS Terms
   SymbolType(..),
   varsIn,
@@ -18,7 +18,7 @@ module TRSConversion.Parse.COPS.Term (
 )
 where
 
-import TRSConversion.Parse.COPS.Utils (COPSParser, ident, parens, symbol)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, ident, parens, symbol)
 import TRSConversion.Problem.Common.Term (Term (..))
 import Text.Megaparsec (option, sepBy)
 

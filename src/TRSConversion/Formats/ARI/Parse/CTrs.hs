@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : Data.Conversion.Parse.ARI.CTrs
+Module      : Data.Conversion.Formats.ARI.Parse.CTrs
 Description : Parser for first-order CTRSs
 
 This module defines functions to parse a first-order CTRS in ARI format.
 -}
-module TRSConversion.Parse.ARI.CTrs (
+module TRSConversion.Formats.ARI.Parse.CTrs (
   -- * System
   parseAriCTrs,
   parseAriCTrs',
@@ -26,9 +26,9 @@ import qualified Data.IntMap as IntMap
 import qualified TRSConversion.Problem.Common.Index as Idx
 import Text.Megaparsec (getOffset, many, option, registerParseError, (<|>), parseError)
 
-import TRSConversion.Parse.ARI.Sig (parseAriSig)
-import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
-import TRSConversion.Parse.ARI.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, sExpr, index, nonPositiveNumberError, FunSymb, VarSymb)
+import TRSConversion.Formats.ARI.Parse.Sig (parseAriSig)
+import TRSConversion.Formats.ARI.Parse.Term (parsePrefixTerm)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, sExpr, index, nonPositiveNumberError, FunSymb, VarSymb)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Common.Index (Index)
 import TRSConversion.Problem.Trs.TrsSig (Sig, TrsSig (..))

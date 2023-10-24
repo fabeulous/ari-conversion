@@ -6,7 +6,7 @@ Description : Parser for first-order TRSs
 
 This module defines functions to parse a first-order TRS in COPS and ARI format.
 -}
-module TRSConversion.Parse.COPS.CTrs (
+module TRSConversion.Formats.COPS.Parse.CTrs (
   -- * system
   parseCopsCTrs,
   -- * parsers
@@ -18,9 +18,9 @@ where
 
 import Data.Functor (($>))
 import qualified Data.IntMap as IntMap
-import TRSConversion.Parse.COPS.Term (parseTermVars)
-import TRSConversion.Parse.COPS.Trs (parseCopsVarBlock)
-import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident, keyword, symbol)
+import TRSConversion.Formats.COPS.Parse.Term (parseTermVars)
+import TRSConversion.Formats.COPS.Parse.Trs (parseCopsVarBlock)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, ident, keyword, symbol)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..), inferSigFromRules)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (FunSig))
 import Text.Megaparsec (many, option, sepBy1, (<|>))

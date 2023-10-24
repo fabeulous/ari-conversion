@@ -1,14 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- | parse for the commutation problems in COPS
-module TRSConversion.Parse.COPS.COM (parseCopsCom) where
+module TRSConversion.Formats.COPS.Parse.COM (parseCopsCom) where
 
 import qualified Data.IntMap as IntMap
 import Data.Text (unpack)
-import TRSConversion.Parse.COPS.Utils (COPSParser, block, keyword)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, keyword)
 import TRSConversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
 import Text.Megaparsec (MonadParsec (takeWhileP), option, try)
-import TRSConversion.Parse.COPS.Trs (parseCopsTrs)
+import TRSConversion.Formats.COPS.Parse.Trs (parseCopsTrs)
 import Data.Containers.ListUtils (nubOrd)
 
 parseCopsCom :: COPSParser (Maybe String, Trs String String)

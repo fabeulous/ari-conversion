@@ -1,4 +1,4 @@
-module TRSConversion.Parse.ARI.CSTrsSpec where
+module TRSConversion.Formats.ARI.Parse.CSTrsSpec where
 
 import Data.Either (fromRight)
 import Data.Text (pack)
@@ -6,8 +6,8 @@ import Gen.CSTrs (genCSTrs)
 import Gen.Sig (genSig)
 import Gen.Term (genVars)
 import qualified Hedgehog as H
-import TRSConversion.Parse.ARI.CSTrs (parseAriCSTrs)
-import qualified TRSConversion.Parse.ARI.Utils as ARI
+import TRSConversion.Formats.ARI.Parse.CSTrs (parseAriCSTrs)
+import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import TRSConversion.Unparse.CSTrs (unparseAriCSTrs)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)

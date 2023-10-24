@@ -6,14 +6,14 @@ Description : Rule parsers
 
 This module defines parsers to parse a single rule and a block of rules in different rewriting formats.
 -}
-module TRSConversion.Parse.ARI.Rule (
+module TRSConversion.Formats.ARI.Parse.Rule (
   -- * ARI
   parseAriRule,
 )
 where
 
-import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
-import TRSConversion.Parse.ARI.Utils (ARIParser, sExpr, keyword, index, FunSymb, VarSymb)
+import TRSConversion.Formats.ARI.Parse.Term (parsePrefixTerm)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, sExpr, keyword, index, FunSymb, VarSymb)
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Trs.TrsSig (Sig)
 import Text.Megaparsec (option, getOffset)

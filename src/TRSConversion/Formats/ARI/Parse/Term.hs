@@ -7,7 +7,7 @@ Description : Term, function symbol, and variable parser
 This module defines functions to parse terms from a @String@ input.
 Also specifies the allowed tokens for function symbols and variables.
 -}
-module TRSConversion.Parse.ARI.Term (
+module TRSConversion.Formats.ARI.Parse.Term (
   -- * ARI Terms
   parsePrefixTerm,
 
@@ -18,7 +18,7 @@ module TRSConversion.Parse.ARI.Term (
 where
 
 import Data.Text (pack, unpack)
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr, restrictedIdent, FunSymb, VarSymb, keywordToken)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, ident, keyword, sExpr, restrictedIdent, FunSymb, VarSymb, keywordToken)
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (choice, count, (<?>), (<|>))

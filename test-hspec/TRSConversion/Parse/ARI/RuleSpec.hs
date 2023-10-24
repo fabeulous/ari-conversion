@@ -1,4 +1,4 @@
-module TRSConversion.Parse.ARI.RuleSpec where
+module TRSConversion.Formats.ARI.Parse.RuleSpec where
 
 import Control.Monad ((<=<))
 import Data.Text (pack)
@@ -9,14 +9,14 @@ import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)
 
-import TRSConversion.Parse.ARI.Rule (parseAriRule)
-import qualified TRSConversion.Parse.ARI.Utils as ARI
+import TRSConversion.Formats.ARI.Parse.Rule (parseAriRule)
+import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import qualified TRSConversion.Problem.Common.Index as Idx
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
 import TRSConversion.Unparse.Problem.Rule (unparseAriRule)
-import TRSConversion.Parse.ARI.TermSpec (dummyToken)
+import TRSConversion.Formats.ARI.Parse.TermSpec (dummyToken)
 import TRSConversion.Problem.Common.Rule (mapRule)
 import TRSConversion.Parse.Utils (unToken)
 

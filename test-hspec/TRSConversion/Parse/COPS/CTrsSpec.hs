@@ -1,4 +1,4 @@
-module TRSConversion.Parse.COPS.CTrsSpec where
+module TRSConversion.Formats.COPS.Parse.CTrsSpec where
 
 import Data.Either (fromRight)
 import Data.Text (pack)
@@ -6,8 +6,8 @@ import Gen.CTrs
 import Gen.Sig
 import Gen.Term
 import qualified Hedgehog as H
-import TRSConversion.Parse.COPS.CTrs (parseCopsCTrs)
-import qualified TRSConversion.Parse.COPS.Utils as COPS
+import TRSConversion.Formats.COPS.Parse.CTrs (parseCopsCTrs)
+import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
 import TRSConversion.Unparse.CTrs (unparseCopsCTrs)
 import Test.Hspec
 import Test.Hspec.Hedgehog

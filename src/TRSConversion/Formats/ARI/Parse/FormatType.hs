@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies #-}
 
-module TRSConversion.Parse.ARI.FormatType (
+module TRSConversion.Formats.ARI.Parse.FormatType (
     parseFormatType,
 )
 where
@@ -11,8 +11,8 @@ import Data.Text (Text, pack)
 import Text.Megaparsec (ParseError, Stream, Tokens, getOffset, option, parseError, try, (<|>))
 import qualified Text.Megaparsec.Error.Builder as E
 
-import TRSConversion.Parse.ARI.CTrs (pCondType)
-import TRSConversion.Parse.ARI.Utils (
+import TRSConversion.Formats.ARI.Parse.CTrs (pCondType)
+import TRSConversion.Formats.ARI.Parse.Utils (
     ARIParser,
     ident,
     keyword,

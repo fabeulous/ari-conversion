@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : Data.Conversion.Parse.ARI.CSTrs
+Module      : Data.Conversion.Formats.ARI.Parse.CSTrs
 Description : Parser for CSTRSs in ARI format
 -}
-module TRSConversion.Parse.ARI.CSCTrs (
+module TRSConversion.Formats.ARI.Parse.CSCTrs (
   parseAriCSCTrs,
   parseAriCSCTrs'
 )
@@ -12,9 +12,9 @@ where
 
 import Text.Megaparsec (option)
 
-import TRSConversion.Parse.ARI.CSTrs (pSignatureReplacementMap)
-import TRSConversion.Parse.ARI.CTrs (pCSystems, pCondType)
-import TRSConversion.Parse.ARI.Utils (ARIParser, keyword, naturalNumber, sExpr, FunSymb, VarSymb)
+import TRSConversion.Formats.ARI.Parse.CSTrs (pSignatureReplacementMap)
+import TRSConversion.Formats.ARI.Parse.CTrs (pCSystems, pCondType)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, keyword, naturalNumber, sExpr, FunSymb, VarSymb)
 import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs (..))
 import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))

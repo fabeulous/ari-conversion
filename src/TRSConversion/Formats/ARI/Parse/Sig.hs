@@ -6,7 +6,7 @@ Description : TRS signature parsers
 
 This module defines functions to parse a 'Sig' from a @String@ input.
 -}
-module TRSConversion.Parse.ARI.Sig (
+module TRSConversion.Formats.ARI.Parse.Sig (
   parseFsymArity,
   parseAriSig,
 )
@@ -14,7 +14,7 @@ where
 
 import Data.Char (isDigit)
 import Data.Text (unpack)
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, lexeme, sExpr, restrictedIdent, FunSymb)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, ident, lexeme, sExpr, restrictedIdent, FunSymb)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (takeWhile1P, (<?>))
 

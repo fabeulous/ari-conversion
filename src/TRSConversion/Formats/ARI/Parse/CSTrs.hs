@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : Data.Conversion.Parse.ARI.CSTrs
+Module      : Data.Conversion.Formats.ARI.Parse.CSTrs
 Description : Parser for CSTRSs in ARI format
 -}
-module TRSConversion.Parse.ARI.CSTrs (
+module TRSConversion.Formats.ARI.Parse.CSTrs (
   parseAriCSTrs,
   parseAriCSTrs',
   -- * Parsers
@@ -12,11 +12,11 @@ module TRSConversion.Parse.ARI.CSTrs (
 )
 where
 
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, naturalNumber, parens, sExpr, index, nonPositiveNumberError, indexOutOfRangeError, duplicateIndex, FunSymb, VarSymb)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, ident, keyword, naturalNumber, parens, sExpr, index, nonPositiveNumberError, indexOutOfRangeError, duplicateIndex, FunSymb, VarSymb)
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import Text.Megaparsec (many, option, MonadParsec (parseError))
-import TRSConversion.Parse.ARI.Trs (parseSystems)
+import TRSConversion.Formats.ARI.Parse.Trs (parseSystems)
 import qualified TRSConversion.Problem.Common.Index as Idx
 import Control.Monad
 import qualified Data.Set as Set

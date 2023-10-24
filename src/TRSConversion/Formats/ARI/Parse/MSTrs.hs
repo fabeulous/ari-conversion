@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Parse.ARI.MsTrs
+Module      : TRSConversion.Formats.ARI.Parse.MsTrs
 Description : Functions to parse MSTRSs
 
 This module defines functions to parse a many-sorted TRS in ARI format.
 -}
-module TRSConversion.Parse.ARI.MSTrs (
+module TRSConversion.Formats.ARI.Parse.MSTrs (
   -- ** ARI
   parseAriMsTrs,
   parseAriMsTrs',
@@ -17,9 +17,9 @@ import qualified Data.Set as Set
 import Data.Text (Text)
 import Text.Megaparsec (many, option)
 
-import TRSConversion.Parse.ARI.MsSig (parseAriMsSig)
-import TRSConversion.Parse.ARI.Trs (parseSystems)
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, keyword, sExpr, naturalNumber, restrictedIdent, FunSymb, VarSymb, SortSymb)
+import TRSConversion.Formats.ARI.Parse.MsSig (parseAriMsSig)
+import TRSConversion.Formats.ARI.Parse.Trs (parseSystems)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, ident, keyword, sExpr, naturalNumber, restrictedIdent, FunSymb, VarSymb, SortSymb)
 import TRSConversion.Problem.MsTrs.MsTrs (MsSig (..), MsTrs (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 

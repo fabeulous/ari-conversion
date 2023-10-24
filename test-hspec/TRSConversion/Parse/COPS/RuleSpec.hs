@@ -1,11 +1,11 @@
-module TRSConversion.Parse.COPS.RuleSpec where
+module TRSConversion.Formats.COPS.Parse.RuleSpec where
 
 import Data.Text (pack)
 import Gen.Sig (genSig)
 import Gen.Term (genTerm, genVars)
 import qualified Hedgehog as H
-import TRSConversion.Parse.COPS.Rule (parseCopsRule)
-import qualified TRSConversion.Parse.COPS.Utils as COPS
+import TRSConversion.Formats.COPS.Parse.Rule (parseCopsRule)
+import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)

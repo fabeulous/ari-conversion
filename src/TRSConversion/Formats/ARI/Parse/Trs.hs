@@ -2,12 +2,12 @@
 {-# LANGUAGE TypeFamilies #-}
 
 {- |
-Module      : TRSConversion.Parse.ARI.Trs
+Module      : TRSConversion.Formats.ARI.Parse.Trs
 Description : Parser for first-order TRSs
 
 This module defines functions to parse first-order (MS-)TRSs in ARI format.
 -}
-module TRSConversion.Parse.ARI.Trs (
+module TRSConversion.Formats.ARI.Parse.Trs (
   -- ** ARI
   parseAriTrs,
   parseAriTrs',
@@ -20,9 +20,9 @@ import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
 import Text.Megaparsec (MonadParsec (parseError), getOffset, many, option, registerParseError)
 
-import TRSConversion.Parse.ARI.Rule (parseAriRule)
-import TRSConversion.Parse.ARI.Sig (parseAriSig)
-import TRSConversion.Parse.ARI.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, nonPositiveNumberError, sExpr)
+import TRSConversion.Formats.ARI.Parse.Rule (parseAriRule)
+import TRSConversion.Formats.ARI.Parse.Sig (parseAriSig)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, indexOutOfRangeError, keyword, naturalNumber, nonPositiveNumberError, sExpr)
 import TRSConversion.Problem.Common.Index (Index (index))
 import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.Trs (Sig, Trs (..), TrsSig (..))

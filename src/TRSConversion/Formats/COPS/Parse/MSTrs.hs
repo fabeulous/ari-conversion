@@ -1,19 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
--- Module      : TRSConversion.Parse.COPS.MSTrs
+-- Module      : TRSConversion.Formats.COPS.Parse.MSTrs
 -- Description : Functions to parse MSTRSs
 --
 -- This module defines functions to parse a many-sorted TRS in COPS and ARI format.
-module TRSConversion.Parse.COPS.MSTrs
+module TRSConversion.Formats.COPS.Parse.MSTrs
   ( -- ** COPS
     parseCopsMsTrs,
   )
 where
 
-import TRSConversion.Parse.COPS.MsSig (parseCopsMsSigs)
-import TRSConversion.Parse.COPS.Rule (parseCopsMsTrsRules)
-import TRSConversion.Parse.COPS.Utils (COPSParser, block)
+import TRSConversion.Formats.COPS.Parse.MsSig (parseCopsMsSigs)
+import TRSConversion.Formats.COPS.Parse.Rule (parseCopsMsTrsRules)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block)
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
 import qualified Data.IntMap as IntMap
 

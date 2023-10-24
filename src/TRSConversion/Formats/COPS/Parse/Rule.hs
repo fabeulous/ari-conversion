@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Parse.COPS.Rule
+Module      : TRSConversion.Formats.COPS.Parse.Rule
 Description : Rule parsers
 
 This module defines parsers to parse a single rule and a block of rules in different rewriting formats.
 -}
-module TRSConversion.Parse.COPS.Rule (
+module TRSConversion.Formats.COPS.Parse.Rule (
   -- * COPS
   parseCopsRule,
   parseCopsTrsRules,
@@ -14,8 +14,8 @@ module TRSConversion.Parse.COPS.Rule (
 )
 where
 
-import TRSConversion.Parse.COPS.Term (parseTermFuns, parseTermVars)
-import TRSConversion.Parse.COPS.Utils (COPSParser, symbol)
+import TRSConversion.Formats.COPS.Parse.Term (parseTermFuns, parseTermVars)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, symbol)
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import Text.Megaparsec (many)

@@ -3,7 +3,7 @@
 -- Description : TRS signature parsers
 --
 -- This module defines functions to parse a 'Sig' from a @String@ input.
-module TRSConversion.Parse.COPS.Sig
+module TRSConversion.Formats.COPS.Parse.Sig
   ( parseCopsSig,
     parseFsymArity,
   )
@@ -12,7 +12,7 @@ where
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (many, takeWhile1P, (<?>))
 import Data.Char (isDigit)
-import TRSConversion.Parse.COPS.Utils (COPSParser, parens, lexeme, ident)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, parens, lexeme, ident)
 import Data.Text (unpack)
 
 -- | Parser to extract the signature from a @SIG@ block of the COPS [extended TRS format](http://project-coco.uibk.ac.at/problems/trs.php#extended).

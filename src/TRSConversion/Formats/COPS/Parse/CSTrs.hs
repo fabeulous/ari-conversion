@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Parse.COPS.CSTrs
+Module      : TRSConversion.Formats.COPS.Parse.CSTrs
 Description : Parser for CSTRSs ins COPS format
 -}
-module TRSConversion.Parse.COPS.CSTrs (
+module TRSConversion.Formats.COPS.Parse.CSTrs (
   -- * System
   parseCopsCSTrs,
   -- * Parsers
@@ -12,8 +12,8 @@ module TRSConversion.Parse.COPS.CSTrs (
 )
 where
 
-import TRSConversion.Parse.COPS.Rule (parseCopsTrsRules)
-import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident, parens, symbol, naturalNumber)
+import TRSConversion.Formats.COPS.Parse.Rule (parseCopsTrsRules)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, ident, parens, symbol, naturalNumber)
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
 import Text.Megaparsec (many, option, some, sepBy)
 import qualified Data.IntMap as IntMap

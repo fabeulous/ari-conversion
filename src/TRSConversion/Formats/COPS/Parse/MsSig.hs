@@ -6,14 +6,14 @@ Description : Parser for MSTRS signatures
 
 This module defines functions to parse an MSTRS signature into an 'MsSig'.
 -}
-module TRSConversion.Parse.COPS.MsSig (
+module TRSConversion.Formats.COPS.Parse.MsSig (
   -- * COPS
   parseCopsMsSigs,
   parseCopsMsSig,
 )
 where
 
-import TRSConversion.Parse.COPS.Utils (COPSParser, ident, parens, symbol)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, ident, parens, symbol)
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import Text.Megaparsec (many, (<?>))
 

@@ -6,7 +6,7 @@ Description : Parser for MSTRS signatures
 
 This module defines functions to parse an MSTRS signature into an 'MsSig'.
 -}
-module TRSConversion.Parse.ARI.MsSig (
+module TRSConversion.Formats.ARI.Parse.MsSig (
   -- * ARI
   parseAriMsSig,
 )
@@ -16,7 +16,7 @@ import Control.Monad (unless)
 import Data.List.NonEmpty (NonEmpty ((:|)))
 import Data.Set (Set)
 import qualified Data.Set as Set
-import TRSConversion.Parse.ARI.Utils (ARIParser, ident, sExpr, FunSymb, SortSymb)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, ident, sExpr, FunSymb, SortSymb)
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import Text.Megaparsec (getOffset, registerParseError, some, (<|>))
 import qualified Text.Megaparsec.Error as E

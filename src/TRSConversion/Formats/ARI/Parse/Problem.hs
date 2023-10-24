@@ -1,26 +1,26 @@
 {- |
-Module      : Data.Conversion.Parse.ARI.Problem
+Module      : Data.Conversion.Formats.ARI.Parse.Problem
 Description : Parse a Problem in COPS format
 -}
-module TRSConversion.Parse.ARI.Problem (
+module TRSConversion.Formats.ARI.Parse.Problem (
   parseProblem,
   parseProblem',
 )
 where
 
-import TRSConversion.Parse.ARI.CSCTrs (parseAriCSCTrs')
-import TRSConversion.Parse.ARI.CSTrs (parseAriCSTrs')
-import TRSConversion.Parse.ARI.CTrs (parseAriCTrs')
-import TRSConversion.Parse.ARI.MSTrs (parseAriMsTrs')
-import TRSConversion.Parse.ARI.MetaInfo (parseAriMetaInfo)
-import TRSConversion.Parse.ARI.Trs (parseAriTrs')
-import TRSConversion.Parse.ARI.Utils (ARIParser, spaces, FunSymb, VarSymb, SortSymb)
+import TRSConversion.Formats.ARI.Parse.CSCTrs (parseAriCSCTrs')
+import TRSConversion.Formats.ARI.Parse.CSTrs (parseAriCSTrs')
+import TRSConversion.Formats.ARI.Parse.CTrs (parseAriCTrs')
+import TRSConversion.Formats.ARI.Parse.MSTrs (parseAriMsTrs')
+import TRSConversion.Formats.ARI.Parse.MetaInfo (parseAriMetaInfo)
+import TRSConversion.Formats.ARI.Parse.Trs (parseAriTrs')
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, spaces, FunSymb, VarSymb, SortSymb)
 import TRSConversion.Problem.Problem (Problem (Problem), FormatType (..), mapSystem)
 import qualified TRSConversion.Problem.Problem as Prob
-import TRSConversion.Parse.ARI.FormatType (parseFormatType)
+import TRSConversion.Formats.ARI.Parse.FormatType (parseFormatType)
 import qualified Text.Megaparsec.Error.Builder as E
 import Text.Megaparsec (MonadParsec(parseError))
-import TRSConversion.Parse.ARI.Infeasibility (parseAriTRSInfeasibility', parseAriCTRSInfeasibility')
+import TRSConversion.Formats.ARI.Parse.Infeasibility (parseAriTRSInfeasibility', parseAriCTRSInfeasibility')
 import TRSConversion.Parse.Utils (unToken)
 
 parseProblem :: ARIParser (Problem String String String)

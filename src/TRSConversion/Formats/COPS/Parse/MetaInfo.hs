@@ -2,13 +2,13 @@
 {-# LANGUAGE TypeFamilies #-}
 
 {- |
-Module      : TRSConversion.Parse.COPS.MetaInfo
+Module      : TRSConversion.Formats.COPS.Parse.MetaInfo
 Description : Comment parser
 
 This module defines parsers to parse the additional information (comment, author, etc.) of a
 given rewriting system.
 -}
-module TRSConversion.Parse.COPS.MetaInfo (
+module TRSConversion.Formats.COPS.Parse.MetaInfo (
   -- * COPS
   parseCopsMetaInfo,
   parseCopsMetaInfoBlock,
@@ -41,7 +41,7 @@ import Text.Megaparsec (
 import Text.Megaparsec.Char (char, hspace, space, string)
 import qualified Text.Megaparsec.Error as E
 
-import TRSConversion.Parse.COPS.Utils (COPSParser, block)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
 
 parseCopsMetaInfoBlock :: COPSParser MetaInfo

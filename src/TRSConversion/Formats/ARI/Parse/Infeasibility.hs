@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module TRSConversion.Parse.ARI.Infeasibility where
+module TRSConversion.Formats.ARI.Parse.Infeasibility where
 
 import Control.Applicative (many)
-import TRSConversion.Parse.ARI.CTrs (parseAriCTrs', parseCondition, pCondType)
-import TRSConversion.Parse.ARI.Utils (ARIParser, sExpr, keyword, FunSymb, VarSymb)
+import TRSConversion.Formats.ARI.Parse.CTrs (parseAriCTrs', parseCondition, pCondType)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, sExpr, keyword, FunSymb, VarSymb)
 import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType, Condition, trsToOrientedCTrs)
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import TRSConversion.Problem.Trs.Sig (Sig)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig(FunSig))
-import TRSConversion.Parse.ARI.Trs (parseAriTrs')
+import TRSConversion.Formats.ARI.Parse.Trs (parseAriTrs')
 import Text.Megaparsec (try, (<|>))
 
 parseAriInfeasibility :: ARIParser (Infeasibility FunSymb VarSymb)

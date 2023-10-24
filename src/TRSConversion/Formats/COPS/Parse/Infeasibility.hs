@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module TRSConversion.Parse.COPS.Infeasibility where
+module TRSConversion.Formats.COPS.Parse.Infeasibility where
 
 import qualified Data.IntMap as IntMap
 import Data.Text (unpack)
-import TRSConversion.Parse.COPS.CTrs (pCRulesBlock, pCondTypeBlock, parseCopsCondition)
-import TRSConversion.Parse.COPS.Trs (parseCopsVarBlock)
-import TRSConversion.Parse.COPS.Utils (COPSParser, block, keyword, symbol)
+import TRSConversion.Formats.COPS.Parse.CTrs (pCRulesBlock, pCondTypeBlock, parseCopsCondition)
+import TRSConversion.Formats.COPS.Parse.Trs (parseCopsVarBlock)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, keyword, symbol)
 import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType (Oriented), inferSigFromRules, Condition ((:==)), CRule (CRule))
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import Text.Megaparsec (

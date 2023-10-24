@@ -27,10 +27,10 @@ import System.IO (
   stdout,
  )
 
-import qualified TRSConversion.Parse.ARI.Problem as ARI
-import qualified TRSConversion.Parse.ARI.Utils as ARI
-import qualified TRSConversion.Parse.COPS.Problem as COPS
-import qualified TRSConversion.Parse.COPS.Utils as COPS
+import qualified TRSConversion.Formats.ARI.Parse.Problem as ARI
+import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
+import qualified TRSConversion.Formats.COPS.Parse.Problem as COPS
+import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
 import TRSConversion.Parse.Utils (parseIO)
 import TRSConversion.Unparse.Problem (
   unparseAriProblem,

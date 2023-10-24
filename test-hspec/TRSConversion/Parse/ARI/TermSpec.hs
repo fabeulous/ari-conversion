@@ -1,11 +1,11 @@
-module TRSConversion.Parse.ARI.TermSpec where
+module TRSConversion.Formats.ARI.Parse.TermSpec where
 
 import Data.Text (pack)
 import Gen.Sig (genSig)
 import Gen.Term (genTerm, genVars)
 import qualified Hedgehog as H
-import TRSConversion.Parse.ARI.Term (parsePrefixTerm)
-import qualified TRSConversion.Parse.ARI.Utils as ARI
+import TRSConversion.Formats.ARI.Parse.Term (parsePrefixTerm)
+import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
 import TRSConversion.Unparse.Problem.Term (unparsePrefixTerm)

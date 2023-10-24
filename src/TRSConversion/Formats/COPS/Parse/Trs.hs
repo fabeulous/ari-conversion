@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Parse.COPS.Trs
+Module      : TRSConversion.Formats.COPS.Parse.Trs
 Description : Parser for first-order TRSs
 
 This module defines functions to parse a first-order TRS in COPS ARI format.
 -}
-module TRSConversion.Parse.COPS.Trs (
+module TRSConversion.Formats.COPS.Parse.Trs (
   -- ** COPS
   parseCopsTrs,
   parseCopsVarBlock,
@@ -14,9 +14,9 @@ module TRSConversion.Parse.COPS.Trs (
 where
 
 import qualified Data.IntMap as IntMap
-import TRSConversion.Parse.COPS.Rule (parseCopsTrsRules)
-import TRSConversion.Parse.COPS.Sig (parseCopsSig)
-import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident)
+import TRSConversion.Formats.COPS.Parse.Rule (parseCopsTrsRules)
+import TRSConversion.Formats.COPS.Parse.Sig (parseCopsSig)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, ident)
 import TRSConversion.Problem.Common.Rule (inferSigFromRules)
 import TRSConversion.Problem.Trs.Trs (Trs (..), TrsSig (..))
 import Text.Megaparsec (many, option, optional)

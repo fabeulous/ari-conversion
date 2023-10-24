@@ -2,7 +2,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module TRSConversion.Parse.COPS.Utils (
+module TRSConversion.Formats.COPS.Parse.Utils (
     -- * Type
     COPSParser,
     toParser,

@@ -1,19 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : Data.Conversion.Parse.COPS.CSCTrs
+Module      : Data.Conversion.Formats.COPS.Parse.CSCTrs
 Description : Parser for CSCTRSs
 -}
-module TRSConversion.Parse.COPS.CSCTrs (
+module TRSConversion.Formats.COPS.Parse.CSCTrs (
   -- ** COPS
   parseCopsCSCTrs,
 )
 where
 
 import qualified Data.IntMap as IntMap
-import TRSConversion.Parse.COPS.CSTrs (pReplacementMap)
-import TRSConversion.Parse.COPS.CTrs (pCRulesBlock, pCondTypeBlock)
-import TRSConversion.Parse.COPS.Utils (COPSParser, block, ident)
+import TRSConversion.Formats.COPS.Parse.CSTrs (pReplacementMap)
+import TRSConversion.Formats.COPS.Parse.CTrs (pCRulesBlock, pCondTypeBlock)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, ident)
 import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs (..))
 import TRSConversion.Problem.CTrs.CTrs (CTrs (..), inferSigFromRules)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (FunSig))

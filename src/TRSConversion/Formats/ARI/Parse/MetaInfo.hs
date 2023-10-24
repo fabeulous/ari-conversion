@@ -8,7 +8,7 @@ Description : Comment parser
 This module defines parsers to parse the additional information (comment, author, etc.) of a
 given rewriting system.
 -}
-module TRSConversion.Parse.ARI.MetaInfo (
+module TRSConversion.Formats.ARI.Parse.MetaInfo (
     -- * ARI
     parseAriMetaInfo,
 )
@@ -20,7 +20,7 @@ import Text.Megaparsec.Char (char, string, eol)
 
 import Control.Monad (void)
 import Data.Foldable (foldl')
-import TRSConversion.Parse.ARI.Utils (ARIParser, isNewline)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, isNewline)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo, mergeMetaInfo)
 
 {- | Parse meta-info blocks in ARI format

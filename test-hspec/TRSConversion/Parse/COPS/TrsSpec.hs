@@ -1,4 +1,4 @@
-module TRSConversion.Parse.COPS.TrsSpec where
+module TRSConversion.Formats.COPS.Parse.TrsSpec where
 
 import Data.Either (fromRight)
 import Data.List (sort)
@@ -7,8 +7,8 @@ import Gen.Sig (genSig)
 import Gen.Term (genVars)
 import Gen.Trs (genTrs)
 import qualified Hedgehog as H
-import TRSConversion.Parse.COPS.Trs (parseCopsTrs)
-import qualified TRSConversion.Parse.COPS.Utils as COPS
+import TRSConversion.Formats.COPS.Parse.Trs (parseCopsTrs)
+import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
 import TRSConversion.Unparse.UnparseTrs (unparseCopsTrs)

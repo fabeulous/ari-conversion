@@ -1,10 +1,10 @@
-module TRSConversion.Parse.ARI.SigSpec where
+module TRSConversion.Formats.ARI.Parse.SigSpec where
 
 import Data.Text (pack)
 import Gen.Sig (genSig)
 import qualified Hedgehog as H
-import TRSConversion.Parse.ARI.Sig (parseAriSig)
-import qualified TRSConversion.Parse.ARI.Utils as ARI
+import TRSConversion.Formats.ARI.Parse.Sig (parseAriSig)
+import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
 import TRSConversion.Unparse.Problem.TrsSig (unparseAriSigs)

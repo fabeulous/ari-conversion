@@ -10,9 +10,9 @@ import Text.Megaparsec (takeWhileP)
 import Text.Megaparsec.Char (char, space1)
 import qualified Text.Megaparsec.Char.Lexer as L
 
-import TRSConversion.Parse.ARI.FormatType (parseFormatType)
-import TRSConversion.Parse.ARI.Utils (ARIParser)
-import qualified TRSConversion.Parse.ARI.Utils as ARI
+import TRSConversion.Formats.ARI.Parse.FormatType (parseFormatType)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser)
+import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import TRSConversion.Parse.Utils (parseIO)
 import TRSConversion.Problem.Problem (FormatType (..))
 

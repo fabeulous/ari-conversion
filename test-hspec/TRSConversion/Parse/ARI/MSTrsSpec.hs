@@ -1,12 +1,12 @@
-module TRSConversion.Parse.ARI.MSTrsSpec where
+module TRSConversion.Formats.ARI.Parse.MSTrsSpec where
 
 import Data.Text (pack)
 import Gen.MSTrs (genMsTrsString)
 import Gen.MsSig (genMsSig)
 import Gen.Term (genVars)
 import qualified Hedgehog as H
-import TRSConversion.Parse.ARI.MSTrs (parseAriMsTrs)
-import qualified TRSConversion.Parse.ARI.Utils as ARI
+import TRSConversion.Formats.ARI.Parse.MSTrs (parseAriMsTrs)
+import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
 import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs)

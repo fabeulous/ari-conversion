@@ -1,13 +1,13 @@
-module TRSConversion.Parse.ARI.InfeasibilitySpec where
+module TRSConversion.Formats.ARI.Parse.InfeasibilitySpec where
 
 import Test.Hspec
 import qualified Hedgehog as H
-import qualified TRSConversion.Parse.ARI.Utils as ARI
+import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import Test.Hspec.Hedgehog (hedgehog)
 import Gen.Sig (genSig)
 import Gen.Infeasibility (genInfeasibility)
 import TRSConversion.Unparse.Infeasibility (unparseAriInfeasibility)
-import TRSConversion.Parse.ARI.Infeasibility (parseAriInfeasibility)
+import TRSConversion.Formats.ARI.Parse.Infeasibility (parseAriInfeasibility)
 import Gen.Term (genVars)
 import Data.Text (pack)
 import Data.Either (fromRight)

@@ -1,23 +1,23 @@
 {- |
-Module      : Data.Conversion.Parse.COPS.Problem
+Module      : Data.Conversion.Formats.COPS.Parse.Problem
 Description : Parser a Problem in COPS format
 -}
-module TRSConversion.Parse.COPS.Problem (
+module TRSConversion.Formats.COPS.Parse.Problem (
   parseProblem,
   parseCOMProblem,
 )
 where
 
 import Control.Applicative ((<|>))
-import TRSConversion.Parse.COPS.COM (parseCopsCom)
-import TRSConversion.Parse.COPS.CSCTrs (parseCopsCSCTrs)
-import TRSConversion.Parse.COPS.CSTrs (parseCopsCSTrs)
-import TRSConversion.Parse.COPS.CTrs (parseCopsCTrs)
-import TRSConversion.Parse.COPS.Infeasibility (parseCopsInfeasibility)
-import TRSConversion.Parse.COPS.MSTrs (parseCopsMsTrs)
-import TRSConversion.Parse.COPS.MetaInfo (parseCopsMetaInfoBlock)
-import TRSConversion.Parse.COPS.Trs (parseCopsTrs)
-import TRSConversion.Parse.COPS.Utils (COPSParser)
+import TRSConversion.Formats.COPS.Parse.COM (parseCopsCom)
+import TRSConversion.Formats.COPS.Parse.CSCTrs (parseCopsCSCTrs)
+import TRSConversion.Formats.COPS.Parse.CSTrs (parseCopsCSTrs)
+import TRSConversion.Formats.COPS.Parse.CTrs (parseCopsCTrs)
+import TRSConversion.Formats.COPS.Parse.Infeasibility (parseCopsInfeasibility)
+import TRSConversion.Formats.COPS.Parse.MSTrs (parseCopsMsTrs)
+import TRSConversion.Formats.COPS.Parse.MetaInfo (parseCopsMetaInfoBlock)
+import TRSConversion.Formats.COPS.Parse.Trs (parseCopsTrs)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser)
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..), emptyMetaInfo)
 import TRSConversion.Problem.Problem (Problem (Problem))
 import qualified TRSConversion.Problem.Problem as Prob

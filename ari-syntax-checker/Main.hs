@@ -14,9 +14,9 @@ import Text.Megaparsec (PosState (..), defaultTabWidth, initialPos)
 import Text.Megaparsec.Error
 import qualified Text.Megaparsec.Error.Builder as PE
 
-import qualified TRSConversion.Parse.ARI.Problem as ARI
-import TRSConversion.Parse.ARI.Utils (FunSymb, SortSymb, VarSymb)
-import qualified TRSConversion.Parse.ARI.Utils as ARI
+import qualified TRSConversion.Formats.ARI.Parse.Problem as ARI
+import TRSConversion.Formats.ARI.Parse.Utils (FunSymb, SortSymb, VarSymb)
+import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import TRSConversion.Parse.Utils (Token (..), parseIO)
 import qualified TRSConversion.Problem.CSCTrs.CSCTrs as CSCTrs
 import qualified TRSConversion.Problem.CSTrs.CSTrs as CSTrs

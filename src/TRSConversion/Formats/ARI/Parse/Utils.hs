@@ -1,7 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module TRSConversion.Parse.ARI.Utils (
+module TRSConversion.Formats.ARI.Parse.Utils (
   -- * Type
   ARIParser,
   toParser,
