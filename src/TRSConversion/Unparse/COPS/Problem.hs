@@ -5,7 +5,6 @@ Description : Type definition Problems
 module TRSConversion.Unparse.Problem (
     unparseCopsProblem,
     unparseCopsCOMProblem,
-    unparseAriProblem,
 )
 where
 
@@ -56,18 +55,3 @@ unparseCopsCOMProblem problem =
     metaInfo' = (metaInfo problem){origin = Nothing}
     originComment = fromMaybe "" (origin (metaInfo problem))
 
-unparseAriProblem :: (Ord f, Eq v, Pretty f, Pretty v, Eq s, Pretty s) =>
-  Problem f v s -> Either String (Doc ann)
-unparseAriProblem problem = do
-    prettySystem <- prettySystemErr
-    pure (vsep $ filterEmptyDocs [prettyMeta, prettySystem])
-  where
-    prettySystemErr =
-        case system problem of
-            Trs trs -> unparseAriTrs trs
-            MSTrs trs -> pure $ unparseAriMsTrs trs
-            CTrs trs -> unparseAriCTrs trs
-            CSTrs trs -> unparseAriCSTrs trs
-            CSCTrs trs -> unparseAriCSCTrs trs
-            Infeasibility inf -> unparseAriInfeasibility inf
-    prettyMeta = unparseAriMetaInfo (metaInfo problem)
