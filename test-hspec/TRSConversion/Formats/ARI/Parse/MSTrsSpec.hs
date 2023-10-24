@@ -9,7 +9,7 @@ import TRSConversion.Formats.ARI.Parse.MSTrs (parseAriMsTrs)
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
-import TRSConversion.Unparse.UnparseMsTrs (unparseAriMsTrs)
+import TRSConversion.Unparse.ARI.UnparseMsTrs (unparseAriMsTrs)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)

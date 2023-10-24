@@ -11,7 +11,7 @@ import TRSConversion.Formats.COPS.Parse.Trs (parseCopsTrs)
 import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
-import TRSConversion.Unparse.UnparseTrs (unparseCopsTrs)
+import TRSConversion.Unparse.COPS.UnparseTrs (unparseCopsTrs)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)
