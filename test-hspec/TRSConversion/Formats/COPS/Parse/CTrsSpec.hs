@@ -8,7 +8,7 @@ import Gen.Term
 import qualified Hedgehog as H
 import TRSConversion.Formats.COPS.Parse.CTrs (parseCopsCTrs)
 import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
-import TRSConversion.Unparse.COPS.CTrs (unparseCopsCTrs)
+import TRSConversion.Formats.COPS.Unparse.CTrs (unparseCopsCTrs)
 import Test.Hspec
 import Test.Hspec.Hedgehog
 import Text.Megaparsec (parse)

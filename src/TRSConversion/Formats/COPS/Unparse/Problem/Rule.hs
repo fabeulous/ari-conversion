@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.COPS.Problem.Rule
+-- Module      : TRSConversion.Formats.COPS.Unparse.Problem.Rule
 -- Description : Unparser for rewrite rules
 --
 -- This module defines functions to unparse single TRS 'Rule's and blocks of rules
 -- in COPS and ARI format.
-module TRSConversion.Unparse.COPS.Problem.Rule
+module TRSConversion.Formats.COPS.Unparse.Problem.Rule
   ( -- * COPS
     unparseCopsRules,
     unparseCopsRule,
@@ -15,7 +15,7 @@ where
 import Prettyprinter (Doc, Pretty, emptyDoc, indent, vsep, (<+>))
 
 import TRSConversion.Problem.Common.Rule (Rule (..))
-import TRSConversion.Unparse.COPS.Problem.Term (unparseTerm)
+import TRSConversion.Formats.COPS.Unparse.Problem.Term (unparseTerm)
 import TRSConversion.Unparse.Utils (prettyBlock)
 
 

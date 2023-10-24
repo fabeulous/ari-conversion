@@ -1,8 +1,8 @@
 {- |
-Module      : TRSConversion.Unparse.ARI.Problem
+Module      : TRSConversion.Formats.ARI.Unparse.Problem
 Description : Type definition Problems
 -}
-module TRSConversion.Unparse.ARI.Problem (
+module TRSConversion.Formats.ARI.Unparse.Problem (
     unparseAriProblem,
 )
 where
@@ -10,13 +10,13 @@ where
 import Prettyprinter (Doc, vsep, Pretty)
 
 import TRSConversion.Problem.Problem (Problem (..), System (..))
-import TRSConversion.Unparse.ARI.CSCTrs (unparseAriCSCTrs)
-import TRSConversion.Unparse.ARI.CSTrs (unparseAriCSTrs)
-import TRSConversion.Unparse.ARI.CTrs (unparseAriCTrs)
-import TRSConversion.Unparse.ARI.Infeasibility (unparseAriInfeasibility)
-import TRSConversion.Unparse.ARI.Problem.MetaInfo (unparseAriMetaInfo)
-import TRSConversion.Unparse.ARI.UnparseMsTrs (unparseAriMsTrs)
-import TRSConversion.Unparse.ARI.UnparseTrs (unparseAriTrs)
+import TRSConversion.Formats.ARI.Unparse.CSCTrs (unparseAriCSCTrs)
+import TRSConversion.Formats.ARI.Unparse.CSTrs (unparseAriCSTrs)
+import TRSConversion.Formats.ARI.Unparse.CTrs (unparseAriCTrs)
+import TRSConversion.Formats.ARI.Unparse.Infeasibility (unparseAriInfeasibility)
+import TRSConversion.Formats.ARI.Unparse.Problem.MetaInfo (unparseAriMetaInfo)
+import TRSConversion.Formats.ARI.Unparse.UnparseMsTrs (unparseAriMsTrs)
+import TRSConversion.Formats.ARI.Unparse.UnparseTrs (unparseAriTrs)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseAriProblem :: (Ord f, Pretty f, Pretty v, Eq s, Pretty s) =>

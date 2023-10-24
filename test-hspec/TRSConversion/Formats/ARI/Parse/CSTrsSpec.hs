@@ -8,7 +8,7 @@ import Gen.Term (genVars)
 import qualified Hedgehog as H
 import TRSConversion.Formats.ARI.Parse.CSTrs (parseAriCSTrs)
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
-import TRSConversion.Unparse.ARI.CSTrs (unparseAriCSTrs)
+import TRSConversion.Formats.ARI.Unparse.CSTrs (unparseAriCSTrs)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)

@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Unparse.COPS.CTrs
+Module      : TRSConversion.Formats.COPS.Unparse.CTrs
 Description : Unparser for TRSs
 
 This module defines functions to output a 'CTrs' in COPS and ARI format.
 -}
-module TRSConversion.Unparse.COPS.CTrs (
+module TRSConversion.Formats.COPS.Unparse.CTrs (
   -- * COPS
   unparseCopsCTrs,
 
@@ -23,7 +23,7 @@ import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, nest, pretty, spa
 
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Common.Term (vars)
-import TRSConversion.Unparse.COPS.Problem.Term (unparseTerm)
+import TRSConversion.Formats.COPS.Unparse.Problem.Term (unparseTerm)
 import TRSConversion.Unparse.Utils (prettyBlock)
 
 {- | Unparse a first-order TRS from the Haskell 'Trs' representation into

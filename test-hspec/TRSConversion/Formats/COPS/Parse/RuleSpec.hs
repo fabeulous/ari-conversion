@@ -9,7 +9,7 @@ import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
-import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRule)
+import TRSConversion.Formats.COPS.Unparse.Problem.Rule (unparseCopsRule)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)

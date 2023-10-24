@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Unparse.ARI.CSTrs
+Module      : TRSConversion.Formats.ARI.Unparse.CSTrs
 Description : Unparser for CSTRSs
 -}
-module TRSConversion.Unparse.ARI.CSTrs (
+module TRSConversion.Formats.ARI.Unparse.CSTrs (
   -- * ARI
   unparseAriCSTrs,
   -- ** Helpers
@@ -18,7 +18,7 @@ import Prettyprinter (Doc, Pretty, hsep, parens, pretty, vsep, (<+>))
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
-import TRSConversion.Unparse.ARI.Problem.Rule (unparseAriSystems)
+import TRSConversion.Formats.ARI.Unparse.Problem.Rule (unparseAriSystems)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseAriCSTrs :: (Pretty f, Pretty v, Ord f) => CSTrs f v -> Either String (Doc ann)

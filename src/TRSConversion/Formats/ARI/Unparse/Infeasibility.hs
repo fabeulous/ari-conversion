@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module TRSConversion.Unparse.ARI.Infeasibility (
+module TRSConversion.Formats.ARI.Unparse.Infeasibility (
     unparseAriInfeasibility,
 ) where
 
@@ -9,7 +9,7 @@ import Prettyprinter (Doc, Pretty, hsep, parens, vsep, (<+>))
 import TRSConversion.Problem.CTrs.CTrs (CTrs (..), Condition (..), conditionType, rules, signature)
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
-import TRSConversion.Unparse.ARI.CTrs (prettyAriConditionType, unparseAriCSystems, unparseAriCTrsSig, unparseAriCondition)
+import TRSConversion.Formats.ARI.Unparse.CTrs (prettyAriConditionType, unparseAriCSystems, unparseAriCTrsSig, unparseAriCondition)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseAriInfeasibility :: (Pretty f, Pretty v) => Infeasibility f v -> Either String (Doc ann)

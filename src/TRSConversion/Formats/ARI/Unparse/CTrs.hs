@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Unparse.ARI.CTrs
+Module      : TRSConversion.Formats.ARI.Unparse.CTrs
 Description : Unparser for TRSs
 
 This module defines functions to output a 'CTrs' in COPS and ARI format.
 -}
-module TRSConversion.Unparse.ARI.CTrs (
+module TRSConversion.Formats.ARI.Unparse.CTrs (
   -- * ARI
   unparseAriCTrs,
   unparseAriCSystems,
@@ -23,7 +23,7 @@ import Prettyprinter (Doc, Pretty, hsep, parens, pretty, space, vsep, (<+>))
 
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
-import TRSConversion.Unparse.ARI.Problem.Term (unparsePrefixTerm)
+import TRSConversion.Formats.ARI.Unparse.Problem.Term (unparsePrefixTerm)
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 
 unparseAriCTrs :: (Pretty f, Pretty v) =>CTrs f v -> Either String (Doc ann)

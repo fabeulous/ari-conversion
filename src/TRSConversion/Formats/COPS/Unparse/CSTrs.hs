@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {- |
-Module      : TRSConversion.Unparse.COPS.CSTrs
+Module      : TRSConversion.Formats.COPS.Unparse.CSTrs
 Description : Unparser for CSTRSs
 -}
-module TRSConversion.Unparse.COPS.CSTrs (
+module TRSConversion.Formats.COPS.Unparse.CSTrs (
   -- * COPS
   unparseCopsCSTrs,
   -- ** Helpers
@@ -20,7 +20,7 @@ import Prettyprinter (Doc, Pretty, comma, hardline, hsep, nest, parens, pretty, 
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
 import qualified TRSConversion.Problem.Common.Rule as R
 import TRSConversion.Problem.Common.Term (vars)
-import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRule)
+import TRSConversion.Formats.COPS.Unparse.Problem.Rule (unparseCopsRule)
 import TRSConversion.Unparse.Utils (prettyBlock)
 
 {- | Unparse a CSTRS from the Haskell 'CSTrs' representation into

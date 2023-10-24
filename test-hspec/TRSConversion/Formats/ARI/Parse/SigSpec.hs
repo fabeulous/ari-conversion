@@ -7,7 +7,7 @@ import TRSConversion.Formats.ARI.Parse.Sig (parseAriSig)
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
-import TRSConversion.Unparse.ARI.Problem.TrsSig (unparseAriSigs)
+import TRSConversion.Formats.ARI.Unparse.Problem.TrsSig (unparseAriSigs)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (many, parse)

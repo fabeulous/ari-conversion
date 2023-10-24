@@ -6,7 +6,7 @@ import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import Test.Hspec.Hedgehog (hedgehog)
 import Gen.Sig (genSig)
 import Gen.Infeasibility (genInfeasibility)
-import TRSConversion.Unparse.ARI.Infeasibility (unparseAriInfeasibility)
+import TRSConversion.Formats.ARI.Unparse.Infeasibility (unparseAriInfeasibility)
 import TRSConversion.Formats.ARI.Parse.Infeasibility (parseAriInfeasibility)
 import Gen.Term (genVars)
 import Data.Text (pack)

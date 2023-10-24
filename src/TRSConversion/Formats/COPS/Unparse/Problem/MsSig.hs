@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.COPS.Problem.MsSig
+-- Module      : TRSConversion.Formats.COPS.Unparse.Problem.MsSig
 -- Description : Unparser for MsSig
 --
 -- This module defines functions to unparse an MSTRS signature 'MsSig' into COPS and ARI format.
-module TRSConversion.Unparse.COPS.Problem.MsSig
+module TRSConversion.Formats.COPS.Unparse.Problem.MsSig
   ( -- *  COPS
     unparseCopsMsSig,
   )

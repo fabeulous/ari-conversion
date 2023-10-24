@@ -1,9 +1,9 @@
 -- |
--- Module      : TRSConversion.Unparse.COPS.UnparseTrs
+-- Module      : TRSConversion.Formats.COPS.Unparse.UnparseTrs
 -- Description : Unparser for TRSs
 --
 -- This module defines functions to output a 'Trs' in COPS and ARI format.
-module TRSConversion.Unparse.COPS.UnparseTrs
+module TRSConversion.Formats.COPS.Unparse.UnparseTrs
   ( -- * COPS
     unparseCopsTrs,
   )
@@ -14,8 +14,8 @@ import Data.Foldable (toList)
 import Prettyprinter (Doc, Pretty, vsep)
 
 import TRSConversion.Problem.Trs.Trs (Trs (..))
-import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRules)
-import TRSConversion.Unparse.COPS.Problem.TrsSig (unparseCopsTrsSig)
+import TRSConversion.Formats.COPS.Unparse.Problem.Rule (unparseCopsRules)
+import TRSConversion.Formats.COPS.Unparse.Problem.TrsSig (unparseCopsTrsSig)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 -- | Unparse a first-order TRS from the Haskell 'Trs' representation into

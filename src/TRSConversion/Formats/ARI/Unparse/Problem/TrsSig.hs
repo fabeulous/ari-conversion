@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.ARI.Problem.TrsSig
+-- Module      : TRSConversion.Formats.ARI.Unparse.Problem.TrsSig
 -- Description : Unparser for TrsSig
 --
 -- This module defines functions to unparse a 'TrsSig' into COPS and ARI format.
@@ -9,7 +9,7 @@
 -- whereas ARI format only specifies function symbols.
 -- So it is sometimes necessary to infer variables or function symbols from the
 -- given signature and the rewrite system rules.
-module TRSConversion.Unparse.ARI.Problem.TrsSig
+module TRSConversion.Formats.ARI.Unparse.Problem.TrsSig
   ( -- * ARI
     unparseAriTrsSig,
     unparseAriSigs,

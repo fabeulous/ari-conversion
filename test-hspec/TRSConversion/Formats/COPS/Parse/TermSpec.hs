@@ -8,7 +8,7 @@ import TRSConversion.Formats.COPS.Parse.Term (parseTermFuns)
 import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig (Sig))
-import TRSConversion.Unparse.COPS.Problem.Term (unparseTerm)
+import TRSConversion.Formats.COPS.Unparse.Problem.Term (unparseTerm)
 import Test.Hspec (Spec, describe, it)
 import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)

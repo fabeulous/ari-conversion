@@ -15,7 +15,7 @@ import qualified TRSConversion.Problem.Common.Index as Idx
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Problem.Common.Term (Term, termFunArities)
 import TRSConversion.Problem.Trs.Sig (Sig)
-import TRSConversion.Unparse.ARI.Problem.Rule (unparseAriRule)
+import TRSConversion.Formats.ARI.Unparse.Problem.Rule (unparseAriRule)
 import TRSConversion.Formats.ARI.Parse.TermSpec (dummyToken)
 import TRSConversion.Problem.Common.Rule (mapRule)
 import TRSConversion.Parse.Utils (unToken)

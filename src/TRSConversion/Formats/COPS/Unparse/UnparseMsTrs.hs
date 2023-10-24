@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.COPS.UnparseMsTrs
+-- Module      : TRSConversion.Formats.COPS.Unparse.UnparseMsTrs
 -- Description : Unparser for MSTRSs
 --
 -- This module defines functions to output an 'MsTrs' in COPS and ARI format.
-module TRSConversion.Unparse.COPS.UnparseMsTrs
+module TRSConversion.Formats.COPS.Unparse.UnparseMsTrs
   ( -- * COPS
     unparseCopsMsTrs,
   )
@@ -14,8 +14,8 @@ import qualified Data.IntMap as IntMap
 import Prettyprinter (Doc, Pretty, vsep)
 
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
-import TRSConversion.Unparse.COPS.Problem.MsSig (unparseCopsMsSig)
-import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRules)
+import TRSConversion.Formats.COPS.Unparse.Problem.MsSig (unparseCopsMsSig)
+import TRSConversion.Formats.COPS.Unparse.Problem.Rule (unparseCopsRules)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 

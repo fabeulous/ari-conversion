@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
--- Module      : TRSConversion.Unparse.ARI.Problem.MetaInfo
+-- Module      : TRSConversion.Formats.ARI.Unparse.Problem.MetaInfo
 -- Description : Unparser for MetaInfo
 --
 -- This module defines functions to unparse 'MetaInfo' into the formats expected for
 -- COPS and ARI rewrite systems.
-module TRSConversion.Unparse.ARI.Problem.MetaInfo
+module TRSConversion.Formats.ARI.Unparse.Problem.MetaInfo
   ( -- * ARI
     unparseAriMetaInfo,
   )

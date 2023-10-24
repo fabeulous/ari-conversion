@@ -1,8 +1,8 @@
 {- |
-Module      : TRSConversion.Unparse.COPS.Problem
+Module      : TRSConversion.Formats.COPS.Unparse.Problem
 Description : Type definition Problems
 -}
-module TRSConversion.Unparse.COPS.Problem (
+module TRSConversion.Formats.COPS.Unparse.Problem (
     unparseCopsProblem,
     unparseCopsCOMProblem,
 )
@@ -13,14 +13,14 @@ import Prettyprinter (Doc, Pretty, hardline, vsep)
 
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Problem.Problem (Problem (..), System (..))
-import TRSConversion.Unparse.COPS.COM (unparseCopsCOM)
-import TRSConversion.Unparse.COPS.CSCTrs (unparseCopsCSCTrs)
-import TRSConversion.Unparse.COPS.CSTrs (unparseCopsCSTrs)
-import TRSConversion.Unparse.COPS.CTrs (unparseCopsCTrs)
-import TRSConversion.Unparse.COPS.Infeasibility (unparseCopsInfeasibility)
-import TRSConversion.Unparse.COPS.Problem.MetaInfo (unparseCopsMetaInfo)
-import TRSConversion.Unparse.COPS.UnparseMsTrs (unparseCopsMsTrs)
-import TRSConversion.Unparse.COPS.UnparseTrs (unparseCopsTrs)
+import TRSConversion.Formats.COPS.Unparse.COM (unparseCopsCOM)
+import TRSConversion.Formats.COPS.Unparse.CSCTrs (unparseCopsCSCTrs)
+import TRSConversion.Formats.COPS.Unparse.CSTrs (unparseCopsCSTrs)
+import TRSConversion.Formats.COPS.Unparse.CTrs (unparseCopsCTrs)
+import TRSConversion.Formats.COPS.Unparse.Infeasibility (unparseCopsInfeasibility)
+import TRSConversion.Formats.COPS.Unparse.Problem.MetaInfo (unparseCopsMetaInfo)
+import TRSConversion.Formats.COPS.Unparse.UnparseMsTrs (unparseCopsMsTrs)
+import TRSConversion.Formats.COPS.Unparse.UnparseTrs (unparseCopsTrs)
 
 unparseCopsProblem :: (Pretty f, Pretty v, Pretty s, Ord f, Ord v) =>
   Problem f v s -> Either String (Doc ann)
