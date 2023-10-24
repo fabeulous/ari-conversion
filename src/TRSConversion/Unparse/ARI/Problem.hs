@@ -7,9 +7,8 @@ module TRSConversion.Unparse.ARI.Problem (
 )
 where
 
-import Data.Maybe (fromMaybe)
-import Prettyprinter (Doc, hardline, vsep, Pretty)
-import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
+import Prettyprinter (Doc, vsep, Pretty)
+
 import TRSConversion.Problem.Problem (Problem (..), System (..))
 import TRSConversion.Unparse.ARI.CSCTrs (unparseAriCSCTrs)
 import TRSConversion.Unparse.ARI.CSTrs (unparseAriCSTrs)
@@ -20,7 +19,7 @@ import TRSConversion.Unparse.ARI.UnparseMsTrs (unparseAriMsTrs)
 import TRSConversion.Unparse.ARI.UnparseTrs (unparseAriTrs)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
-unparseAriProblem :: (Ord f, Eq v, Pretty f, Pretty v, Eq s, Pretty s) =>
+unparseAriProblem :: (Ord f, Pretty f, Pretty v, Eq s, Pretty s) =>
   Problem f v s -> Either String (Doc ann)
 unparseAriProblem problem = do
     prettySystem <- prettySystemErr

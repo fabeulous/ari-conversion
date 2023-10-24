@@ -10,18 +10,16 @@ module TRSConversion.Unparse.COPS.CSCTrs (
 )
 where
 
+import qualified Data.IntMap as IntMap
 import Data.List (group, sort)
-import Prettyprinter (Doc, Pretty, hardline, hsep, nest, parens, pretty, vsep, (<+>))
+import Prettyprinter (Doc, Pretty, hardline, hsep, nest, pretty, vsep)
+
 import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs (..))
-import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), inferSigFromRules)
+import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..))
 import TRSConversion.Problem.Common.Term (vars)
-import TRSConversion.Problem.Trs.TrsSig (TrsSig (..), Sig (..))
 import TRSConversion.Unparse.COPS.CSTrs (copsReplacementMap)
 import TRSConversion.Unparse.COPS.CTrs (prettyCRule, prettyCondType)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import TRSConversion.Problem.CSTrs.CSTrs (ReplacementMap)
-import qualified Data.Map.Strict as M
-import qualified Data.IntMap as IntMap
+import TRSConversion.Unparse.Utils (prettyBlock)
 
 {- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).

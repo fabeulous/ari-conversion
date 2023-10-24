@@ -59,9 +59,3 @@ vars (Fun _ ts) = concatMap vars ts
 funs :: Term f v -> [f]
 funs (Var _) = []
 funs (Fun f ts) = f : concatMap funs ts
-
-
-data Token a = Token { tokenValue :: a
-                     , tokenOffset :: Int
-                     , tokenLength :: Int
-                     }

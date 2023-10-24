@@ -1,21 +1,24 @@
 {-# LANGUAGE OverloadedStrings #-}
-
-module TRSConversion.Formats.COPS.Parse.Infeasibility where
+module TRSConversion.Formats.COPS.Parse.Infeasibility (
+    parseCopsInfeasibility,
+)
+where
 
 import qualified Data.IntMap as IntMap
+import Data.Maybe (fromMaybe, isNothing)
 import Data.Text (unpack)
-import TRSConversion.Formats.COPS.Parse.CTrs (pCRulesBlock, pCondTypeBlock, parseCopsCondition)
-import TRSConversion.Formats.COPS.Parse.Trs (parseCopsVarBlock)
-import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, keyword, symbol)
-import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType (Oriented), inferSigFromRules, Condition ((:==)), CRule (CRule))
-import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import Text.Megaparsec (
     MonadParsec (takeWhileP, try),
     option,
     sepBy1,
  )
-import TRSConversion.Problem.Trs.TrsSig (TrsSig(FunSig))
-import Data.Maybe (fromMaybe, isNothing)
+
+import TRSConversion.Formats.COPS.Parse.CTrs (pCRulesBlock, pCondTypeBlock, parseCopsCondition)
+import TRSConversion.Formats.COPS.Parse.Trs (parseCopsVarBlock)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, keyword, symbol)
+import TRSConversion.Problem.CTrs.CTrs (CRule (CRule), CTrs (..), CondType (Oriented), Condition ((:==)), inferSigFromRules)
+import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
+import TRSConversion.Problem.Trs.TrsSig (TrsSig (FunSig))
 
 parseCopsInfeasibility :: COPSParser (Maybe String, Infeasibility String String)
 parseCopsInfeasibility = do

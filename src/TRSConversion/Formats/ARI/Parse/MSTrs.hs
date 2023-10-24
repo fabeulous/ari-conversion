@@ -19,7 +19,7 @@ import Text.Megaparsec (many, option)
 
 import TRSConversion.Formats.ARI.Parse.MsSig (parseAriMsSig)
 import TRSConversion.Formats.ARI.Parse.Trs (parseSystems)
-import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, ident, keyword, sExpr, naturalNumber, restrictedIdent, FunSymb, VarSymb, SortSymb)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, keyword, sExpr, naturalNumber, restrictedIdent, FunSymb, VarSymb, SortSymb)
 import TRSConversion.Problem.MsTrs.MsTrs (MsSig (..), MsTrs (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 

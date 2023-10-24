@@ -1,16 +1,23 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module TRSConversion.Formats.ARI.Parse.Infeasibility where
+module TRSConversion.Formats.ARI.Parse.Infeasibility
+( parseAriInfeasibility,
+  parseAriTRSInfeasibility',
+  parseAriCTRSInfeasibility',
+  parseInfQuery,
+  )
+where
 
 import Control.Applicative (many)
-import TRSConversion.Formats.ARI.Parse.CTrs (parseAriCTrs', parseCondition, pCondType)
-import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, sExpr, keyword, FunSymb, VarSymb)
+import Text.Megaparsec (try, (<|>))
+
+import TRSConversion.Formats.ARI.Parse.CTrs (pCondType, parseAriCTrs', parseCondition)
+import TRSConversion.Formats.ARI.Parse.Trs (parseAriTrs')
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, FunSymb, VarSymb, keyword, sExpr)
 import TRSConversion.Problem.CTrs.CTrs (CTrs (..), CondType, Condition, trsToOrientedCTrs)
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import TRSConversion.Problem.Trs.Sig (Sig)
-import TRSConversion.Problem.Trs.TrsSig (TrsSig(FunSig))
-import TRSConversion.Formats.ARI.Parse.Trs (parseAriTrs')
-import Text.Megaparsec (try, (<|>))
+import TRSConversion.Problem.Trs.TrsSig (TrsSig (FunSig))
 
 parseAriInfeasibility :: ARIParser (Infeasibility FunSymb VarSymb)
 parseAriInfeasibility = ctrsInf <|> trsInf

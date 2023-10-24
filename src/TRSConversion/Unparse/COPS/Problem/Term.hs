@@ -9,8 +9,9 @@ module TRSConversion.Unparse.COPS.Problem.Term
   )
 where
 
+import Prettyprinter (Doc, Pretty, comma, emptyDoc, encloseSep, lparen, pretty, rparen)
+
 import TRSConversion.Problem.Common.Term (Term (..))
-import Prettyprinter (Doc, Pretty, comma, emptyDoc, encloseSep, hsep, lparen, parens, pretty, rparen, (<+>))
 
 -- | Unparse 'Term's using applicative notation:
 -- see examples below and tests for more examples.

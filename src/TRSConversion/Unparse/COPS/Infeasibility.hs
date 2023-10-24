@@ -7,12 +7,12 @@ module TRSConversion.Unparse.COPS.Infeasibility (
 import Data.Containers.ListUtils (nubOrd)
 import Prettyprinter (Doc, Pretty, concatWith, hsep, parens, pretty, vsep, (<+>))
 
-import TRSConversion.Problem.CTrs.CTrs (CTrs (..), Condition (..), conditionType, orientedCTrsToTrs, rules, signature, varsCondition)
+import TRSConversion.Problem.CTrs.CTrs (orientedCTrsToTrs, varsCondition)
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
 import TRSConversion.Unparse.COPS.CTrs (unparseCondition, unparseCopsCTrs)
 import TRSConversion.Unparse.COPS.UnparseTrs (unparseCopsTrs)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.Utils (prettyBlock)
 
 unparseCopsInfeasibility :: (Ord v, Pretty f, Pretty v, Ord f) => String -> Infeasibility f v -> Either String (Doc ann)
 unparseCopsInfeasibility comment inf = do

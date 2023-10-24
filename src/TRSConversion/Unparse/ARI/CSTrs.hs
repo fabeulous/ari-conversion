@@ -12,22 +12,18 @@ module TRSConversion.Unparse.ARI.CSTrs (
 )
 where
 
-import Data.List (group, sort)
 import qualified Data.Map as M
-import Prettyprinter (Doc, Pretty, comma, hardline, hsep, nest, parens, pretty, punctuate, space, vsep, (<+>))
+import Prettyprinter (Doc, Pretty, hsep, parens, pretty, vsep, (<+>))
+
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
-import TRSConversion.Problem.Common.Rule (inferSigFromRules)
-import qualified TRSConversion.Problem.Common.Rule as R
-import TRSConversion.Problem.Common.Term (vars)
 import TRSConversion.Problem.Trs.Sig (Sig (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import TRSConversion.Unparse.ARI.Problem.Rule (unparseAriSystems)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import qualified Data.IntMap as IntMap
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseAriCSTrs :: (Pretty f, Pretty v, Ord f) => CSTrs f v -> Either String (Doc ann)
 unparseAriCSTrs cstrs = do
-  ariSig <- unparseAriReplacementSig (concat $ rules cstrs) (signature cstrs) (replacementMap cstrs)
+  ariSig <- unparseAriReplacementSig (signature cstrs) (replacementMap cstrs)
   let trsElements =
         [ formatString
         , ariSig
@@ -39,8 +35,8 @@ unparseAriCSTrs cstrs = do
   formatString = parens $ "format" <+> "CSTRS" <>
     if n > 1 then mempty <+> ":number" <+> pretty n else mempty
 
-unparseAriReplacementSig :: (Ord f, Pretty f) => [R.Rule f v] -> TrsSig f -> ReplacementMap f -> Either String (Doc ann)
-unparseAriReplacementSig rs (FunSig fs) repMap = Right (vsep $ map prettySigLine fs)
+unparseAriReplacementSig :: (Ord f, Pretty f) => TrsSig f -> ReplacementMap f -> Either String (Doc ann)
+unparseAriReplacementSig (FunSig fs) repMap = Right (vsep $ map prettySigLine fs)
  where
   repMapM = M.fromList repMap
   prettyM = M.map (\ints -> mempty <+> ":replacement-map" <+> (parens . hsep $ map pretty ints)) repMapM

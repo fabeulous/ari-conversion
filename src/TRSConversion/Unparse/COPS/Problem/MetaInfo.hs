@@ -11,9 +11,10 @@ module TRSConversion.Unparse.COPS.Problem.MetaInfo
   )
 where
 
+import Prettyprinter (Doc, comma, emptyDoc, hsep, pretty, punctuate, vsep, (<+>), hardline)
+
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import Prettyprinter (Doc, comma, emptyDoc, hsep, pretty, punctuate, vsep, (<+>), semi, hardline)
 
 -- | Unparse TRS 'MetaInfo' to fit into a single COPS @COMMENT@ block.
 -- If the 'MetaInfo' is empty then returns 'emptyDoc'.

@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 -- |
 -- Module      : TRSConversion.Unparse.COPS.UnparseTrs
 -- Description : Unparser for TRSs
@@ -12,7 +11,7 @@ where
 
 import Control.Monad (forM)
 import Data.Foldable (toList)
-import Prettyprinter (Doc, Pretty, parens, pretty, vsep, (<+>))
+import Prettyprinter (Doc, Pretty, vsep)
 
 import TRSConversion.Problem.Trs.Trs (Trs (..))
 import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRules)

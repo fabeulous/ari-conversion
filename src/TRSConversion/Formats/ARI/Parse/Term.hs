@@ -17,12 +17,13 @@ module TRSConversion.Formats.ARI.Parse.Term (
 )
 where
 
-import Data.Text (pack, unpack)
-import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, ident, keyword, sExpr, restrictedIdent, FunSymb, VarSymb, keywordToken)
+import Data.Text (unpack)
+import Text.Megaparsec (choice, count, (<|>))
+
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, FunSymb, VarSymb, keywordToken, restrictedIdent, sExpr)
+import TRSConversion.Parse.Utils (Token (tokenText))
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
-import Text.Megaparsec (choice, count, (<?>), (<|>))
-import TRSConversion.Parse.Utils (Token(tokenText))
 
 {- | Parses a single variable name using 'parseCopsSym' and returns a string.
 

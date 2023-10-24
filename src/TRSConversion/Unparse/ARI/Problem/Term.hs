@@ -9,8 +9,9 @@ module TRSConversion.Unparse.ARI.Problem.Term
   )
 where
 
+import Prettyprinter (Doc, Pretty, hsep, parens, pretty, (<+>))
+
 import TRSConversion.Problem.Common.Term (Term (..))
-import Prettyprinter (Doc, Pretty, comma, emptyDoc, encloseSep, hsep, lparen, parens, pretty, rparen, (<+>))
 
 -- | Unparse 'Term's into prefix notation:
 -- see examples below and tests for more examples.

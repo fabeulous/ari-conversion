@@ -18,14 +18,13 @@ module TRSConversion.Unparse.COPS.CTrs (
 where
 
 import Data.Containers.ListUtils (nubOrd)
-import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
-import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, nest, parens, pretty, space, vsep, (<+>))
-import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..), inferSigFromRules)
+import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, nest, pretty, space, vsep, (<+>))
+
+import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Common.Term (vars)
-import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import TRSConversion.Unparse.COPS.Problem.Term (unparseTerm)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
+import TRSConversion.Unparse.Utils (prettyBlock)
 
 {- | Unparse a first-order TRS from the Haskell 'Trs' representation into
 [COPS TRS format](http://project-coco.uibk.ac.at/problems/trs.php).

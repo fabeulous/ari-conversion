@@ -4,10 +4,9 @@ module TRSConversion.Unparse.ARI.Infeasibility (
     unparseAriInfeasibility,
 ) where
 
-import Data.Containers.ListUtils (nubOrd)
-import Prettyprinter (Doc, Pretty, concatWith, hsep, parens, pretty, vsep, (<+>))
+import Prettyprinter (Doc, Pretty, hsep, parens, vsep, (<+>))
 
-import TRSConversion.Problem.CTrs.CTrs (CTrs (..), Condition (..), conditionType, orientedCTrsToTrs, rules, signature, varsCondition)
+import TRSConversion.Problem.CTrs.CTrs (CTrs (..), Condition (..), conditionType, rules, signature)
 import TRSConversion.Problem.CTrs.Infeasibility (Infeasibility (..))
 import qualified TRSConversion.Problem.CTrs.Infeasibility as Inf
 import TRSConversion.Unparse.ARI.CTrs (prettyAriConditionType, unparseAriCSystems, unparseAriCTrsSig, unparseAriCondition)
@@ -15,12 +14,12 @@ import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseAriInfeasibility :: (Pretty f, Pretty v) => Infeasibility f v -> Either String (Doc ann)
 unparseAriInfeasibility infProb = do
-    let ctrs = Inf.ctrs infProb
-    ariSig <- unparseAriCTrsSig (signature ctrs)
+    let system = Inf.ctrs infProb
+    ariSig <- unparseAriCTrsSig (signature system)
     let trsElements =
             [ prettyAriInfFormat infProb
             , ariSig
-            , unparseAriCSystems (rules ctrs)
+            , unparseAriCSystems (rules system)
             , unparseAriQuery (Inf.query infProb)
             ]
     return $ vsep (filterEmptyDocs trsElements)
@@ -29,7 +28,7 @@ unparseAriQuery :: (Pretty f, Pretty v) => [Condition f v] -> Doc ann
 unparseAriQuery conds = parens $ "infeasible?" <+> hsep (map unparseAriCondition conds)
 
 prettyAriInfFormat :: Infeasibility f v -> Doc ann
-prettyAriInfFormat Infeasibility { isTrs = isTrs, ctrs = CTrs {conditionType = condType}}
+prettyAriInfFormat Infeasibility { isTrs = sysIsTrs, ctrs = CTrs {conditionType = condType}}
   --  | condType == Oriented && all (all (null . conditions)) rs =
-  | isTrs = parens $ "format TRS" <+> ":problem" <+> "infeasibility"
+  | sysIsTrs = parens $ "format TRS" <+> ":problem" <+> "infeasibility"
   | otherwise = parens $ "format CTRS" <+> prettyAriConditionType condType <+> ":problem" <+> "infeasibility"

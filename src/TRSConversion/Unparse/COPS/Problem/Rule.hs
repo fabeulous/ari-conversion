@@ -12,12 +12,12 @@ module TRSConversion.Unparse.COPS.Problem.Rule
   )
 where
 
+import Prettyprinter (Doc, Pretty, emptyDoc, indent, vsep, (<+>))
+
 import TRSConversion.Problem.Common.Rule (Rule (..))
 import TRSConversion.Unparse.COPS.Problem.Term (unparseTerm)
 import TRSConversion.Unparse.Utils (prettyBlock)
-import Prettyprinter (Doc, Pretty, emptyDoc, indent, parens, pretty, vsep, (<+>))
-import Data.IntMap (IntMap)
-import qualified Data.IntMap as IntMap
+
 
 -- | Unparse a list of 'Rule's into the expected [COPS format](http://project-coco.uibk.ac.at/problems/trs.php)
 -- separated by newlines. Uses 'unparseCopsRule' to parse individual rules.

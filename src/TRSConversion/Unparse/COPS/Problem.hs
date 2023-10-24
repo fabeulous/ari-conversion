@@ -9,7 +9,8 @@ module TRSConversion.Unparse.COPS.Problem (
 where
 
 import Data.Maybe (fromMaybe)
-import Prettyprinter (Doc, hardline, vsep, Pretty)
+import Prettyprinter (Doc, Pretty, hardline, vsep)
+
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Problem.Problem (Problem (..), System (..))
 import TRSConversion.Unparse.COPS.COM (unparseCopsCOM)
@@ -20,7 +21,6 @@ import TRSConversion.Unparse.COPS.Infeasibility (unparseCopsInfeasibility)
 import TRSConversion.Unparse.COPS.Problem.MetaInfo (unparseCopsMetaInfo)
 import TRSConversion.Unparse.COPS.UnparseMsTrs (unparseCopsMsTrs)
 import TRSConversion.Unparse.COPS.UnparseTrs (unparseCopsTrs)
-import TRSConversion.Unparse.Utils (filterEmptyDocs)
 
 unparseCopsProblem :: (Pretty f, Pretty v, Pretty s, Ord f, Ord v) =>
   Problem f v s -> Either String (Doc ann)

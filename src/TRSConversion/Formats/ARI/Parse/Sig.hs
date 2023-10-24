@@ -14,9 +14,10 @@ where
 
 import Data.Char (isDigit)
 import Data.Text (unpack)
-import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, ident, lexeme, sExpr, restrictedIdent, FunSymb)
-import TRSConversion.Problem.Trs.Sig (Sig (..))
 import Text.Megaparsec (takeWhile1P, (<?>))
+
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, FunSymb, lexeme, restrictedIdent, sExpr)
+import TRSConversion.Problem.Trs.Sig (Sig (..))
 
 parseAriSig :: ARIParser (Sig FunSymb)
 parseAriSig = sExpr "fun" parseFsymArity

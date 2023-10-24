@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
 
 module TRSConversion.Formats.ARI.Parse.FormatType (
     parseFormatType,
@@ -7,7 +8,7 @@ module TRSConversion.Formats.ARI.Parse.FormatType (
 where
 
 import Control.Monad (unless)
-import Data.Text (Text, pack)
+import Data.Text (Text)
 import Text.Megaparsec (ParseError, Stream, Tokens, getOffset, option, parseError, try, (<|>))
 import qualified Text.Megaparsec.Error.Builder as E
 
@@ -20,8 +21,8 @@ import TRSConversion.Formats.ARI.Parse.Utils (
     nonPositiveNumberError,
     sExpr,
  )
+import TRSConversion.Parse.Utils (tokenText, tokenValue)
 import TRSConversion.Problem.Problem (FormatType (..))
-import TRSConversion.Parse.Utils (tokenValue, tokenText)
 
 parseFormatType :: ARIParser (Int, FormatType)
 parseFormatType =

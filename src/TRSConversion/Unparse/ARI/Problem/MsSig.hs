@@ -9,7 +9,8 @@ module TRSConversion.Unparse.ARI.Problem.MsSig
     unparseAriMsSig,
   )
 where
-import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep, (<+>))
+
+import Prettyprinter (Doc, Pretty, hsep, parens, pretty, vsep, (<+>))
 
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import TRSConversion.Unparse.Utils (prettyBlock)

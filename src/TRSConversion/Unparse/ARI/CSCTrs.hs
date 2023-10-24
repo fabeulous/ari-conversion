@@ -10,17 +10,15 @@ module TRSConversion.Unparse.ARI.CSCTrs (
 )
 where
 
-import Data.List (group, sort)
-import Prettyprinter (Doc, Pretty, hardline, hsep, nest, parens, pretty, vsep, (<+>))
+import qualified Data.Map.Strict as M
+import Prettyprinter (Doc, Pretty, hsep, parens, pretty, vsep, (<+>))
+
 import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs (..))
-import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), inferSigFromRules)
-import TRSConversion.Problem.Common.Term (vars)
-import TRSConversion.Problem.Trs.TrsSig (TrsSig (..), Sig (..))
+import TRSConversion.Problem.CSTrs.CSTrs (ReplacementMap)
+import TRSConversion.Problem.CTrs.CTrs (CTrs (..))
+import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import TRSConversion.Unparse.ARI.CTrs (prettyAriConditionType, unparseAriCSystems)
 import TRSConversion.Unparse.Utils (filterEmptyDocs)
-import TRSConversion.Problem.CSTrs.CSTrs (ReplacementMap)
-import qualified Data.Map.Strict as M
-import qualified Data.IntMap as IntMap
 
 unparseAriCSCTrs :: (Pretty f, Pretty v, Ord f) => CSCTrs f v -> Either String (Doc ann)
 unparseAriCSCTrs CSCTrs{ctrs = system, replacementMap = repMap} = do

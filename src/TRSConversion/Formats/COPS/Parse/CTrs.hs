@@ -18,12 +18,13 @@ where
 
 import Data.Functor (($>))
 import qualified Data.IntMap as IntMap
+import Text.Megaparsec (many, option, sepBy1, (<|>))
+
 import TRSConversion.Formats.COPS.Parse.Term (parseTermVars)
 import TRSConversion.Formats.COPS.Parse.Trs (parseCopsVarBlock)
-import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, ident, keyword, symbol)
+import TRSConversion.Formats.COPS.Parse.Utils (COPSParser, block, keyword, symbol)
 import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..), inferSigFromRules)
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (FunSig))
-import Text.Megaparsec (many, option, sepBy1, (<|>))
 
 parseCopsCTrs :: COPSParser (CTrs String String)
 parseCopsCTrs = do

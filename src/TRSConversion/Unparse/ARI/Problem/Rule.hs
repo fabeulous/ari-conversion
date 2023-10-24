@@ -13,11 +13,12 @@ module TRSConversion.Unparse.ARI.Problem.Rule
   )
 where
 
-import TRSConversion.Problem.Common.Rule (Rule (..))
-import TRSConversion.Unparse.ARI.Problem.Term (unparsePrefixTerm)
-import Prettyprinter (Doc, Pretty, emptyDoc, indent, parens, pretty, vsep, (<+>))
+import Prettyprinter (Doc, Pretty, parens, pretty, vsep, (<+>))
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
+
+import TRSConversion.Problem.Common.Rule (Rule (..))
+import TRSConversion.Unparse.ARI.Problem.Term (unparsePrefixTerm)
 
 -- | Unparse an indexed map of trss.
 unparseAriSystems :: (Pretty f, Pretty v) => IntMap [Rule f v] -> Doc ann

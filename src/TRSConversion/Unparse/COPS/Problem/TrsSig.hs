@@ -15,12 +15,14 @@ module TRSConversion.Unparse.COPS.Problem.TrsSig
   )
 where
 
-import TRSConversion.Problem.Common.Rule (Rule, inferSigFromRules, ruleVars)
+import qualified Data.Set as Set
+import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep)
+
+import TRSConversion.Problem.Common.Rule (Rule, ruleVars)
+import qualified TRSConversion.Problem.Common.Rule as Rule
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
 import TRSConversion.Unparse.Utils (prettyBlock)
-import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep, (<+>))
-import qualified Data.Set as Set
-import qualified TRSConversion.Problem.Common.Rule as Rule
+
 
 -- | Pretty print a 'TrsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/trs.php).
 -- @Right doc@ indicates a success, and @Left err@ indicates an error due to a variable being in
@@ -49,6 +51,6 @@ unparseCopsTrsSig rs (FunSig fs)
     prettyVars, prettyNonEmptyVars :: Pretty v => [v] -> Doc ann
     prettyVars vs = if null vs then emptyDoc else prettyNonEmptyVars vs
     prettyNonEmptyVars vs = prettyBlock "VAR" (hsep $ map pretty vs)
-    prettyCopsSig :: Pretty f => [Sig f] -> Doc ann
-    prettyCopsSig fs = prettyBlock "SIG" (hsep $ map (parens . pretty) fs)
 
+    prettyCopsSig :: Pretty f => [Sig f] -> Doc ann
+    prettyCopsSig sig = prettyBlock "SIG" (hsep $ map (parens . pretty) sig)

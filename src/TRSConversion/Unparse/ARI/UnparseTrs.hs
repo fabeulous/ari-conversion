@@ -10,8 +10,6 @@ module TRSConversion.Unparse.ARI.UnparseTrs
   )
 where
 
-import Control.Monad (forM)
-import Data.Foldable (toList)
 import Prettyprinter (Doc, Pretty, parens, pretty, vsep, (<+>))
 
 import TRSConversion.Problem.Trs.Trs (Trs (..))
@@ -26,7 +24,7 @@ import TRSConversion.Unparse.Utils (filterEmptyDocs)
 -- unparse each part of the 'Trs'.
 --
 -- See the tests for examples of expected output.
-unparseAriTrs :: (Pretty f, Pretty v, Eq v, Eq f) => Trs f v -> Either String (Doc ann)
+unparseAriTrs :: (Pretty f, Pretty v) => Trs f v -> Either String (Doc ann)
 unparseAriTrs (Trs {rules = rs, signature = sig, numSystems = n}) = do
   ariSig <- unparseAriTrsSig (concat rs) sig
   let trsElements =

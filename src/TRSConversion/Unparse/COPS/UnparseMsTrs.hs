@@ -10,14 +10,14 @@ module TRSConversion.Unparse.COPS.UnparseMsTrs
   )
 where
 
-import TRSConversion.Problem.MsTrs.MsSig (inferSorts)
+import qualified Data.IntMap as IntMap
+import Prettyprinter (Doc, Pretty, vsep)
+
 import TRSConversion.Problem.MsTrs.MsTrs (MsTrs (..))
 import TRSConversion.Unparse.COPS.Problem.MsSig (unparseCopsMsSig)
 import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRules)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import Data.Maybe (fromMaybe)
-import Prettyprinter (Doc, Pretty, pretty, vcat, vsep, parens, (<+>))
-import qualified Data.IntMap as IntMap
+import TRSConversion.Unparse.Utils (filterEmptyDocs)
+
 
 -- | Unparse a many-sorted TRS from the Haskell 'MsTrs' representation into
 -- [COPS MSTRS format](http://project-coco.uibk.ac.at/problems/mstrs.php).

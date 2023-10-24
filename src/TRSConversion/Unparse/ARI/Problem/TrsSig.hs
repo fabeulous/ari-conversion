@@ -16,12 +16,10 @@ module TRSConversion.Unparse.ARI.Problem.TrsSig
   )
 where
 
-import TRSConversion.Problem.Common.Rule (Rule, inferSigFromRules, ruleVars)
+import Prettyprinter (Doc, Pretty, parens, pretty, vsep, (<+>))
+
+import TRSConversion.Problem.Common.Rule (Rule)
 import TRSConversion.Problem.Trs.TrsSig (Sig (..), TrsSig (..))
-import TRSConversion.Unparse.Utils (prettyBlock)
-import Prettyprinter (Doc, Pretty, emptyDoc, hsep, parens, pretty, vsep, (<+>))
-import qualified Data.Set as Set
-import qualified TRSConversion.Problem.Common.Rule as Rule
 
 -- | Pretty print a 'TrsSig' in [ARI format](https://ari-informatik.uibk.ac.at/tasks/A/trs.txt).
 --   @Right doc@ indicates a success, and @Left err@ indicates an error due to being unable to deduce the signature from

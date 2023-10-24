@@ -3,6 +3,7 @@
 module TRSConversion.Unparse.COPS.COM (unparseCopsCOM) where
 
 import Prettyprinter (Doc, Pretty (pretty), parens, vsep, (<+>))
+
 import TRSConversion.Problem.Trs.Trs (Trs)
 import TRSConversion.Unparse.COPS.UnparseTrs (unparseCopsTrs)
 

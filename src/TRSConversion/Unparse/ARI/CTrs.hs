@@ -17,12 +17,11 @@ module TRSConversion.Unparse.ARI.CTrs (
 )
 where
 
-import Data.Containers.ListUtils (nubOrd)
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
-import Prettyprinter (Doc, Pretty, concatWith, hardline, hsep, nest, parens, pretty, space, vsep, (<+>))
-import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..), inferSigFromRules)
-import TRSConversion.Problem.Common.Term (vars)
+import Prettyprinter (Doc, Pretty, hsep, parens, pretty, space, vsep, (<+>))
+
+import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..), CondType (..), Condition (..))
 import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import TRSConversion.Unparse.ARI.Problem.Term (unparsePrefixTerm)
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)

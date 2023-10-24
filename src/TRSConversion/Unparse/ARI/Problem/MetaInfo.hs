@@ -11,7 +11,7 @@ module TRSConversion.Unparse.ARI.Problem.MetaInfo
   )
 where
 
-import Prettyprinter (Doc, comma, emptyDoc, hsep, pretty, punctuate, vsep, (<+>), semi, hardline)
+import Prettyprinter (Doc, emptyDoc, pretty, vsep, (<+>), semi)
 
 import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Unparse.Utils (filterEmptyDocs)

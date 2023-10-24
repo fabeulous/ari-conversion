@@ -13,18 +13,15 @@ module TRSConversion.Unparse.COPS.CSTrs (
 )
 where
 
+import qualified Data.IntMap as IntMap
 import Data.List (group, sort)
-import qualified Data.Map as M
-import Prettyprinter (Doc, Pretty, comma, hardline, hsep, nest, parens, pretty, punctuate, space, vsep, (<+>))
+import Prettyprinter (Doc, Pretty, comma, hardline, hsep, nest, parens, pretty, punctuate, space, vsep)
+
 import TRSConversion.Problem.CSTrs.CSTrs (CSTrs (..), ReplacementMap)
-import TRSConversion.Problem.Common.Rule (inferSigFromRules)
 import qualified TRSConversion.Problem.Common.Rule as R
 import TRSConversion.Problem.Common.Term (vars)
-import TRSConversion.Problem.Trs.Sig (Sig (..))
-import TRSConversion.Problem.Trs.TrsSig (TrsSig (..))
 import TRSConversion.Unparse.COPS.Problem.Rule (unparseCopsRule)
-import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import qualified Data.IntMap as IntMap
+import TRSConversion.Unparse.Utils (prettyBlock)
 
 {- | Unparse a CSTRS from the Haskell 'CSTrs' representation into
 [COPS CSTRS format](http://project-coco.uibk.ac.at/problems/cstrs.php).

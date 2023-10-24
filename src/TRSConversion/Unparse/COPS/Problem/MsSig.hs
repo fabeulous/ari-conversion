@@ -10,9 +10,10 @@ module TRSConversion.Unparse.COPS.Problem.MsSig
   )
 where
 
+import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep)
+
 import TRSConversion.Problem.MsTrs.MsSig (MsSig (..))
 import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
-import Prettyprinter (Doc, Pretty, emptyDoc, hsep, indent, parens, pretty, vsep, (<+>))
 
 -- | Pretty print an 'MsSig' in [COPS format](http://project-coco.uibk.ac.at/problems/mstrs.php).
 --
