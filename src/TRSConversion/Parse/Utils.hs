@@ -20,9 +20,8 @@ where
 
 import Data.Text (Text, unpack, pack)
 import System.Exit (exitFailure)
-import Text.Megaparsec (Parsec, errorBundlePretty, parse)
+import Text.Megaparsec (Parsec, errorBundlePretty, parse, eof, hidden)
 import Text.Megaparsec.Error (ShowErrorComponent)
-
 {- | Type alias for a 'Megaparsec' parser which uses error handler of type 'Void' and
 takes an input of type 'Text'.
 -}
@@ -30,7 +29,7 @@ type Parser e = Parsec e Text
 
 parseIO :: ShowErrorComponent e => Parser e a -> String -> Text -> IO a
 parseIO p inpName inp =
-  case parse p inpName inp of
+  case parse (p <* hidden eof) inpName inp of
     Left err -> do
       putStrLn "Error: invalid input"
       putStr $ errorBundlePretty err
