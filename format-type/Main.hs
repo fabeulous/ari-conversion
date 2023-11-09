@@ -13,7 +13,7 @@ import qualified Text.Megaparsec.Char.Lexer as L
 import TRSConversion.Formats.ARI.Parse.FormatType (parseFormatType)
 import TRSConversion.Formats.ARI.Parse.Utils (ARIParser)
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
-import TRSConversion.Parse.Utils (parseIO)
+import TRSConversion.Parse.Utils (parseIOpartial)
 import TRSConversion.Problem.Problem (FormatType (..))
 
 usage :: String -> String
@@ -32,7 +32,7 @@ main = do
 runApp :: FilePath -> IO ()
 runApp filename = do
     fileContents <- Text.readFile filename
-    formatType <- parseIO (ARI.toParser parseHead) filename fileContents
+    formatType <- parseIOpartial (ARI.toParser parseHead) filename fileContents
     putStrLn $ case formatType of
         TrsFormat n
             | n == 1 -> "trs"

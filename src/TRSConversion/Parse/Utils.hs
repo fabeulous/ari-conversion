@@ -15,6 +15,7 @@ module TRSConversion.Parse.Utils (
   unToken,
   -- * Parsing
   parseIO,
+  parseIOpartial,
 )
 where
 
@@ -27,15 +28,19 @@ takes an input of type 'Text'.
 -}
 type Parser e = Parsec e Text
 
+-- | forces full consumption of the input
 parseIO :: ShowErrorComponent e => Parser e a -> String -> Text -> IO a
-parseIO p inpName inp =
-  case parse (p <* hidden eof) inpName inp of
+parseIO p = parseIOpartial (p <* hidden eof)
+
+-- | only consumes as much input as the parser does
+parseIOpartial :: ShowErrorComponent e => Parser e a -> String -> Text -> IO a
+parseIOpartial p inpName inp =
+  case parse p inpName inp of
     Left err -> do
       putStrLn "Error: invalid input"
       putStr $ errorBundlePretty err
       exitFailure
     Right trs -> return trs
-
 
 
 data Token a = Token { tokenValue :: a
