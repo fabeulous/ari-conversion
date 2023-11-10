@@ -196,7 +196,7 @@ runApp config inputFile = do
       --     parseIO (COPS.toParser COPS.parseCOMProblem) inputFile fileContents
       -- | otherwise ->
       --     parseIO (COPS.toParser COPS.parseProblem) inputFile fileContents
-    ARI -> parseIO (ARI.toParser (ARI.parseProblem <* ARI.noSExpr) inputFile fileContents
+    ARI -> parseIO (ARI.toParser (ARI.parseProblem <* ARI.noSExpr)) inputFile fileContents
 
   doc <- case target config of
     COPS
