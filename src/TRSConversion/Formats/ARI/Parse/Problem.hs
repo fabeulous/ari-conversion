@@ -42,14 +42,6 @@ parseProblem' = do
     InfeasibilityCTrsFormat condType -> Prob.Infeasibility <$> parseAriCTRSInfeasibility' condType
     InfeasibilityTrsFormat -> Prob.Infeasibility <$> parseAriTRSInfeasibility'
     LCTrsFormat _ -> parseError $ E.err o $ E.ulabel "LCTRS (not supported)"
-  -- system <-
-  --   choice
-  --     [ try $ Prob.Trs <$> parseAriTrs
-  --     , try $ Prob.MSTrs <$> parseAriMsTrs
-  --     , try $ Prob.CTrs <$> parseAriCTrs
-  --     , try $ Prob.CSTrs <$> parseAriCSTrs
-  --     , Prob.CSCTrs <$> parseAriCSCTrs
-  --     ]
   pure $
     Problem
       { Prob.metaInfo = metaInfo

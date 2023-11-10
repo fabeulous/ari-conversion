@@ -99,7 +99,7 @@ instance Monoid (Result a) where
 runApp :: FilePath -> IO ()
 runApp fp = do
     fileContent <- Text.readFile fp
-    problem <- parseIO (ARI.toParser ARI.parseProblem') fp fileContent
+    problem <- parseIO (ARI.toParser (ARI.parseProblem' <* ARI.noSExpr)) fp fileContent
     case checkSem (system problem) of
         Fail errInfo err -> do
             hPutStrLn stderr "ERROR:"

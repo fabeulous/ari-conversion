@@ -5,6 +5,7 @@ module TRSConversion.Formats.ARI.Parse.Utils (
   -- * Type
   ARIParser,
   toParser,
+
   -- ** Helper types
   VarSymb,
   FunSymb,
@@ -22,7 +23,9 @@ module TRSConversion.Formats.ARI.Parse.Utils (
 
   -- * Combinators
   sExpr,
+  sExpr',
   parens,
+  noSExpr,
 
   -- * Predicates
   isNewline,
@@ -45,12 +48,15 @@ import Text.Megaparsec (
   between,
   empty,
   getOffset,
+  label,
   noneOf,
   notFollowedBy,
+  showErrorComponent,
   takeWhile1P,
   takeWhileP,
   try,
-  (<?>), showErrorComponent,
+  (<?>),
+  (<|>),
  )
 import Text.Megaparsec.Char (char, space1, string)
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -83,7 +89,6 @@ data ARIParseError
   | DuplicateIndex Int
   deriving (Eq, Ord)
 
-
 instance Show ARIParseError where
   show = showErrorComponent
 
@@ -98,9 +103,9 @@ mustBeUnique = DuplicateIndex
 
 instance ShowErrorComponent ARIParseError where
   showErrorComponent (DuplicateIndex n) =
-     "index " ++ show n ++ " must appear at most once"
+    "index " ++ show n ++ " must appear at most once"
   showErrorComponent (NonPositiveNumber n) =
-     "number " ++ show n ++ " must be greater than 0"
+    "number " ++ show n ++ " must be greater than 0"
   showErrorComponent (IndexOutOfRange n maxInd) =
     "index " ++ show n ++ " out of range, it must be at most " ++ show maxInd
   showErrorComponent (InvalidIdentifier name reason) =
@@ -116,6 +121,22 @@ instance ShowErrorComponent ARIParseError where
 
 customErr :: ARIParseError -> E.EF ARIParseError
 customErr = E.fancy . ErrorCustom
+
+{- | suceeds if no parentheses is opened. Use when no more sExpression is expected, like before @eof@.
+ this lead to better error messages when an sExpression is upened unexpectedly.
+
+Parsing "( unknownName )" leads to unexpected "unknownName",
+instead of unexpected '('
+-}
+noSExpr :: ARIParser ()
+noSExpr =
+  ( parens
+      $ do
+        o <- getOffset
+        n <- ident
+        parseError $ E.err o $ E.utoks (tokenText n)
+  )
+    <|> pure ()
 
 {- | @'lineComment'@ consumes a line-comment, which starts with a @;@ character
 and continues until a newline character (the newline character is not consumed).
@@ -162,13 +183,13 @@ keywords =
     ++ ["TRS", "MSTRS", "LCSTRS", "CTRS", "CSTRS", "CSCTRS"]
 
 restrictedIdent :: ARIParser (Token String)
-restrictedIdent = lexeme $ do
+restrictedIdent = label "identifier" . lexeme $ do
   o <- getOffset
   identifier' <- tokenOfText $ takeWhile1P Nothing (`notElem` identChar)
   let identifier = unpack <$> identifier'
-  when (tokenValue identifier `elem` keywords) $
-    parseError $
-      E.errFancy o (customErr (unpack (tokenText identifier) `isInvalidIdentifier` "because it is a reserved keyword"))
+  when (tokenValue identifier `elem` keywords)
+    $ parseError
+    $ E.errFancy o (customErr (unpack (tokenText identifier) `isInvalidIdentifier` "because it is a reserved keyword"))
   pure identifier
 
 keywordChar :: ARIParser Char
@@ -186,9 +207,13 @@ keyword word = lexeme (try (string word <* notFollowedBy keywordChar))
 keywordToken :: Text -> ARIParser (Token Text)
 keywordToken word = lexeme . tokenOfText $ try (string word <* notFollowedBy keywordChar)
 
--- | @'block' p@ parses as s-expression with the head @name@ and content @p@.
+-- | @'sExpr' name p@ parses as s-expression with the head @name@ and content @p@.
 sExpr :: Text -> ARIParser a -> ARIParser a
 sExpr hd = between (try (symbol "(" *> keyword hd)) (symbol ")")
+
+-- | @'sExpr\'' name p@ parses as s-expression, where the head is parsed by @name@ and content @p@.
+sExpr' :: ARIParser b -> ARIParser a -> ARIParser a
+sExpr' p = between (try (symbol "(" *> p)) (symbol ")")
 
 {- | @'parens' p@ parses @'('@ followed by @p@ followed by @')'@.
 
@@ -219,13 +244,12 @@ nonPositiveNumberError n offset =
 
 indexOutOfRangeError :: Int -> Idx.Index -> E.ParseError s ARIParseError
 indexOutOfRangeError maxIndex i =
-  E.errFancy (Idx.startOffset i) $
-    customErr (Idx.index i `mustBeBelow` maxIndex)
+  E.errFancy (Idx.startOffset i)
+    $ customErr (Idx.index i `mustBeBelow` maxIndex)
 
 duplicateIndex :: Idx.Index -> E.ParseError s ARIParseError
 duplicateIndex i =
   E.errFancy (Idx.startOffset i) $ customErr (mustBeUnique (Idx.index i))
-
 
 tokenOfText :: ARIParser Text -> ARIParser (Token Text)
 tokenOfText p = do

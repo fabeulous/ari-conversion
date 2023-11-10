@@ -8,37 +8,31 @@ This module defines functions to parse terms from a @String@ input.
 Also specifies the allowed tokens for function symbols and variables.
 -}
 module TRSConversion.Formats.ARI.Parse.Term (
-  -- * ARI Terms
-  parsePrefixTerm,
+    -- * ARI Terms
+    parsePrefixTerm,
 
-  -- * Functions and Variables
-  -- parseFunSymbol,
-  -- parseVariable,
+    -- * Functions and Variables
 )
 where
 
-import Data.Text (unpack)
-import Text.Megaparsec (choice, count, (<|>))
+-- parseFunSymbol,
+-- parseVariable,
 
-import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, FunSymb, VarSymb, keywordToken, restrictedIdent, sExpr)
+import Data.Text (unpack)
+import Text.Megaparsec (choice, count, (<?>), (<|>))
+
+import TRSConversion.Formats.ARI.Parse.Utils (
+    ARIParser,
+    FunSymb,
+    VarSymb,
+    keyword,
+    keywordToken,
+    restrictedIdent,
+    sExpr',
+ )
 import TRSConversion.Parse.Utils (Token (tokenText))
 import TRSConversion.Problem.Common.Term (Term (..))
 import TRSConversion.Problem.Trs.Sig (Sig (..))
-
-{- | Parses a single variable name using 'parseCopsSym' and returns a string.
-
-Does not consume trailing whitespace (needed for parsing terms in prefix notation).
--}
--- parseVariable :: ARIParser String
--- parseVariable = ident <?> "variable"
-
-{- | Parses a function symbol either until the first '(' or as long as characters allowed by 'parseCopsSym' are present.
-Does not consume the final @'('@ and does not consume all input.
-
-This function doesn't consume trailing whitespace (needed for parsing terms in prefix notation).
--}
--- parseFunSymbol :: ARIParser String
--- parseFunSymbol = ident <?> "function symbol"
 
 {- | Parses a term in prefix notation (see also [S-expressions](https://en.wikipedia.org/wiki/S-expression)).
 
@@ -53,11 +47,15 @@ Fun "f" [Var "x", Fun "g" [Fun "x" []]]
 -}
 parsePrefixTerm :: [Sig FunSymb] -> ARIParser (Term FunSymb VarSymb)
 parsePrefixTerm funSig = parseT
- where
-   parseT =
-     choice (map mkParser funSig)
-       <|> (Var <$> restrictedIdent)
-       -- <|> parens parseT -- how about redundant parenthesis?
-   mkParser (Sig fSymb arity)
-     | arity <= 0 = Fun <$> (fmap unpack <$> keywordToken (tokenText fSymb)) <*> pure []
-     | otherwise = Fun fSymb <$> sExpr (tokenText fSymb) (count arity parseT)
+  where
+    parseT =
+        choice (map mkParser funSig)
+            <|> (Var <$> restrictedIdent <?> "variable")
+    -- <|> parens parseT -- how about redundant parenthesis?
+    mkParser (Sig fSymb arity)
+        | arity <= 0 = Fun <$> constant <*> pure []
+        | otherwise = Fun fSymb <$> sExpr' funSymb args
+      where
+        constant = fmap unpack <$> keywordToken (tokenText fSymb) <?> "constant"
+        funSymb = keyword (tokenText fSymb) <?> "non-constant function symbol"
+        args = count arity parseT
