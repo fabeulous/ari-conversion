@@ -14,10 +14,11 @@ module TRSConversion.Problem.Trs.Trs
     TrsSig (..),
     Sig (..),
     mapTrs,
+    emptyTrs,
   )
 where
 
-import Data.IntMap (IntMap)
+import Data.IntMap (IntMap, empty)
 
 import TRSConversion.Problem.Common.Rule (Rule (..), mapRule)
 import TRSConversion.Problem.Common.Term (Term (..))
@@ -42,3 +43,9 @@ mapTrs f v trs = Trs { rules = map (mapRule f v) <$> rules trs
                      , signature = fmap f (signature trs)
                      , numSystems = numSystems trs
                      }
+
+emptyTrs :: Trs f v
+emptyTrs = Trs { rules = Data.IntMap.empty
+               , signature = FunSig []
+               , numSystems = 1
+               }

@@ -24,6 +24,7 @@ module TRSConversion.Formats.ARI.Parse.Utils (
   -- * Combinators
   sExpr,
   sExpr',
+  sExpr'',
   parens,
   noSExpr,
 
@@ -55,6 +56,7 @@ import Text.Megaparsec (
   takeWhile1P,
   takeWhileP,
   try,
+  many,
   (<?>),
   (<|>),
  )
@@ -176,6 +178,15 @@ ident = lexeme $ do
   txt <- tokenOfText (takeWhile1P Nothing (`notElem` identChar)) <?> "identifier"
   pure $ fmap unpack txt
 
+ident'Char :: [Char]
+ident'Char = " \t\n\r;()"
+
+ident' :: ARIParser (Token String)
+ident' = lexeme $ do
+  txt <- tokenOfText (takeWhile1P Nothing (`notElem` ident'Char)) <?> "identifier"
+  pure $ fmap unpack txt
+
+
 keywords :: [String]
 keywords =
   ["format", "fun", "sort", "rule", "theory", "define-fun"]
@@ -214,6 +225,13 @@ sExpr hd = between (try (symbol "(" *> keyword hd)) (symbol ")")
 -- | @'sExpr\'' name p@ parses as s-expression, where the head is parsed by @name@ and content @p@.
 sExpr' :: ARIParser b -> ARIParser a -> ARIParser a
 sExpr' p = between (try (symbol "(" *> p)) (symbol ")")
+
+data LTree l
+  = Leaf l
+  | Node [LTree l]
+
+sExpr'' :: ARIParser (LTree (Token String))
+sExpr'' = ( symbol "(" *> many sExpr'' >>= \es -> symbol ")" *> return (Node es) ) <|> ( ident' >>= \i -> return (Leaf i) )
 
 {- | @'parens' p@ parses @'('@ followed by @p@ followed by @')'@.
 

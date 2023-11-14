@@ -32,6 +32,7 @@ data FormatType
 data System f v s
     = Trs (Trs f v)
     | MSTrs (MsTrs f v s)
+    | LCTrs (MsTrs f v s)
     | CTrs (CTrs f v)
     | CSTrs (CSTrs f v)
     | CSCTrs (CSCTrs f v)
@@ -45,6 +46,7 @@ mapSystem f v _ (CTrs sys) = CTrs $ mapCTrs f v sys
 mapSystem f v _ (CSTrs sys) = CSTrs $ mapCSTrs f v sys
 mapSystem f v _ (CSCTrs sys) = CSCTrs $ mapCSCTrs f v sys
 mapSystem f v s (MSTrs sys) = MSTrs $ mapMsTrs f v s sys
+mapSystem f v s (LCTrs sys) = LCTrs $ mapMsTrs f v s sys
 mapSystem f v _ (Infeasibility sys) = Infeasibility $ mapInfeasibility f v sys
 
 data Problem f v s = Problem
