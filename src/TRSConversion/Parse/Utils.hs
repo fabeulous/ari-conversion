@@ -14,6 +14,8 @@ module TRSConversion.Parse.Utils (
   mkToken',
   unToken,
   -- * Parsing
+  parseEither,
+  parseEitherpartial,
   parseIO,
   parseIOpartial,
 )
@@ -29,18 +31,37 @@ takes an input of type 'Text'.
 type Parser e = Parsec e Text
 
 -- | forces full consumption of the input
-parseIO :: ShowErrorComponent e => Parser e a -> String -> Text -> IO a
+parseIO :: (ShowErrorComponent e) => Parser e a -> String -> Text -> IO a
 parseIO p = parseIOpartial (p <* hidden eof)
 
 -- | only consumes as much input as the parser does
-parseIOpartial :: ShowErrorComponent e => Parser e a -> String -> Text -> IO a
+parseIOpartial :: (ShowErrorComponent e) => Parser e a -> String -> Text -> IO a
 parseIOpartial p inpName inp =
-  case parse p inpName inp of
-    Left err -> do
-      putStrLn "Error: invalid input"
-      putStr $ errorBundlePretty err
+  case parseEitherpartial p inpName inp of
+    Left errMsg -> do
+      putStr errMsg
       exitFailure
-    Right trs -> return trs
+    Right result -> return result
+
+{- | @parseEither p name input@ consumes the whole @input@ using the parser @p@.
+@name@ is the input name (e.g. Filename) and is used in the error message.
+It returns either a @Left errorMessage@ or a @Right result@.
+-}
+parseEither :: (ShowErrorComponent e) => Parser e a -> String -> Text -> Either String a
+parseEither p = parseEitherpartial (p <* hidden eof)
+
+{- | @parseEither p name input@ applies the parser @p@ to the @input@.
+It may only consume a prefix of the input.
+@name@ is the input name (e.g. Filename) and is used in the error message.
+It returns either a @Left errorMessage@ or a @Right result@.
+-}
+parseEitherpartial :: (ShowErrorComponent e) => Parser e a -> String -> Text -> Either String a
+parseEitherpartial p inpName inp =
+  case parse p inpName inp of
+    Left err ->
+      let errMsg = "ERROR: invalid input\n" ++ errorBundlePretty err
+       in Left errMsg
+    Right result -> Right result
 
 
 data Token a = Token { tokenValue :: a

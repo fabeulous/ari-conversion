@@ -17,7 +17,7 @@ import qualified Text.Megaparsec.Error.Builder as PE
 import qualified TRSConversion.Formats.ARI.Parse.Problem as ARI
 import TRSConversion.Formats.ARI.Parse.Utils (FunSymb, SortSymb, VarSymb)
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
-import TRSConversion.Parse.Utils (Token (..), parseIO)
+import TRSConversion.Parse.Utils (Token (..), parseIO, parseEither)
 import qualified TRSConversion.Problem.CSCTrs.CSCTrs as CSCTrs
 import qualified TRSConversion.Problem.CSTrs.CSTrs as CSTrs
 import TRSConversion.Problem.CTrs.CTrs (orientedCTrsToTrs)
@@ -99,9 +99,20 @@ instance Monoid (Result a) where
 runApp :: FilePath -> IO ()
 runApp fp = do
     fileContent <- Text.readFile fp
-    problem <- parseIO (ARI.toParser (ARI.parseProblem' <* ARI.noSExpr)) fp fileContent
+    let eithProblem = parseEither (ARI.toParser (ARI.parseProblem' <* ARI.noSExpr)) fp fileContent
+
+    -- handle parse errors
+    problem <- case eithProblem of
+      Left errMsg -> do
+            putStrLn "NO"
+            putStr errMsg
+            exitFailure
+      Right res -> pure res
+
+    -- check "semantic" errors
     case checkSem (system problem) of
         Fail errInfo err -> do
+            putStrLn "NO"
             hPutStrLn stderr "ERROR:"
             case errInfo of
                 Nothing -> hPutStrLn stderr err
@@ -110,6 +121,7 @@ runApp fp = do
                      in hPutStr stderr $ errorBundlePretty errBundle
             exitFailure
         Succeed -> do
+            putStrLn "YES"
             putStr $ case Prob.system problem of
                 (Prob.Trs _) -> "trs"
                 (Prob.MSTrs _) -> "mstrs"
