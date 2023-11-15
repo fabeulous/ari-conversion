@@ -10,6 +10,7 @@ import Test.Hspec.Hedgehog (hedgehog)
 import Text.Megaparsec (parse)
 
 import TRSConversion.Formats.ARI.Parse.Rule (parseAriRule)
+import TRSConversion.Formats.ARI.Parse.Term (parsePrefixTerm)
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
 import qualified TRSConversion.Problem.Common.Index as Idx
 import TRSConversion.Problem.Common.Rule (Rule (..))
@@ -36,7 +37,7 @@ spec = do
           (pack . show . uncurry unparseAriRule)
           ((\(i, r) -> pure (Idx.index i, r)) <=< parse (ARI.toParser (parseAriRuleString sig')) "testinput")
 
-parseAriRuleString sig = (\(i,r) -> (i, mapRule unToken unToken r)) <$> parseAriRule sig
+parseAriRuleString sig = (\(i,r) -> (i, mapRule unToken unToken r)) <$> parseAriRule (parsePrefixTerm sig)
 
 sigOfTerm :: Eq f => Term f v -> [Sig f]
 sigOfTerm t =

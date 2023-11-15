@@ -18,17 +18,16 @@ where
 -- parseFunSymbol,
 -- parseVariable,
 
-import Data.Text (unpack)
-import Text.Megaparsec (choice, count, (<?>), (<|>))
+import qualified Data.Map.Strict as M
+import Text.Megaparsec (count, getOffset, parseError, (<|>), hidden)
+import qualified Text.Megaparsec.Error.Builder as E
 
 import TRSConversion.Formats.ARI.Parse.Utils (
     ARIParser,
     FunSymb,
     VarSymb,
-    keyword,
-    keywordToken,
+    parens,
     restrictedIdent,
-    sExpr',
  )
 import TRSConversion.Parse.Utils (Token (tokenText))
 import TRSConversion.Problem.Common.Term (Term (..))
@@ -46,16 +45,34 @@ Consumes trailing white space only after the term has been recursively parsed as
 Fun "f" [Var "x", Fun "g" [Fun "x" []]]
 -}
 parsePrefixTerm :: [Sig FunSymb] -> ARIParser (Term FunSymb VarSymb)
-parsePrefixTerm funSig = parseT
+parsePrefixTerm funSig = parseTerm
   where
-    parseT =
-        choice (map mkParser funSig)
-            <|> (Var <$> restrictedIdent <?> "variable")
+    mp = M.fromList [(f, arity) | Sig f arity <- funSig]
+
+    parseTerm = fun <|> constantOrVar
     -- <|> parens parseT -- how about redundant parenthesis?
-    mkParser (Sig fSymb arity)
-        | arity <= 0 = Fun <$> constant <*> pure []
-        | otherwise = Fun fSymb <$> sExpr' funSymb args
-      where
-        constant = fmap unpack <$> keywordToken (tokenText fSymb) <?> "constant"
-        funSymb = keyword (tokenText fSymb) <?> "non-constant function symbol"
-        args = count arity parseT
+
+    constantOrVar = do
+        o <- getOffset
+        name <- restrictedIdent <|> parseError (E.err o $ E.elabel "constant" <> E.elabel "variable")
+        case M.lookup name mp of
+            Nothing -> pure $ Var name
+            Just a
+                | a == 0 -> pure $ Fun name []
+                | otherwise ->
+                    parseError
+                        $ E.err o
+                        $ E.utoks (tokenText name)
+                        <> E.elabel "constant"
+                        <> E.elabel "variable"
+
+    fun = parens $ do
+        o <- getOffset
+        name <- restrictedIdent
+        case M.lookup name mp of
+            Just arity | arity > 0 -> Fun name <$> count arity parseTerm
+            _ ->
+                parseError
+                    $ E.err o
+                    $ E.utoks (tokenText name)
+                    <> E.elabel "non-constant function symbol"
