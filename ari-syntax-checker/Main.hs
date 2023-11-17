@@ -9,7 +9,7 @@ import Data.Text (Text)
 import qualified Data.Text.IO as Text
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure, exitSuccess)
-import System.IO (hPutStr, hPutStrLn, stderr)
+import System.IO (hPutStrLn, stderr)
 import Text.Megaparsec (PosState (..), defaultTabWidth, initialPos)
 import Text.Megaparsec.Error
 import qualified Text.Megaparsec.Error.Builder as PE
@@ -17,7 +17,7 @@ import qualified Text.Megaparsec.Error.Builder as PE
 import qualified TRSConversion.Formats.ARI.Parse.Problem as ARI
 import TRSConversion.Formats.ARI.Parse.Utils (FunSymb, SortSymb, VarSymb)
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
-import TRSConversion.Parse.Utils (Token (..), parseIO, parseEither)
+import TRSConversion.Parse.Utils (Token (..), parseEither)
 import qualified TRSConversion.Problem.CSCTrs.CSCTrs as CSCTrs
 import qualified TRSConversion.Problem.CSTrs.CSTrs as CSTrs
 import TRSConversion.Problem.CTrs.CTrs (orientedCTrsToTrs)
@@ -103,22 +103,22 @@ runApp fp = do
 
     -- handle parse errors
     problem <- case eithProblem of
-      Left errMsg -> do
+        Left errMsg -> do
             putStrLn "NO"
             putStr errMsg
             exitFailure
-      Right res -> pure res
+        Right res -> pure res
 
     -- check "semantic" errors
     case checkSem (system problem) of
         Fail errInfo err -> do
             putStrLn "NO"
-            hPutStrLn stderr "ERROR:"
+            putStrLn "ERROR:"
             case errInfo of
-                Nothing -> hPutStrLn stderr err
+                Nothing -> putStrLn err
                 Just errInf ->
                     let errBundle = errorBundleFromErrInfo errInf fp fileContent
-                     in hPutStr stderr $ errorBundlePretty errBundle
+                     in putStr $ errorBundlePretty errBundle
             exitFailure
         Succeed -> do
             putStrLn "YES"
