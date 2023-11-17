@@ -36,24 +36,24 @@ runApp filename = do
     putStrLn $ case formatType of
         TrsFormat n
             | n == 1 -> "trs"
-            | n == 2 -> "two-trs"
+            | n == 2 -> "2trs"
             | otherwise -> "multi-trs"
         MSTrsFormat n
             | n == 1 -> "mstrs"
-            | n == 2 -> "two-mstrs"
+            | n == 2 -> "2mstrs"
             | otherwise -> "multi-mstrs"
         CTrsFormat _ n
             | n == 1 -> "ctrs"
-            | n == 2 -> "two-ctrs"
+            | n == 2 -> "2ctrs"
             | otherwise -> "multi-ctrs"
         CSTrsFormat _ -> "cstrs"
         CSCTrsFormat _ n
             | n == 1 -> "csctrs"
-            | n == 2 -> "two-csctrs"
+            | n == 2 -> "2csctrs"
             | otherwise -> "multi-csctrs"
         LCTrsFormat n
             | n == 1 -> "lctrs"
-            | n == 2 -> "two-lctrs"
+            | n == 2 -> "2lctrs"
             | otherwise -> "multi-lctrs"
         InfeasibilityTrsFormat -> "infeasibility-trs"
         InfeasibilityCTrsFormat _ -> "infeasibility-ctrs"
