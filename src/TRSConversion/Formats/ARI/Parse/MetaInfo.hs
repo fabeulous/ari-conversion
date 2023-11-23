@@ -16,7 +16,7 @@ where
 
 import Data.Text (Text, unpack)
 import Text.Megaparsec (MonadParsec (notFollowedBy, withRecovery), between, eof, many, registerParseError, takeWhileP, try, (<|>))
-import Text.Megaparsec.Char (char, string, eol)
+import Text.Megaparsec.Char (char, eol, space, string)
 
 import Control.Monad (void)
 import Data.Foldable (foldl')
@@ -38,15 +38,15 @@ Expects e.g. something like
 @.
 -}
 parseAriMetaInfo :: ARIParser MetaInfo
-parseAriMetaInfo = do
-    meta <- foldl' mergeMetaInfo emptyMetaInfo <$> many structuredMeta
-    comments <- foldl' mergeMetaInfo emptyMetaInfo <$> many ariLeadingComment
-    pure $ mergeMetaInfo meta comments
+parseAriMetaInfo =
+    foldl' mergeMetaInfo emptyMetaInfo
+        <$> many (structuredMeta <|> ariLeadingComment)
 
 structuredMeta :: ARIParser MetaInfo
 structuredMeta = structure $ ariAuthorLine <|> ariDoiLine <|> ariOriginLine
   where
-    structure = between (try (string "; @")) (void eol <|> eof) . continue
+    structure =
+        between (try (string "; @")) ((void eol <|> eof) <* space) . continue
 
     continue = withRecovery $ \err -> do
         registerParseError err
