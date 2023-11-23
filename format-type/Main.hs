@@ -13,7 +13,7 @@ import qualified Text.Megaparsec.Char.Lexer as L
 import TRSConversion.Formats.ARI.Parse.FormatType (parseFormatType)
 import TRSConversion.Formats.ARI.Parse.Utils (ARIParser)
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
-import TRSConversion.Parse.Utils (parseIO)
+import TRSConversion.Parse.Utils (parseIOpartial)
 import TRSConversion.Problem.Problem (FormatType (..))
 
 usage :: String -> String
@@ -32,28 +32,28 @@ main = do
 runApp :: FilePath -> IO ()
 runApp filename = do
     fileContents <- Text.readFile filename
-    formatType <- parseIO (ARI.toParser parseHead) filename fileContents
+    formatType <- parseIOpartial (ARI.toParser parseHead) filename fileContents
     putStrLn $ case formatType of
         TrsFormat n
             | n == 1 -> "trs"
-            | n == 2 -> "two-trs"
+            | n == 2 -> "2trs"
             | otherwise -> "multi-trs"
         MSTrsFormat n
             | n == 1 -> "mstrs"
-            | n == 2 -> "two-mstrs"
+            | n == 2 -> "2mstrs"
             | otherwise -> "multi-mstrs"
         CTrsFormat _ n
             | n == 1 -> "ctrs"
-            | n == 2 -> "two-ctrs"
+            | n == 2 -> "2ctrs"
             | otherwise -> "multi-ctrs"
         CSTrsFormat _ -> "cstrs"
         CSCTrsFormat _ n
             | n == 1 -> "csctrs"
-            | n == 2 -> "two-csctrs"
+            | n == 2 -> "2csctrs"
             | otherwise -> "multi-csctrs"
         LCTrsFormat n
             | n == 1 -> "lctrs"
-            | n == 2 -> "two-lctrs"
+            | n == 2 -> "2lctrs"
             | otherwise -> "multi-lctrs"
         InfeasibilityTrsFormat -> "infeasibility-trs"
         InfeasibilityCTrsFormat _ -> "infeasibility-ctrs"

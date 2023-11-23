@@ -202,7 +202,7 @@ runApp config inputFile = do
       --     parseIO (COPS.toParser COPS.parseCOMProblem) inputFile fileContents
       -- | otherwise ->
       --     parseIO (COPS.toParser COPS.parseProblem) inputFile fileContents
-    ARI -> parseIO (ARI.toParser ARI.parseProblem) inputFile fileContents
+    ARI -> parseIO (ARI.toParser (ARI.parseProblem <* ARI.noSExpr)) inputFile fileContents
     CPF3 -> do
       hPutStrLn stderr $ "ERROR: CPF3 is currently only supported as a target (not a source)"
       exitFailure

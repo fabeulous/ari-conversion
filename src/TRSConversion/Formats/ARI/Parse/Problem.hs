@@ -14,7 +14,7 @@ import TRSConversion.Formats.ARI.Parse.CTrs (parseAriCTrs')
 import TRSConversion.Formats.ARI.Parse.MSTrs (parseAriMsTrs')
 import TRSConversion.Formats.ARI.Parse.MetaInfo (parseAriMetaInfo)
 import TRSConversion.Formats.ARI.Parse.Trs (parseAriTrs')
-import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, spaces, FunSymb, VarSymb, SortSymb)
+import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, spaces, FunSymb, VarSymb, SortSymb, sExpr'')
 import TRSConversion.Problem.Problem (Problem (Problem), FormatType (..), mapSystem)
 import qualified TRSConversion.Problem.Problem as Prob
 import TRSConversion.Formats.ARI.Parse.FormatType (parseFormatType)
@@ -22,6 +22,8 @@ import qualified Text.Megaparsec.Error.Builder as E
 import Text.Megaparsec (MonadParsec(parseError))
 import TRSConversion.Formats.ARI.Parse.Infeasibility (parseAriTRSInfeasibility', parseAriCTRSInfeasibility')
 import TRSConversion.Parse.Utils (unToken)
+import TRSConversion.Problem.Trs.Trs (emptyTrs)
+import Text.Megaparsec (many)
 
 parseProblem :: ARIParser (Problem String String String)
 parseProblem = do
@@ -41,15 +43,7 @@ parseProblem' = do
     CSCTrsFormat condType n -> Prob.CSCTrs <$> parseAriCSCTrs' condType n
     InfeasibilityCTrsFormat condType -> Prob.Infeasibility <$> parseAriCTRSInfeasibility' condType
     InfeasibilityTrsFormat -> Prob.Infeasibility <$> parseAriTRSInfeasibility'
-    LCTrsFormat _ -> parseError $ E.err o $ E.ulabel "LCTRS (not supported)"
-  -- system <-
-  --   choice
-  --     [ try $ Prob.Trs <$> parseAriTrs
-  --     , try $ Prob.MSTrs <$> parseAriMsTrs
-  --     , try $ Prob.CTrs <$> parseAriCTrs
-  --     , try $ Prob.CSTrs <$> parseAriCSTrs
-  --     , Prob.CSCTrs <$> parseAriCSCTrs
-  --     ]
+    LCTrsFormat _ -> Prob.Trs <$> (many sExpr'' *> return emptyTrs)
   pure $
     Problem
       { Prob.metaInfo = metaInfo
