@@ -22,7 +22,6 @@ After building you can run the respective tool with:
 
     stack exec ari-syntax-checker -- FILE
 
-where FORMAT can be "COPS" or "ARI".
-
+where FORMAT can be "COPS", "ARI" or CPF3 (latter only supported as target).
 
 
