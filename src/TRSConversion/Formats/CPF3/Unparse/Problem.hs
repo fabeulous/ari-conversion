@@ -24,8 +24,9 @@ problemToXML prob = Document (Prologue [] Nothing []) root []
  where
   root = Element "input" Map.empty $ case Prob.system prob of
     Prob.Trs trss -> trssToNodes trss
+    Prob.CTrs ctrss -> ctrsInputNodes ctrss
     Prob.Infeasibility inf -> infToNodes inf
-    _ -> error "CPF3 currently only supports TRSs, two-TRSs, and infeasibility problems"
+    _ -> error "CPF3 currently only supports TRSs, CTRSs, two-TRSs, and infeasibility problems"
 
 -- One or two trss
 
@@ -80,7 +81,7 @@ ruleToNodes Rule{lhs = l, rhs = r} =
 |]
 
 termToNodes :: (Pretty f, Pretty v) => Term f v -> [Node]
-termToNodes (Var v) = [xml| <var>#{pack (show (pretty v))} |]
+termToNodes (Var v) = [xml| <var>#{pack (show (pretty v))}|]
 termToNodes (Fun f ts) =
   [xml|
 <funapp>
@@ -94,14 +95,18 @@ termToNodes (Fun f ts) =
 infToNodes :: (Pretty f, Pretty v) => Infeasibility f v -> [Node]
 infToNodes inf =
   [xml|
-^{ctrsToNodes (ctrs inf)}
-^{queryToNodes (query inf)}
+<infeasibilityInput>
+  ^{ctrsToNodes (ctrs inf)}
+  ^{queryToNodes (query inf)}
 |]
+
+ctrsInputNodes :: (Pretty f, Pretty v) => CTrs f v -> [Node]
+ctrsInputNodes sys = [xml|<ctrsInput>^{ctrsToNodes sys}|]
 
 ctrsToNodes :: (Pretty f, Pretty v) => CTrs f v -> [Node]
 ctrsToNodes sys
   | CTrs.conditionType sys /= CTrs.Oriented = error "CPF3 only supports ORIENTED ctrss"
-  | CTrs.numSystems sys /= 1 = error "CPF3 only supports problems with a single CTRS"
+  | CTrs.numSystems sys /= 1 = error "CPF3 only supports ctrss with a single CTRS"
   | otherwise =
       let rs = CTrs.rules sys IntMap.! 1
        in [xml|
