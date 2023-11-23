@@ -49,17 +49,16 @@ singleTrsToNodes sig rs =
 twoTrsToNodes :: (Pretty f, Pretty v) => TrsSig f -> [Rule f v] -> [Rule f v] -> [Node]
 twoTrsToNodes sig r1 r2 =
   [xml|
-<input>
-  <twoTrsWithSignature>
-    ^{signatureToNodes sig}
-    <trs>
-      <rules>
-        $forall rule <- r1
-          ^{ruleToNodes rule}
-    <trs>
-      <rules>
-        $forall rule <- r2
-          ^{ruleToNodes rule}
+<twoTrsWithSignature>
+  ^{signatureToNodes sig}
+  <trs>
+    <rules>
+      $forall rule <- r1
+        ^{ruleToNodes rule}
+  <trs>
+    <rules>
+      $forall rule <- r2
+        ^{ruleToNodes rule}
 |]
 
 signatureToNodes :: (Pretty f) => TrsSig f -> [Node]
@@ -95,9 +94,8 @@ termToNodes (Fun f ts) =
 infToNodes :: (Pretty f, Pretty v) => Infeasibility f v -> [Node]
 infToNodes inf =
   [xml|
-<input>
-  ^{ctrsToNodes (ctrs inf)}
-  ^{queryToNodes (query inf)}
+^{ctrsToNodes (ctrs inf)}
+^{queryToNodes (query inf)}
 |]
 
 ctrsToNodes :: (Pretty f, Pretty v) => CTrs f v -> [Node]
