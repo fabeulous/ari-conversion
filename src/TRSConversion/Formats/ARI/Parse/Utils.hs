@@ -20,6 +20,7 @@ module TRSConversion.Formats.ARI.Parse.Utils (
   ident,
   restrictedIdent,
   naturalNumber,
+  index,
 
   -- * Combinators
   sExpr,
@@ -30,7 +31,6 @@ module TRSConversion.Formats.ARI.Parse.Utils (
 
   -- * Predicates
   isNewline,
-  index,
 
   -- * ParseErrors
   indexOutOfRangeError,
@@ -39,7 +39,8 @@ module TRSConversion.Formats.ARI.Parse.Utils (
 ) where
 
 import Control.Applicative (Alternative)
-import Control.Monad (MonadPlus, when)
+import Control.Monad (MonadPlus)
+import Data.Char (isAscii, isPrint)
 import Data.Functor (void)
 import Data.Text (Text, unpack)
 import Text.Megaparsec (
@@ -50,23 +51,23 @@ import Text.Megaparsec (
   empty,
   getOffset,
   label,
-  noneOf,
+  many,
   notFollowedBy,
+  satisfy,
   showErrorComponent,
   takeWhile1P,
   takeWhileP,
   try,
-  many,
   (<?>),
   (<|>),
  )
 import Text.Megaparsec.Char (char, space1, string)
 import qualified Text.Megaparsec.Char.Lexer as L
 import qualified Text.Megaparsec.Error as E
+import qualified Text.Megaparsec.Error.Builder as E
 
 import TRSConversion.Parse.Utils (Parser, Token (..), mkToken)
 import qualified TRSConversion.Problem.Common.Index as Idx
-import qualified Text.Megaparsec.Error.Builder as E
 
 type FunSymb = Token String
 type VarSymb = Token String
@@ -170,12 +171,15 @@ symbol = L.symbol spaces
 that is any string of characters not containing a whitespace, any character in
 {(, ), ;}
 -}
-identChar :: [Char]
-identChar = " \t\n\r;:()"
+nonIdentChar :: [Char]
+nonIdentChar = " \t\n\r;:()"
+
+isIdentChar :: Char -> Bool
+isIdentChar c = isAscii c && isPrint c && c `notElem` nonIdentChar
 
 ident :: ARIParser (Token String)
 ident = lexeme $ do
-  txt <- tokenOfText (takeWhile1P Nothing (`notElem` identChar)) <?> "identifier"
+  txt <- tokenOfText (takeWhile1P Nothing isIdentChar) <?> "identifier"
   pure $ fmap unpack txt
 
 ident'Char :: [Char]
@@ -186,7 +190,6 @@ ident' = lexeme $ do
   txt <- tokenOfText (takeWhile1P Nothing (`notElem` ident'Char)) <?> "identifier"
   pure $ fmap unpack txt
 
-
 keywords :: [String]
 keywords =
   ["format", "fun", "sort", "rule", "theory", "define-fun"]
@@ -195,16 +198,16 @@ keywords =
 
 restrictedIdent :: ARIParser (Token String)
 restrictedIdent = label "identifier" . lexeme $ do
-  o <- getOffset
-  identifier' <- tokenOfText $ takeWhile1P Nothing (`notElem` identChar)
+  -- o <- getOffset
+  identifier' <- tokenOfText $ takeWhile1P Nothing isIdentChar
   let identifier = unpack <$> identifier'
-  when (tokenValue identifier `elem` keywords)
-    $ parseError
-    $ E.errFancy o (customErr (unpack (tokenText identifier) `isInvalidIdentifier` "because it is a reserved keyword"))
+  -- when (tokenValue identifier `elem` keywords)
+  --   $ parseError
+  --   $ E.errFancy o (customErr (unpack (tokenText identifier) `isInvalidIdentifier` "because it is a reserved keyword"))
   pure identifier
 
 keywordChar :: ARIParser Char
-keywordChar = noneOf identChar
+keywordChar = satisfy isIdentChar
 
 {- | @'keyword' name@ defines and parses a keyword.
 
@@ -231,7 +234,7 @@ data LTree l
   | Node [LTree l]
 
 sExpr'' :: ARIParser (LTree (Token String))
-sExpr'' = ( symbol "(" *> many sExpr'' >>= \es -> symbol ")" *> return (Node es) ) <|> ( ident' >>= \i -> return (Leaf i) )
+sExpr'' = (symbol "(" *> many sExpr'' >>= \es -> symbol ")" *> return (Node es)) <|> (ident' >>= \i -> return (Leaf i))
 
 {- | @'parens' p@ parses @'('@ followed by @p@ followed by @')'@.
 

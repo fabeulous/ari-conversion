@@ -14,6 +14,10 @@ and this project adheres to the
 - ARI parser no longer allows most keywords as function symbols or variables
 - added INFEASIBILITY format for both COPS and ARI
 - `ari-syntax-checker` executable added.
+- only allow ASCII characters in identifiers
+  (specifically printable characters not in " ;:()")
+- allow leading spaces before meta-info comments
+- allow noraml comments before and between meta-info comments
 
 ## 0.4.0.0 - 2023-08-14
 - ARI format support for multiple systems
