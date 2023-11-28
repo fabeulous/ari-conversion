@@ -166,17 +166,18 @@ lexeme = L.lexeme spaces
 symbol :: Text -> ARIParser Text
 symbol = L.symbol spaces
 
+isIdentChar :: Char -> Bool
+isIdentChar c = isAscii c && isPrint c && c `notElem` nonIdentChar
+ where
+  -- printable characters that are not accepted
+  nonIdentChar :: [Char]
+  nonIdentChar = " ;:()"
+
 {- | @'ident'@ parses cops identifiers
 
 that is any string of characters not containing a whitespace, any character in
 {(, ), ;}
 -}
-nonIdentChar :: [Char]
-nonIdentChar = " \t\n\r;:()"
-
-isIdentChar :: Char -> Bool
-isIdentChar c = isAscii c && isPrint c && c `notElem` nonIdentChar
-
 ident :: ARIParser (Token String)
 ident = lexeme $ do
   txt <- tokenOfText (takeWhile1P Nothing isIdentChar) <?> "identifier"
