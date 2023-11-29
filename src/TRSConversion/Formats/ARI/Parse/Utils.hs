@@ -169,14 +169,14 @@ symbol = L.symbol spaces
 isIdentChar :: Char -> Bool
 isIdentChar c = isAscii c && isPrint c && c `notElem` nonIdentChar
  where
-  -- printable characters that are not accepted
+  -- printable ASCII characters that are not accepted
   nonIdentChar :: [Char]
   nonIdentChar = " ;:()"
 
-{- | @'ident'@ parses cops identifiers
+{- | @'ident'@ parses ari identifiers
 
-that is any string of characters not containing a whitespace, any character in
-{(, ), ;}
+that is any string of printable ASCII characters not containing a whitespace,
+any character in {(, ), ;, :}
 -}
 ident :: ARIParser (Token String)
 ident = lexeme $ do
