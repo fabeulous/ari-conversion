@@ -52,10 +52,11 @@ block of the COPS TRS format.
 -}
 parseCopsMetaInfo :: COPSParser MetaInfo
 parseCopsMetaInfo = do
-  ls <- sepEndBy (metaDoi <|> metaAuthors <|> metaComment) space
+  ls <- sepEndBy (metaDoi <|> metaAuthors <|> metaCopsNum <|> metaComment) space
   return $ foldr mergeMetaInfo emptyMetaInfo ls
  where
   metaDoi = (\v -> emptyMetaInfo{doi = Just v}) <$> copsDoiLine
+  metaCopsNum = (\v -> emptyMetaInfo{copsNum = Just v}) <$> copsCopsNumLine
   metaAuthors = (\v -> emptyMetaInfo{submitted = Just v}) <$> copsAuthorsLine
   metaComment = (\v -> emptyMetaInfo{comment = Just [v]}) <$> copsCommentLine
 
@@ -63,6 +64,11 @@ copsDoiLine :: COPSParser String
 copsDoiLine = string "doi:" *> (pDoi <?> "doi")
  where
   pDoi = unpack <$> takeWhileP Nothing (not . isSpace)
+
+copsCopsNumLine :: COPSParser String
+copsCopsNumLine = string "cops number:" *> hspace *> (pCopsNum <?> "cops num")
+ where
+  pCopsNum = unpack <$> takeWhileP Nothing (not . isSpace)
 
 copsAuthorsLine :: COPSParser [String]
 copsAuthorsLine = string "submitted by:" *> hspace *> (pAuthors <?> "authors")

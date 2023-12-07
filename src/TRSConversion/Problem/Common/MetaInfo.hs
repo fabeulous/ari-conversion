@@ -30,6 +30,8 @@ data MetaInfo = MetaInfo
     doi :: Maybe String,
     -- | The origin of the problem. e.g. @Just "COPS #20"@
     origin :: Maybe String,
+    -- | The original cops number.
+    copsNum :: Maybe String,
     -- | The individual(s) who submitted the problem. e.g. @Just ["Takahito Aoto","Junichi Yoshida","Yoshihito Toyama"]@
     submitted :: Maybe [String]
   }
@@ -48,6 +50,11 @@ mergeMetaInfo m1 m2 =
            , comment = case (comment m1, comment m2) of
                (Just c1, Just c2) -> Just (c1 ++ c2)
                (a, b)->  a <|> b
+           , copsNum =
+             case (copsNum m1, copsNum m2) of
+               (Just c1, Just c2) | c1 == c2 -> copsNum m1
+                                  | otherwise -> Nothing
+               (a, b) -> a <|> b
            }
 
 -- | Default value for an empty 'MetaInfo' object. Can be modified as shown below.
@@ -59,5 +66,6 @@ emptyMetaInfo =
     { comment = Nothing,
       doi = Nothing,
       origin = Nothing,
-      submitted = Nothing
+      submitted = Nothing,
+      copsNum = Nothing
     }

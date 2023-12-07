@@ -18,8 +18,6 @@ import TRSConversion.Formats.ARI.Parse.Utils (ARIParser, spaces, FunSymb, VarSym
 import TRSConversion.Problem.Problem (Problem (Problem), FormatType (..), mapSystem)
 import qualified TRSConversion.Problem.Problem as Prob
 import TRSConversion.Formats.ARI.Parse.FormatType (parseFormatType)
-import qualified Text.Megaparsec.Error.Builder as E
-import Text.Megaparsec (MonadParsec(parseError))
 import TRSConversion.Formats.ARI.Parse.Infeasibility (parseAriTRSInfeasibility', parseAriCTRSInfeasibility')
 import TRSConversion.Parse.Utils (unToken)
 import TRSConversion.Problem.Trs.Trs (emptyTrs)
@@ -34,7 +32,7 @@ parseProblem' :: ARIParser (Problem FunSymb VarSymb SortSymb)
 parseProblem' = do
   metaInfo <- parseAriMetaInfo
   spaces
-  (o, ft) <- parseFormatType
+  (_o, ft) <- parseFormatType
   system <- case ft of
     TrsFormat n -> Prob.Trs <$> parseAriTrs' n
     MSTrsFormat n -> Prob.MSTrs <$> parseAriMsTrs' n
