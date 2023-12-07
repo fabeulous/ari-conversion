@@ -20,6 +20,7 @@ and this project adheres to the
 - allow leading spaces before meta-info comments
 - allow noraml comments before and between meta-info comments
 - support for pretty printing the CPF3-input format of CeTA added
+- add flag for '@cops' meta info field
 
 ## 0.4.0.0 - 2023-08-14
 - ARI format support for multiple systems
