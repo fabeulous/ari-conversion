@@ -40,6 +40,7 @@ parseAriCSCTrs' condType n = do
 
 pFormat :: ARIParser (CondType, Int)
 pFormat = sExpr "format" $ do
-  condType <- keyword "CSCTRS" *> pCondType
+  _ <- keyword "CSCTRS"
+  condType <- pCondType
   n <- option 1 (keyword ":number" >> naturalNumber)
   pure (condType, n)

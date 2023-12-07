@@ -7,6 +7,7 @@ and this project adheres to the
 [Haskell Package Versioning Policy](https://pvp.haskell.org/).
 
 ## Unreleased
+- many small fixes to the ARI parser
 - `file-type` executable added. Given an ARI input file it prints the format
   type to stdout.
 - dropped `--comm` as shorthand for the `--commutation` flag, since the parser
@@ -18,6 +19,7 @@ and this project adheres to the
   (specifically printable characters not in " ;:()")
 - allow leading spaces before meta-info comments
 - allow noraml comments before and between meta-info comments
+- support for pretty printing the CPF3-input format of CeTA added
 
 ## 0.4.0.0 - 2023-08-14
 - ARI format support for multiple systems

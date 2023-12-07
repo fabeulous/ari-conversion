@@ -1,12 +1,17 @@
-{-# LANGUAGE  OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main (main) where
 
+import Control.Applicative ((<|>))
 import Control.Monad (unless)
 import Data.Char (toUpper)
 import qualified Data.Text.IO as Text
+import qualified Data.Text.Lazy as LazyText
+import qualified Data.Text.Lazy.IO as LazyText
 import Data.Version (showVersion)
 import Paths_trs_conversion (version)
-import Prettyprinter (Doc)
+import Prettyprinter (Doc, defaultLayoutOptions, layoutPretty)
+import Prettyprinter.Render.Text (renderLazy)
 import System.Console.GetOpt (
   ArgDescr (NoArg, ReqArg),
   ArgOrder (Permute),
@@ -20,24 +25,28 @@ import System.IO (
   Handle,
   IOMode (WriteMode),
   hClose,
-  hPrint,
   hPutStrLn,
   openFile,
   stderr,
   stdout,
  )
+import Text.XML (def, renderText)
 
+import qualified TRSConversion.Problem.Common.MetaInfo as MetaInfo
+import qualified TRSConversion.Problem.Problem as Problem
 import qualified TRSConversion.Formats.ARI.Parse.Problem as ARI
 import qualified TRSConversion.Formats.ARI.Parse.Utils as ARI
+import TRSConversion.Formats.ARI.Unparse.Problem (unparseAriProblem)
 import qualified TRSConversion.Formats.COPS.Parse.Problem as COPS
 import qualified TRSConversion.Formats.COPS.Parse.Utils as COPS
-import TRSConversion.Parse.Utils (parseIO)
-import TRSConversion.Formats.ARI.Unparse.Problem (unparseAriProblem)
 import TRSConversion.Formats.COPS.Unparse.Problem (unparseCopsCOMProblem, unparseCopsProblem)
+import TRSConversion.Formats.CPF3.Unparse.Problem (problemToXML)
+import TRSConversion.Parse.Utils (parseIO)
 
 data Format
   = COPS
   | ARI
+  | CPF3
   deriving (Eq, Ord, Enum, Bounded, Show)
 
 -- | @Config@ holds the information parsed from the options given on the command line.
@@ -46,6 +55,7 @@ data Config = Config
   , confSource :: Maybe String
   , confCommutationFlag :: Bool
   , confOutputFile :: Maybe FilePath
+  , confAddCopsNum :: Maybe String
   }
 
 defaultConfig :: Config
@@ -55,10 +65,14 @@ defaultConfig =
     , confTarget = Nothing
     , confCommutationFlag = False
     , confOutputFile = Nothing
+    , confAddCopsNum = Nothing
     }
 
 options :: [OptDescr (Config -> IO Config)]
-options =
+options = generalOptions ++ metaInfoOptions
+
+generalOptions :: [OptDescr (Config -> IO Config)]
+generalOptions =
   [ Option
       ['f']
       ["from"]
@@ -105,15 +119,24 @@ options =
       "print version"
   ]
 
+metaInfoOptions :: [OptDescr (Config -> IO Config)]
+metaInfoOptions =
+  [ Option
+      []
+      ["cops-num"]
+      (ReqArg (\s c -> pure c{confAddCopsNum = Just s}) "NUM")
+      "add '@cops NUM' meta-info"
+  ]
 
 usage :: Handle -> IO ()
 usage handle = do
   execName <- getProgName
   hPutStrLn handle $ description execName
-  hPutStrLn handle (usageInfo "OPTIONS" options)
+  hPutStrLn handle (usageInfo "OPTIONS" generalOptions)
+  hPutStrLn handle (usageInfo "META-INFO OPTIONS" metaInfoOptions)
  where
   description execName =
-   unlines
+    unlines
       [ "Usage: " <> execName <> " -f FORMAT -t FORMAT [OPTIONS] FILE"
       , mempty
       , "Convert problems involving term-rewrite systems between formats."
@@ -159,6 +182,7 @@ data Context = Context
   , source :: Format
   , commutationFlag :: Bool
   , outputFile :: Maybe FilePath
+  , addCopsNum :: Maybe String
   }
 
 contextFromConfig :: Config -> Either String Context
@@ -174,14 +198,16 @@ contextFromConfig conf = do
       , source = src
       , outputFile = outFile
       , commutationFlag = confCommutationFlag conf
+      , addCopsNum = confAddCopsNum conf
       }
  where
   parseFormat s = case toUpper <$> s of
     "COPS" -> Right COPS
     "ARI" -> Right ARI
+    "CPF3" -> Right CPF3
     _ ->
-      Left $
-        unlines
+      Left
+        $ unlines
           [ "ERROR: '" ++ s ++ "' is not a valid FORMAT"
           , "(Must be one of: " ++ show [minBound .. maxBound :: Format] ++ ")"
           ]
@@ -192,24 +218,36 @@ runApp config inputFile = do
 
   problem <- case source config of
     COPS -> parseIO (COPS.toParser COPS.parseProblem) inputFile fileContents
-      -- | commutationFlag config ->
-      --     parseIO (COPS.toParser COPS.parseCOMProblem) inputFile fileContents
-      -- | otherwise ->
-      --     parseIO (COPS.toParser COPS.parseProblem) inputFile fileContents
+    -- \| commutationFlag config ->
+    --     parseIO (COPS.toParser COPS.parseCOMProblem) inputFile fileContents
+    -- \| otherwise ->
+    --     parseIO (COPS.toParser COPS.parseProblem) inputFile fileContents
     ARI -> parseIO (ARI.toParser (ARI.parseProblem <* ARI.noSExpr)) inputFile fileContents
+    CPF3 -> do
+      hPutStrLn stderr $ "ERROR: CPF3 is currently only supported as a target (not a source)"
+      exitFailure
+
+  -- modify meta-info
+  let metaInfo = MetaInfo.copsNum (Problem.metaInfo problem)
+  let problem' = problem {
+        Problem.metaInfo = (Problem.metaInfo problem){MetaInfo.copsNum = addCopsNum config <|> metaInfo}
+        }
 
   doc <- case target config of
     COPS
-      | commutationFlag config -> unparseIO unparseCopsCOMProblem problem
-      | otherwise -> unparseIO unparseCopsProblem problem
-    ARI -> unparseIO unparseAriProblem problem
-
+      | commutationFlag config -> renderPretty <$> unparseIO unparseCopsCOMProblem problem'
+      | otherwise -> renderPretty <$> unparseIO unparseCopsProblem problem'
+    ARI -> renderPretty <$> unparseIO unparseAriProblem problem'
+    CPF3 -> pure $ renderText def (problemToXML problem')
   outputHandle <- case outputFile config of
     Nothing -> pure stdout
     Just fp -> openFile fp WriteMode
 
-  hPrint outputHandle doc
+  LazyText.hPutStrLn outputHandle doc
   hClose outputHandle
+
+renderPretty :: Doc ann -> LazyText.Text
+renderPretty = renderLazy . layoutPretty defaultLayoutOptions
 
 -- | Takes an unparsing function @up@ as an argument and wraps the result in the IO monad
 unparseIO :: (a -> Either String (Doc ann)) -> a -> IO (Doc ann)

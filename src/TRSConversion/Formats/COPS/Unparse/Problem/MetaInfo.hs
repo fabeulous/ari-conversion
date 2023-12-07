@@ -22,7 +22,7 @@ import TRSConversion.Unparse.Utils (filterEmptyDocs, prettyBlock)
 -- qqjf I was unsure what output format is desired, but this is easy to adjust.
 -- See the tests for examples of the current output format.
 unparseCopsMetaInfo :: MetaInfo -> Doc ann
-unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
+unparseCopsMetaInfo (MetaInfo {comment = cs, doi = ds, origin = orig, submitted = sub, copsNum = cn}) =
   if null metaBlocks
     then emptyDoc
     else prettyBlock "COMMENT" (vsep (emptyDoc : metaBlocks) <> hardline)
@@ -33,6 +33,7 @@ unparseCopsMetaInfo (MetaInfo cs ds orig sub) =
         [maybe emptyDoc (\d -> " doi:" <> pretty d) ds]
         ++ filterEmptyDocs
           [ maybe emptyDoc (\org -> " origin:" <+> pretty org) orig,
+            maybe emptyDoc (\n -> " cops number:" <+> pretty n) cn,
             maybe emptyDoc unparseSubmitters sub
           ]
         ++ maybe [] (map pretty) cs
