@@ -31,9 +31,9 @@ description:
 dependencies:
   - base >= 4.7 && < 5
   - prettyprinter >= 1.7.1 && < 1.8
-  - megaparsec >=9.3.0 && < 9.4
-  - text >= 2.0.1 && < 2.1
-  - containers >= 0.6.0.1 && < 0.7
+  - megaparsec >=9.3.0 && < 9.7
+  - text >= 2.0.1 && < 2.2
+  - containers >= 0.6.0.1 && < 0.8
   - xml-conduit >= 1.9.1.1 && < 1.10
   - xml-hamlet >= 0.5.0.2 && < 0.6
 ghc-options:
@@ -75,16 +75,16 @@ executables:
       - trs-conversion
 
 tests:
-  trs-conversion-test:
-    main: Spec.hs
-    source-dirs: test
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
-    dependencies:
-      - trs-conversion
-      - HUnit >= 1.6.2.0 && < 1.6.3
+#  trs-conversion-test:
+#    main: Spec.hs
+#    source-dirs: test
+#    ghc-options:
+#      - -threaded
+#      - -rtsopts
+#      - -with-rtsopts=-N
+#    dependencies:
+#      - trs-conversion
+#      - HUnit >= 1.6.2.0 && < 1.6.3
 
   trs-conversion-hspec:
     main: Spec.hs
@@ -95,7 +95,7 @@ tests:
       - -with-rtsopts=-N
     dependencies:
       - trs-conversion
-      - hspec >= 2.10.0.1 && < 2.11
+      - hspec >= 2.10.0.1 && < 2.12
       - hspec-discover
       - hedgehog
       - hspec-hedgehog

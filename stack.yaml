@@ -17,7 +17,7 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver: nightly-2023-02-14
+resolver: lts-21.23
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -34,8 +34,8 @@ packages:
 # These entries can reference officially published versions as well as
 # forks / in-progress versions pinned to a git hash. For example:
 #
-extra-deps:
-  - prettyprinter-1.7.1
+#extra-deps:
+#  - prettyprinter-1.7.1
 # - git: https://github.com/commercialhaskell/stack.git
 #   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
 #
