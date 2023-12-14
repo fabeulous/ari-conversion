@@ -43,7 +43,7 @@ parseAriMetaInfo =
         <$> many (structuredMeta <|> ariLeadingComment)
 
 structuredMeta :: ARIParser MetaInfo
-structuredMeta = structure $ ariAuthorLine <|> ariDoiLine <|> ariOriginLine <|> ariCopsLine
+structuredMeta = structure $ ariAuthorLine <|> ariDoiLine <|> ariCopsLine
   where
     structure =
         between (try (string "; @")) ((void eol <|> eof) <* space) . continue
@@ -62,11 +62,6 @@ ariDoiLine :: ARIParser MetaInfo
 ariDoiLine = do
     doiStr <- metaKeyValue "doi"
     pure $ emptyMetaInfo{doi = Just $ unpack doiStr}
-
-ariOriginLine :: ARIParser MetaInfo
-ariOriginLine = do
-    originStr <- metaKeyValue "origin"
-    pure $ emptyMetaInfo{origin = Just $ unpack originStr}
 
 ariCopsLine :: ARIParser MetaInfo
 ariCopsLine = do

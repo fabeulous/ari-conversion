@@ -28,8 +28,6 @@ data MetaInfo = MetaInfo
     comment :: Maybe [String],
     -- | The doi of the problem if available. e.g. @Just "10.1007/11805618_6"@
     doi :: Maybe String,
-    -- | The origin of the problem. e.g. @Just "COPS #20"@
-    origin :: Maybe String,
     -- | The original cops number.
     copsNum :: Maybe String,
     -- | The individual(s) who submitted the problem. e.g. @Just ["Takahito Aoto","Junichi Yoshida","Yoshihito Toyama"]@
@@ -43,7 +41,6 @@ data MetaInfo = MetaInfo
 mergeMetaInfo :: MetaInfo -> MetaInfo -> MetaInfo
 mergeMetaInfo m1 m2 =
   MetaInfo { doi = doi m1 <|> doi m2
-           , origin = origin m1 <|> origin m2
            , submitted = case (submitted m1, submitted m2) of
                (Just a1, Just a2) -> Just (a1 ++ a2)
                (a,b) -> a <|> b
@@ -65,7 +62,6 @@ emptyMetaInfo =
   MetaInfo
     { comment = Nothing,
       doi = Nothing,
-      origin = Nothing,
       submitted = Nothing,
       copsNum = Nothing
     }

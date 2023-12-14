@@ -47,7 +47,7 @@ parseCOMProblem = do
   metaInfo <- option emptyMetaInfo parseCopsMetaInfoBlock
   pure $
     Problem
-      { Prob.metaInfo = metaInfo{origin = copsComment}
+      { Prob.metaInfo = metaInfo
       , Prob.system = Prob.Trs trs
       }
 
@@ -57,6 +57,6 @@ parseINFProblem = do
   metaInfo <- option emptyMetaInfo parseCopsMetaInfoBlock
   pure $
     Problem
-      { Prob.metaInfo = metaInfo{origin = copsComment}
+      { Prob.metaInfo = metaInfo
       , Prob.system = Prob.Infeasibility inf
       }

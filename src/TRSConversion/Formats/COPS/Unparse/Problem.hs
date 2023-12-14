@@ -8,10 +8,8 @@ module TRSConversion.Formats.COPS.Unparse.Problem (
 )
 where
 
-import Data.Maybe (fromMaybe)
 import Prettyprinter (Doc, Pretty, hardline, vsep)
 
-import TRSConversion.Problem.Common.MetaInfo (MetaInfo (..))
 import TRSConversion.Problem.Problem (Problem (..), System (..))
 import TRSConversion.Formats.COPS.Unparse.COM (unparseCopsCOM)
 import TRSConversion.Formats.COPS.Unparse.CSCTrs (unparseCopsCSCTrs)
@@ -38,10 +36,8 @@ unparseCopsProblem problem = do
             Infeasibility inf -> unparseCopsInfeasibility originComment inf
 
     prettyMeta = unparseCopsMetaInfo metaInfo'
-    metaInfo' = case system problem of
-        Infeasibility _ -> (metaInfo problem){origin = Nothing}
-        _ -> metaInfo problem
-    originComment = fromMaybe "" (origin (metaInfo problem))
+    metaInfo' = metaInfo problem
+    originComment = ""
 
 unparseCopsCOMProblem :: (Ord f, Ord v, Pretty f, Pretty v) =>
   Problem f v s -> Either String (Doc ann)
@@ -52,6 +48,5 @@ unparseCopsCOMProblem problem =
             pure $ vsep [prettySystems, unparseCopsMetaInfo metaInfo']
         _ -> Left "COPS only supports TRSs in commutation problems"
   where
-    metaInfo' = (metaInfo problem){origin = Nothing}
-    originComment = fromMaybe "" (origin (metaInfo problem))
-
+    metaInfo' = metaInfo problem
+    originComment = ""
