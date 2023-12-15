@@ -143,8 +143,9 @@ usage handle = do
       , mempty
       , "It is mandatory to give a source format (-f) and target format (-t)."
       , "Moreover the input FILE must contain a problem in the source format."
-      , "The following FORMATs are supported: COPS, ARI. The problem type is"
-      , "inferred from the input and may be: TRS, MSTRS, CTRS, CSTRS, CSCTRS."
+      , "The following FORMATs are supported: COPS, ARI, CPF3 (only as target)."
+      , "The problem type is inferred from the input and may be:"
+      , "  TRS, MSTRS, CTRS, CSTRS, CSCTRS."
       ]
 
 {- | @trs-conversion-exe@ entry point. Can be run by calling
