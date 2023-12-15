@@ -25,3 +25,10 @@ After building you can run the respective tool with:
 where FORMAT can be "COPS", "ARI" or CPF3 (latter only supported as target).
 
 
+## Installing tools
+
+Running
+
+    stack install
+
+will build the tools and put them into the $HOME/.local/bin directory.
