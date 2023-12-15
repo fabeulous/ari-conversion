@@ -7,6 +7,8 @@ and this project adheres to the
 [Haskell Package Versioning Policy](https://pvp.haskell.org/).
 
 ## Unreleased
+
+## 0.5.0.0 - 2023-12-15
 - many small fixes to the ARI parser
 - `file-type` executable added. Given an ARI input file it prints the format
   type to stdout.
