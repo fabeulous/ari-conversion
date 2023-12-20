@@ -9,6 +9,7 @@ This module defines functions to output a 'CTrs' in COPS and ARI format.
 module TRSConversion.Formats.COPS.Unparse.CTrs (
   -- * COPS
   unparseCopsCTrs,
+  unparseCopsCTrsSystem,
 
   -- ** Helpers
   prettyCondType,
@@ -35,13 +36,20 @@ unparse each part of the 'Trs'.
 See the tests for examples of expected output.
 -}
 unparseCopsCTrs :: (Ord v, Pretty f, Pretty v) => CTrs f v -> Either String (Doc ann)
-unparseCopsCTrs ctrs
+unparseCopsCTrs ctrs = do
+  system <- unparseCopsCTrsSystem ctrs
+  pure $ vsep
+        [ prettyBlock "CONDITIONTYPE" (prettyCondType $ conditionType ctrs)
+        , system
+        ]
+
+unparseCopsCTrsSystem :: (Ord v, Pretty f, Pretty v) => CTrs f v -> Either String (Doc ann)
+unparseCopsCTrsSystem ctrs
   | numSystems ctrs /= 1 = error "COPS format doesn't support CTRSs with multiple systems"
   | otherwise = do
     pure $
       vsep
-        [ prettyBlock "CONDITIONTYPE" (prettyCondType $ conditionType ctrs)
-        , prettyBlock "VAR" (hsep [pretty v | v <- variables])
+        [ prettyBlock "VAR" (hsep [pretty v | v <- variables])
         , prettyBlock "RULES" (nest 2 (vsep $ mempty : [prettyCRule r | r <- rs]) <> hardline)
         ]
  where
