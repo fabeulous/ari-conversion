@@ -46,11 +46,12 @@ unparseCopsCTrs ctrs
         ]
  where
   rs = rules ctrs IntMap.! 1
-  variables = varsOfTrs rs
+  variables = varsOfCTrs rs
 
-  varsOfTrs rls = nubOrd $ concatMap varsOfRules rls
+  varsOfCTrs rls = nubOrd $ concatMap varsOfCRules rls
 
-  varsOfRules r = vars (lhs r) ++ vars (rhs r)
+  varsOfCRules rl = vars (lhs rl) ++ vars (rhs rl)
+    ++ concatMap (\(l :== r) -> vars l ++ vars r) (conditions rl)
 
 prettyCRule :: (Pretty f, Pretty v) => CRule f v -> Doc ann
 prettyCRule cRule =
