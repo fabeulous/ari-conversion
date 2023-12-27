@@ -9,7 +9,7 @@ where
 
 import Control.Monad (unless)
 import Data.Text (Text)
-import Text.Megaparsec (ParseError, Stream, Tokens, getOffset, option, parseError, try, (<|>))
+import Text.Megaparsec (ParseError, Stream, Tokens, getOffset, option, optional, parseError, try, (<|>))
 import qualified Text.Megaparsec.Error.Builder as E
 
 import TRSConversion.Formats.ARI.Parse.CTrs (pCondType)
@@ -44,7 +44,10 @@ unknownFormatType name offSet =
     E.err offSet $ E.utoks name
 
 lcTrsFormat :: ARIParser FormatType
-lcTrsFormat = LCTrsFormat <$> optNumber
+lcTrsFormat = do
+    n <- optNumber
+    _ <- optional $ keyword ":standard" *> ident
+    pure $ LCTrsFormat n
 
 cscTrsFormat :: ARIParser FormatType
 cscTrsFormat = CSCTrsFormat <$> pCondType <*> optNumber
