@@ -11,12 +11,10 @@ module TRSConversion.Formats.COPS.Unparse.CSCTrs (
 where
 
 import qualified Data.IntMap as IntMap
-import Data.List (group, sort)
 import Prettyprinter (Doc, Pretty, hardline, hsep, nest, pretty, vsep)
 
 import TRSConversion.Problem.CSCTrs.CSCTrs (CSCTrs (..))
-import TRSConversion.Problem.CTrs.CTrs (CRule (..), CTrs (..))
-import TRSConversion.Problem.Common.Term (vars)
+import TRSConversion.Problem.CTrs.CTrs (CTrs (..), vars)
 import TRSConversion.Formats.COPS.Unparse.CSTrs (copsReplacementMap)
 import TRSConversion.Formats.COPS.Unparse.CTrs (prettyCRule, prettyCondType)
 import TRSConversion.Unparse.Utils (prettyBlock)
@@ -42,9 +40,4 @@ unparseCopsCSCTrs CSCTrs{ctrs = system, replacementMap = repMap}
           ]
  where
   rs = rules system IntMap.! 1
-  vs = varsOfTrs rs
-
-  varsOfTrs rls = map head . group . sort $ concatMap varsOfRules rls
-
-  varsOfRules r = vars (lhs r) ++ vars (rhs r)
-
+  vs = vars rs
