@@ -1,5 +1,5 @@
 name: trs-conversion
-version: 0.5.0.0
+version: 0.6.0.0
 git: "https://git.uibk.ac.at/informatik/cl/ari/task-a/trs-conversion"
 license: NONE
 author:
@@ -13,6 +13,7 @@ copyright:
 extra-source-files:
   - README.md
   - CHANGELOG.md
+  - stack.yaml
 
 # Metadata used when publishing your package
 synopsis: TRS format converter
