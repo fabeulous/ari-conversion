@@ -37,7 +37,7 @@ spec = do
           (pack . show . uncurry unparseAriRule)
           ((\(i, r) -> pure (Idx.index i, r)) <=< parse (ARI.toParser (parseAriRuleString sig')) "testinput")
 
-parseAriRuleString sig = (\(i,r) -> (i, mapRule unToken unToken r)) <$> parseAriRule (parsePrefixTerm sig)
+parseAriRuleString sig = (\(i,r) -> (i, mapRule unToken unToken r)) <$> parseAriRule sig
 
 sigOfTerm :: Eq f => Term f v -> [Sig f]
 sigOfTerm t =
