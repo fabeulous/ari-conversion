@@ -46,7 +46,7 @@ unknownFormatType name offSet =
 lcTrsFormat :: ARIParser FormatType
 lcTrsFormat = do
     n <- optNumber
-    _ <- optional $ keyword ":standard" *> ident
+    _ <- optional $ keyword ":smtlib" *> ident
     pure $ LCTrsFormat n
 
 cscTrsFormat :: ARIParser FormatType

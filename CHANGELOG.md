@@ -7,6 +7,8 @@ and this project adheres to the
 [Haskell Package Versioning Policy](https://pvp.haskell.org/).
 
 ## Unreleased
+- change LCTRS (format ..) tag syntax to include ':smtlib'. See:
+  http://project-coco.uibk.ac.at/ARI/lctrs.php
 
 ## 0.6.0.0 - 2023-12-28
 - fixes to COPS output on CSCTRSs
