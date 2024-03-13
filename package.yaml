@@ -1,14 +1,15 @@
 name: trs-conversion
 version: 0.6.0.0
 git: "https://git.uibk.ac.at/informatik/cl/ari/task-a/trs-conversion"
-license: NONE
+license:            GPL-3.0-only
+license-file:       LICENSE
 author:
   - "Fabian Mitterwallner"
   - "Jamie Fox"
 maintainer: "Fabian Mitterwallner <fabian.mittewallner@uibk.ac.at>"
 copyright:
   - "2023 Jamie Fox"
-  - "2023 Fabian Mitterwallner"
+  - "2023-2024 Fabian Mitterwallner"
 
 extra-source-files:
   - README.md
