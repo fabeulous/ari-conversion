@@ -141,9 +141,8 @@ queryToNodes :: (Pretty f, Pretty v) => [Condition f v] -> [Node]
 queryToNodes conditions =
   [xml|
 <infeasibilityQuery>
-  <rules>
-    $forall cond <- conditions
-      ^{queryCond cond}
+  $forall cond <- conditions
+    ^{queryCond cond}
 |]
  where
   queryCond (l :== r) =
