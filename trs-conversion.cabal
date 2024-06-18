@@ -1,0 +1,227 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.35.2.
+--
+-- see: https://github.com/sol/hpack
+
+name:           trs-conversion
+version:        0.6.0.0
+synopsis:       TRS format converter
+description:    Package to convert between the COPS and ARI rewriting problem formats.
+                See the README.md or at <https://git.uibk.ac.at/informatik/cl/ari/task-a/trs-conversion/-/blob/main/README.md> for more information.
+author:         Fabian Mitterwallner,
+                Jamie Fox
+maintainer:     Fabian Mitterwallner <fabian.mittewallner@uibk.ac.at>
+copyright:      2023 Jamie Fox,
+                2023-2024 Fabian Mitterwallner
+license:        GPL-3.0-only
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+    stack.yaml
+
+source-repository head
+  type: git
+  location: https://git.uibk.ac.at/informatik/cl/ari/task-a/trs-conversion
+
+library
+  exposed-modules:
+      TRSConversion.Formats.ARI.Parse.CSCTrs
+      TRSConversion.Formats.ARI.Parse.CSTrs
+      TRSConversion.Formats.ARI.Parse.CTrs
+      TRSConversion.Formats.ARI.Parse.FormatType
+      TRSConversion.Formats.ARI.Parse.Infeasibility
+      TRSConversion.Formats.ARI.Parse.MetaInfo
+      TRSConversion.Formats.ARI.Parse.MsSig
+      TRSConversion.Formats.ARI.Parse.MSTrs
+      TRSConversion.Formats.ARI.Parse.Problem
+      TRSConversion.Formats.ARI.Parse.Rule
+      TRSConversion.Formats.ARI.Parse.Sig
+      TRSConversion.Formats.ARI.Parse.Term
+      TRSConversion.Formats.ARI.Parse.Trs
+      TRSConversion.Formats.ARI.Parse.Utils
+      TRSConversion.Formats.ARI.Unparse.CSCTrs
+      TRSConversion.Formats.ARI.Unparse.CSTrs
+      TRSConversion.Formats.ARI.Unparse.CTrs
+      TRSConversion.Formats.ARI.Unparse.Infeasibility
+      TRSConversion.Formats.ARI.Unparse.Problem
+      TRSConversion.Formats.ARI.Unparse.Problem.MetaInfo
+      TRSConversion.Formats.ARI.Unparse.Problem.MsSig
+      TRSConversion.Formats.ARI.Unparse.Problem.Rule
+      TRSConversion.Formats.ARI.Unparse.Problem.Term
+      TRSConversion.Formats.ARI.Unparse.Problem.TrsSig
+      TRSConversion.Formats.ARI.Unparse.UnparseMsTrs
+      TRSConversion.Formats.ARI.Unparse.UnparseTrs
+      TRSConversion.Formats.COPS.Parse.COM
+      TRSConversion.Formats.COPS.Parse.CSCTrs
+      TRSConversion.Formats.COPS.Parse.CSTrs
+      TRSConversion.Formats.COPS.Parse.CTrs
+      TRSConversion.Formats.COPS.Parse.Infeasibility
+      TRSConversion.Formats.COPS.Parse.MetaInfo
+      TRSConversion.Formats.COPS.Parse.MsSig
+      TRSConversion.Formats.COPS.Parse.MSTrs
+      TRSConversion.Formats.COPS.Parse.Problem
+      TRSConversion.Formats.COPS.Parse.Rule
+      TRSConversion.Formats.COPS.Parse.Sig
+      TRSConversion.Formats.COPS.Parse.Term
+      TRSConversion.Formats.COPS.Parse.Trs
+      TRSConversion.Formats.COPS.Parse.Utils
+      TRSConversion.Formats.COPS.Unparse.COM
+      TRSConversion.Formats.COPS.Unparse.CSCTrs
+      TRSConversion.Formats.COPS.Unparse.CSTrs
+      TRSConversion.Formats.COPS.Unparse.CTrs
+      TRSConversion.Formats.COPS.Unparse.Infeasibility
+      TRSConversion.Formats.COPS.Unparse.Problem
+      TRSConversion.Formats.COPS.Unparse.Problem.MetaInfo
+      TRSConversion.Formats.COPS.Unparse.Problem.MsSig
+      TRSConversion.Formats.COPS.Unparse.Problem.Rule
+      TRSConversion.Formats.COPS.Unparse.Problem.Term
+      TRSConversion.Formats.COPS.Unparse.Problem.TrsSig
+      TRSConversion.Formats.COPS.Unparse.UnparseMsTrs
+      TRSConversion.Formats.COPS.Unparse.UnparseTrs
+      TRSConversion.Formats.CPF3.Unparse.Problem
+      TRSConversion.Parse.Utils
+      TRSConversion.Problem.Common.Index
+      TRSConversion.Problem.Common.MetaInfo
+      TRSConversion.Problem.Common.Rule
+      TRSConversion.Problem.Common.Term
+      TRSConversion.Problem.CSCTrs.CSCTrs
+      TRSConversion.Problem.CSTrs.CSTrs
+      TRSConversion.Problem.CTrs.CTrs
+      TRSConversion.Problem.CTrs.Infeasibility
+      TRSConversion.Problem.MsTrs.MsSig
+      TRSConversion.Problem.MsTrs.MsTrs
+      TRSConversion.Problem.Problem
+      TRSConversion.Problem.Trs.Sig
+      TRSConversion.Problem.Trs.Trs
+      TRSConversion.Problem.Trs.TrsSig
+      TRSConversion.Unparse.Utils
+  other-modules:
+      Paths_trs_conversion
+  autogen-modules:
+      Paths_trs_conversion
+  hs-source-dirs:
+      src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      base >=4.7 && <5
+    , containers >=0.6.0.1 && <0.8
+    , megaparsec >=9.3.0 && <9.7
+    , prettyprinter >=1.7.1 && <1.8
+    , text >=2.0.1 && <2.2
+    , xml-conduit >=1.9.1.1 && <1.10
+    , xml-hamlet >=0.5.0.2 && <0.6
+  default-language: Haskell2010
+
+executable ari-syntax-checker
+  main-is: Main.hs
+  other-modules:
+      Paths_trs_conversion
+  autogen-modules:
+      Paths_trs_conversion
+  hs-source-dirs:
+      ari-syntax-checker
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -rtsopts
+  build-depends:
+      base >=4.7 && <5
+    , containers >=0.6.0.1 && <0.8
+    , megaparsec >=9.3.0 && <9.7
+    , prettyprinter >=1.7.1 && <1.8
+    , text >=2.0.1 && <2.2
+    , trs-conversion
+    , xml-conduit >=1.9.1.1 && <1.10
+    , xml-hamlet >=0.5.0.2 && <0.6
+  default-language: Haskell2010
+
+executable format-type
+  main-is: Main.hs
+  other-modules:
+      Paths_trs_conversion
+  autogen-modules:
+      Paths_trs_conversion
+  hs-source-dirs:
+      format-type
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -rtsopts
+  build-depends:
+      base >=4.7 && <5
+    , containers >=0.6.0.1 && <0.8
+    , megaparsec >=9.3.0 && <9.7
+    , prettyprinter >=1.7.1 && <1.8
+    , text >=2.0.1 && <2.2
+    , trs-conversion
+    , xml-conduit >=1.9.1.1 && <1.10
+    , xml-hamlet >=0.5.0.2 && <0.6
+  default-language: Haskell2010
+
+executable trs-conversion
+  main-is: Main.hs
+  other-modules:
+      Paths_trs_conversion
+  autogen-modules:
+      Paths_trs_conversion
+  hs-source-dirs:
+      app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -rtsopts
+  build-depends:
+      base >=4.7 && <5
+    , containers >=0.6.0.1 && <0.8
+    , megaparsec >=9.3.0 && <9.7
+    , prettyprinter >=1.7.1 && <1.8
+    , text >=2.0.1 && <2.2
+    , trs-conversion
+    , xml-conduit >=1.9.1.1 && <1.10
+    , xml-hamlet >=0.5.0.2 && <0.6
+  default-language: Haskell2010
+
+test-suite trs-conversion-hspec
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Gen.CSCTrs
+      Gen.CSTrs
+      Gen.CTrs
+      Gen.Infeasibility
+      Gen.MsSig
+      Gen.MSTrs
+      Gen.Rule
+      Gen.Sig
+      Gen.Term
+      Gen.Trs
+      SpecHook
+      TRSConversion.Formats.ARI.Parse.CSCTrsSpec
+      TRSConversion.Formats.ARI.Parse.CSTrsSpec
+      TRSConversion.Formats.ARI.Parse.CTrsSpec
+      TRSConversion.Formats.ARI.Parse.InfeasibilitySpec
+      TRSConversion.Formats.ARI.Parse.MSTrsSpec
+      TRSConversion.Formats.ARI.Parse.RuleSpec
+      TRSConversion.Formats.ARI.Parse.SigSpec
+      TRSConversion.Formats.ARI.Parse.TermSpec
+      TRSConversion.Formats.ARI.Parse.TrsSpec
+      TRSConversion.Formats.COPS.Parse.CTrsSpec
+      TRSConversion.Formats.COPS.Parse.RuleSpec
+      TRSConversion.Formats.COPS.Parse.TermSpec
+      TRSConversion.Formats.COPS.Parse.TrsSpec
+      Paths_trs_conversion
+  autogen-modules:
+      Paths_trs_conversion
+  hs-source-dirs:
+      test-hspec
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-tool-depends:
+      hspec-discover:hspec-discover ==2.*
+  build-depends:
+      base >=4.7 && <5
+    , containers >=0.6.0.1 && <0.8
+    , hedgehog
+    , hspec >=2.10.0.1 && <2.12
+    , hspec-discover
+    , hspec-hedgehog
+    , megaparsec >=9.3.0 && <9.7
+    , prettyprinter >=1.7.1 && <1.8
+    , text
+    , trs-conversion
+    , xml-conduit >=1.9.1.1 && <1.10
+    , xml-hamlet >=0.5.0.2 && <0.6
+  default-language: Haskell2010
